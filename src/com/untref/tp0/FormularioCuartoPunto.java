@@ -85,7 +85,7 @@ public class FormularioCuartoPunto extends JFrame {
 
     }
 	private BufferedImage crearImagen() {
-    	bmp = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
+    	bmp = new BufferedImage(200, 200, BufferedImage.TYPE_4BYTE_ABGR);
 
         for(int i = 0; i < 200 ; i++){
         	for(int j = 0; j < 200; j++){
