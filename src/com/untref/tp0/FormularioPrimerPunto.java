@@ -35,28 +35,41 @@ public class FormularioPrimerPunto extends JFrame {
     private int lenght;
     private BufferedImage bmp ;
     
-	public FormularioPrimerPunto() {
+
+	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+	// Generated using JFormDesigner Evaluation license - Emmanuel Beneventano
+	private JButton buttonObtenerPixel;
+	private JButton buttonCambiarPixel;
+	private JTextField posicionXobtenerPixel;
+	private JTextField posicionYobtenerPixel;
+	private JLabel coordenadasObtenerPixel;
+	private JLabel coordenadasCambiarPixel;
+	private JTextField posicionXcambiarPixel;
+	private JTextField posicionYcambiarPixel;
+	private JButton buttonCargarImagen;
+	private JLabel resultado;
+	private JLabel valorResultado;
+	private JButton buttonGuardarImagen;
+	private JScrollPane scrollPane1;
+	private JLabel labelImagen;
+	private JLabel label4;
+	private JLabel lenghtLabel;
+	private JTextField widthTextField;
+	private JTextField lenghtTextField;
+	private JLabel cambiarPixelLabel;
+	private JTextField cambiarPixelTextField;
+	private JLabel labelDesde;
+	private JTextField desdeTextFieldX;
+	private JTextField desdeTextFieldY;
+	private JLabel labelHasta;
+	private JTextField hastaTextFieldX;
+	private JTextField hastaTextFieldY;
+	private JScrollPane scrollPane2;
+	private JLabel labelImagenNueva;
+	private JButton crearImagenNuevaButton;
+	// JFormDesigner - End of variables declaration  //GEN-END:variables
+    public FormularioPrimerPunto() {
 		initComponents();
-	}
-
-	private void crearImagenNuevaButtonActionPerformed(ActionEvent e) {
-		crearNuevaImagen();
-	}
-
-	private void buttonObtenerPixelActionPerformed(ActionEvent e) {
-		obtenerPixelPorCoordenadas();
-	}
-
-	private void buttonCambiarPixelActionPerformed(ActionEvent e) {
-		cambiarPixelPorCoordenadas();
-	}
-
-	private void buttonCargarImagenActionPerformed(ActionEvent e) {
-		labelImagen.setIcon(new ImageIcon(abrirImagen()));
-	}
-
-	private void buttonGuardarImagenActionPerformed(ActionEvent e) {
-		guardarImagen();
 	}
 
 	private void initComponents() {
@@ -304,39 +317,27 @@ public class FormularioPrimerPunto extends JFrame {
 		setLocationRelativeTo(getOwner());
 		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
+	
+	private void crearImagenNuevaButtonActionPerformed(ActionEvent e) {
+		crearNuevaImagen();
+	}
 
-	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-	// Generated using JFormDesigner Evaluation license - Emmanuel Beneventano
-	private JButton buttonObtenerPixel;
-	private JButton buttonCambiarPixel;
-	private JTextField posicionXobtenerPixel;
-	private JTextField posicionYobtenerPixel;
-	private JLabel coordenadasObtenerPixel;
-	private JLabel coordenadasCambiarPixel;
-	private JTextField posicionXcambiarPixel;
-	private JTextField posicionYcambiarPixel;
-	private JButton buttonCargarImagen;
-	private JLabel resultado;
-	private JLabel valorResultado;
-	private JButton buttonGuardarImagen;
-	private JScrollPane scrollPane1;
-	private JLabel labelImagen;
-	private JLabel label4;
-	private JLabel lenghtLabel;
-	private JTextField widthTextField;
-	private JTextField lenghtTextField;
-	private JLabel cambiarPixelLabel;
-	private JTextField cambiarPixelTextField;
-	private JLabel labelDesde;
-	private JTextField desdeTextFieldX;
-	private JTextField desdeTextFieldY;
-	private JLabel labelHasta;
-	private JTextField hastaTextFieldX;
-	private JTextField hastaTextFieldY;
-	private JScrollPane scrollPane2;
-	private JLabel labelImagenNueva;
-	private JButton crearImagenNuevaButton;
-	// JFormDesigner - End of variables declaration  //GEN-END:variables
+	private void buttonObtenerPixelActionPerformed(ActionEvent e) {
+		obtenerPixelPorCoordenadas();
+	}
+
+	private void buttonCambiarPixelActionPerformed(ActionEvent e) {
+		cambiarPixelPorCoordenadas();
+	}
+
+	private void buttonCargarImagenActionPerformed(ActionEvent e) {
+		labelImagen.setIcon(new ImageIcon(abrirImagen()));
+	}
+
+	private void buttonGuardarImagenActionPerformed(ActionEvent e) {
+		guardarImagen();
+	}
+
     public BufferedImage abrirImagen(){
     	
     	this.width = Integer.valueOf(widthTextField.getText());
@@ -388,23 +389,6 @@ public class FormularioPrimerPunto extends JFrame {
 		
 		return nombreDelArchivo;
 	}
-	
-    private void jButtonCargarImagen(ActionEvent evt) {
-        labelImagen.setIcon(new ImageIcon(abrirImagen()));
-
-    }
-    
-    private void jButtonObtenerrPixel(ActionEvent evt) {
-    	obtenerPixelPorCoordenadas();
-    }
-    
-    private void jButtonCambiarPixel(ActionEvent evt) {
-    	cambiarPixelPorCoordenadas();
-    }
-    
-    private void jButtonGuardarImagen(ActionEvent evt) {
-    	guardarImagen();
-    }
     
     public void obtenerPixelPorCoordenadas(){
     	int x = Integer.valueOf(posicionXobtenerPixel.getText());
