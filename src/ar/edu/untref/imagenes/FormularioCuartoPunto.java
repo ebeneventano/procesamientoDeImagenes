@@ -17,15 +17,17 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle;
 
+import ar.edu.untref.imagenes.utils.ColorProvider;
+
 /**
  * @author Emmanuel Beneventano
  */
 public class FormularioCuartoPunto extends JFrame {
-   
+
 	private static final long serialVersionUID = -5624241489547478016L;
-	
-	private BufferedImage bmp ;
-    private JButton buttonCrearImagen;
+
+	private BufferedImage bmp;
+	private JButton buttonCrearImagen;
 	private JScrollPane scrollPane1;
 	private JLabel imagenLabel;
 
@@ -38,19 +40,19 @@ public class FormularioCuartoPunto extends JFrame {
 		scrollPane1 = new JScrollPane();
 		imagenLabel = new JLabel();
 
-		//======== this ========
+		// ======== this ========
 		setTitle("Punto 2 - Imagen Binaria con Circulo en el medio");
 		Container contentPane = getContentPane();
 
-		//---- buttonCrearImagen ----
+		// ---- buttonCrearImagen ----
 		buttonCrearImagen.setText("Crear Imagen");
 		buttonCrearImagen.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-            	jButtonCrearImagenConCirculoCentrado(evt);  
-            }
-        });
+			public void actionPerformed(ActionEvent evt) {
+				jButtonCrearImagenConCirculoCentrado(evt);
+			}
+		});
 
-		//======== scrollPane1 ========
+		// ======== scrollPane1 ========
 		{
 			imagenLabel.setSize(200, 200);
 			scrollPane1.setViewportView(imagenLabel);
@@ -58,45 +60,68 @@ public class FormularioCuartoPunto extends JFrame {
 
 		GroupLayout contentPaneLayout = new GroupLayout(contentPane);
 		contentPane.setLayout(contentPaneLayout);
-		contentPaneLayout.setHorizontalGroup(
-			contentPaneLayout.createParallelGroup()
-				.addGroup(contentPaneLayout.createSequentialGroup()
-					.addGroup(contentPaneLayout.createParallelGroup()
-						.addGroup(contentPaneLayout.createSequentialGroup()
-							.addGap(124, 124, 124)
-							.addComponent(buttonCrearImagen))
-						.addGroup(contentPaneLayout.createSequentialGroup()
-							.addGap(75, 75, 75)
-							.addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap(74, Short.MAX_VALUE))
-		);
-		contentPaneLayout.setVerticalGroup(
-			contentPaneLayout.createParallelGroup()
-				.addGroup(contentPaneLayout.createSequentialGroup()
-					.addGap(28, 28, 28)
-					.addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-					.addComponent(buttonCrearImagen)
-					.addContainerGap(47, Short.MAX_VALUE))
-		);
+		contentPaneLayout
+				.setHorizontalGroup(contentPaneLayout
+						.createParallelGroup()
+						.addGroup(
+								contentPaneLayout
+										.createSequentialGroup()
+										.addGroup(
+												contentPaneLayout
+														.createParallelGroup()
+														.addGroup(
+																contentPaneLayout
+																		.createSequentialGroup()
+																		.addGap(124,
+																				124,
+																				124)
+																		.addComponent(
+																				buttonCrearImagen))
+														.addGroup(
+																contentPaneLayout
+																		.createSequentialGroup()
+																		.addGap(75,
+																				75,
+																				75)
+																		.addComponent(
+																				scrollPane1,
+																				GroupLayout.PREFERRED_SIZE,
+																				203,
+																				GroupLayout.PREFERRED_SIZE)))
+										.addContainerGap(74, Short.MAX_VALUE)));
+		contentPaneLayout
+				.setVerticalGroup(contentPaneLayout
+						.createParallelGroup()
+						.addGroup(
+								contentPaneLayout
+										.createSequentialGroup()
+										.addGap(28, 28, 28)
+										.addComponent(scrollPane1,
+												GroupLayout.PREFERRED_SIZE,
+												203, GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(
+												LayoutStyle.ComponentPlacement.UNRELATED)
+										.addComponent(buttonCrearImagen)
+										.addContainerGap(47, Short.MAX_VALUE)));
 		pack();
 		setLocationRelativeTo(getOwner());
 	}
 
-    private void jButtonCrearImagenConCirculoCentrado(ActionEvent evt) {
-        imagenLabel.setIcon(new ImageIcon(crearImagen()));
+	private void jButtonCrearImagenConCirculoCentrado(ActionEvent evt) {
+		imagenLabel.setIcon(new ImageIcon(crearImagen()));
 
-    }
+	}
+
 	private BufferedImage crearImagen() {
-    	bmp = new BufferedImage(200, 200, BufferedImage.TYPE_4BYTE_ABGR);
+		bmp = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
 
-        for(int i = 0; i < 200 ; i++){
-        	for(int j = 0; j < 200; j++){
-        		bmp.setRGB(i, j, j);
-        	}
-        }
-        
-        return bmp;
+		for (int i = 0; i < 200; i++) {
+			for (int j = 0; j < 200; j++) {
+				bmp.setRGB(i, j, ColorProvider.getIntRgbGrayScale(j, j, j));
+			}
+		}
+
+		return bmp;
 	}
 
 }
