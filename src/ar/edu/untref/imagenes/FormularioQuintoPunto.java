@@ -17,12 +17,10 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle;
 
-import ar.edu.untref.imagenes.utils.ColorProvider;
-
 /**
  * @author Emmanuel Beneventano
  */
-public class FormularioCuartoPunto extends JFrame {
+public class FormularioQuintoPunto extends JFrame {
 
 	private static final long serialVersionUID = -5624241489547478016L;
 
@@ -31,7 +29,7 @@ public class FormularioCuartoPunto extends JFrame {
 	private JScrollPane scrollPane1;
 	private JLabel imagenLabel;
 
-	public FormularioCuartoPunto() {
+	public FormularioQuintoPunto() {
 		initComponents();
 	}
 
@@ -41,7 +39,7 @@ public class FormularioCuartoPunto extends JFrame {
 		imagenLabel = new JLabel();
 
 		// ======== this ========
-		setTitle("Punto 4 - Escala de grises");
+		setTitle("Punto 5 - Escala de Colores");
 		Container contentPane = getContentPane();
 
 		// ---- buttonCrearImagen ----
@@ -113,15 +111,7 @@ public class FormularioCuartoPunto extends JFrame {
 	}
 
 	private BufferedImage crearImagen() {
-		bmp = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
-
-		for (int i = 0; i < 200; i++) {
-			for (int j = 0; j < 200; j++) {
-				bmp.setRGB(i, j, ColorProvider.getIntRgbGrayScale(j, j, j));
-			}
-		}
-
-		return bmp;
+			return null;
 	}
 
 }
