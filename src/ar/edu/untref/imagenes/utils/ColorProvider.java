@@ -16,5 +16,11 @@ public class ColorProvider {
 		
 		return 0xff000000 + (gray<<16) + (gray<<8) + gray;
 	}
+	
+	public static int getIntRgbColorScale(int red, int green, int blue) {	
+		int color = (int)(red + green + blue);
+		
+		return color;
+	}
 
 }
