@@ -21,15 +21,19 @@ import javax.swing.LayoutStyle;
  * @author Emmanuel Beneventano
  */
 public class FormularioCuartoPunto extends JFrame {
-    private BufferedImage bmp ;
+   
+	private static final long serialVersionUID = -5624241489547478016L;
+	
+	private BufferedImage bmp ;
+    private JButton buttonCrearImagen;
+	private JScrollPane scrollPane1;
+	private JLabel imagenLabel;
 
 	public FormularioCuartoPunto() {
 		initComponents();
 	}
 
 	private void initComponents() {
-		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-		// Generated using JFormDesigner Evaluation license - Emmanuel Beneventano
 		buttonCrearImagen = new JButton();
 		scrollPane1 = new JScrollPane();
 		imagenLabel = new JLabel();
@@ -77,7 +81,6 @@ public class FormularioCuartoPunto extends JFrame {
 		);
 		pack();
 		setLocationRelativeTo(getOwner());
-		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
 
     private void jButtonCrearImagenConCirculoCentrado(ActionEvent evt) {
@@ -95,10 +98,5 @@ public class FormularioCuartoPunto extends JFrame {
         
         return bmp;
 	}
-	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-	// Generated using JFormDesigner Evaluation license - Emmanuel Beneventano
-	private JButton buttonCrearImagen;
-	private JScrollPane scrollPane1;
-	private JLabel imagenLabel;
-	// JFormDesigner - End of variables declaration  //GEN-END:variables
+
 }

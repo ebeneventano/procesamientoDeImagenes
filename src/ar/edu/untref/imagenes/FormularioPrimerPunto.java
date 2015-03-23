@@ -28,6 +28,8 @@ import javax.swing.LayoutStyle;
  */
 public class FormularioPrimerPunto extends JFrame {
   
+	private static final long serialVersionUID = -5568383398523619524L;
+	
 	private File archivoSeleccionado;
     private String nombreDelArchivo;
     private BufferedImage imagenActual;
@@ -341,7 +343,6 @@ public class FormularioPrimerPunto extends JFrame {
     	
     	bmp = new BufferedImage(width, lenght, BufferedImage.TYPE_3BYTE_BGR);
 
-        //Creamos un nuevo cuadro de diálogo para seleccionar imagen
         JFileChooser selector=new JFileChooser();
         selector.setDialogTitle("Seleccione una imagen");
         
@@ -352,8 +353,11 @@ public class FormularioPrimerPunto extends JFrame {
             try {
                 //Devuelve el fichero seleccionado
                 archivoSeleccionado=selector.getSelectedFile();
+                
                 byte[] bytes = Files.readAllBytes(archivoSeleccionado.toPath());
+                
                 matrizDeImagen = new double [width][lenght];
+                
                 int contador = 0;
                 for(int i = 0; i < lenght ; i++){
                 	for(int j = 0; j < width; j++){
@@ -362,7 +366,9 @@ public class FormularioPrimerPunto extends JFrame {
                 		contador++;
                 	}
                 }
+                
             } catch (Exception e) {
+            	e.printStackTrace();
             }
                  
         }
@@ -370,7 +376,7 @@ public class FormularioPrimerPunto extends JFrame {
         //Asignamos la imagen cargada a la propiedad imageActual
         imagenActual=bmp;
         nombreDelArchivo = getNombreImagen(null);
-        //Retornamos el valor
+       
         return bmp;
     }
     
@@ -422,8 +428,6 @@ public class FormularioPrimerPunto extends JFrame {
     	BufferedImage imagenNueva = bmp.getSubimage(xDesde, yDesde, xHasta, yHasta);
     	
         labelImagenNueva.setIcon(new ImageIcon(imagenNueva));
-
-    	
 	}
 
 }

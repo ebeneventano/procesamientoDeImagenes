@@ -5,7 +5,7 @@ import java.awt.image.DataBufferByte;
 
 public class ConversorImagenes {
 
-	public int[][] convertirImagenEnMatriz(BufferedImage image) {
+	public static int[][] convertirImagenEnMatriz(BufferedImage image) {
 
 		final byte[] pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
 		final int width = image.getWidth();
@@ -48,7 +48,7 @@ public class ConversorImagenes {
 		return matriz;
 	}
 	
-	public BufferedImage convertirMatrizEnImagen(int[][] matriz, int ancho, int alto){
+	public static BufferedImage convertirMatrizEnImagen(int[][] matriz, int ancho, int alto){
 		
 		BufferedImage bufferedImage = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_RGB);
 	    for (int i = 0; i < matriz.length; i++) {

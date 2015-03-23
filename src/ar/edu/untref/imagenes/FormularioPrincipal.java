@@ -13,6 +13,14 @@ import javax.swing.GroupLayout;
  * @author Emmanuel Beneventano
  */
 public class FormularioPrincipal extends JFrame {
+
+	private static final long serialVersionUID = -1575796688929412886L;
+	private JButton button1;
+	private JButton button2;
+	private JButton button3;
+	private JLabel label1;
+	private JButton button4;
+	
 	public FormularioPrincipal() {
 		initComponents();
 	}
@@ -22,8 +30,6 @@ public class FormularioPrincipal extends JFrame {
 	}
 
 	private void initComponents() {
-		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-		// Generated using JFormDesigner Evaluation license - Emmanuel Beneventano
 		button1 = new JButton();
 		button2 = new JButton();
 		button3 = new JButton();
@@ -123,12 +129,5 @@ public class FormularioPrincipal extends JFrame {
 	private void button3ActionPerformed(ActionEvent e) {
 		new FormularioTercerPunto().setVisible(true);
 	}
-	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-	// Generated using JFormDesigner Evaluation license - Emmanuel Beneventano
-	private JButton button1;
-	private JButton button2;
-	private JButton button3;
-	private JLabel label1;
-	private JButton button4;
-	// JFormDesigner - End of variables declaration  //GEN-END:variables
+
 }

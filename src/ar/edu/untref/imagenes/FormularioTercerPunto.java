@@ -24,7 +24,13 @@ import javax.swing.LayoutStyle;
  * @author Emmanuel Beneventano
  */
 public class FormularioTercerPunto extends JFrame {
-    private BufferedImage bmp ;
+
+	private static final long serialVersionUID = 7990591639971088223L;
+	private BufferedImage bmp ;
+	private JButton buttonCrearImagen;
+	private JScrollPane scrollPane1;
+	private JLabel imagenLabel;
+	private JButton buttonGuardar;
 
 	public FormularioTercerPunto() {
 		initComponents();
@@ -134,11 +140,5 @@ public class FormularioTercerPunto extends JFrame {
 			e.printStackTrace();
 		}
     }
-	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-	// Generated using JFormDesigner Evaluation license - Emmanuel Beneventano
-	private JButton buttonCrearImagen;
-	private JScrollPane scrollPane1;
-	private JLabel imagenLabel;
-	private JButton buttonGuardar;
-	// JFormDesigner - End of variables declaration  //GEN-END:variables
+
 }
