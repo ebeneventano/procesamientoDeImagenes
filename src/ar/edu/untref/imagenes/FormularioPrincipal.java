@@ -21,6 +21,7 @@ public class FormularioPrincipal extends JFrame {
 	private JLabel label1;
 	private JButton button4;
 	private JButton button5;
+	private JButton button6;
 	
 	public FormularioPrincipal() {
 		initComponents();
@@ -37,7 +38,8 @@ public class FormularioPrincipal extends JFrame {
 		label1 = new JLabel();
 		button4 = new JButton();
 		button5 = new JButton();
-
+		button6 = new JButton();
+		
 		//======== this ========
 		setTitle("TP 0");
 		Container contentPane = getContentPane();
@@ -89,6 +91,14 @@ public class FormularioPrincipal extends JFrame {
 				button5ActionPerformed(e);
 			}
 		});
+		
+		button6.setText("Ejercicio 6");
+		button6.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				button6ActionPerformed(e);
+			}
+		});
 
 		GroupLayout contentPaneLayout = new GroupLayout(contentPane);
 		contentPane.setLayout(contentPaneLayout);
@@ -103,7 +113,8 @@ public class FormularioPrincipal extends JFrame {
 								.addComponent(button2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								.addComponent(button1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								.addComponent(button4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(button5, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+								.addComponent(button5, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(button6, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
 						.addGroup(contentPaneLayout.createSequentialGroup()
 							.addGap(122, 122, 122)
 							.addComponent(label1, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE)))
@@ -124,6 +135,8 @@ public class FormularioPrincipal extends JFrame {
 					.addComponent(button4)
 					.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 					.addComponent(button5)
+					.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+					.addComponent(button6)
 					.addContainerGap(90, Short.MAX_VALUE))
 		);
 		pack();
@@ -145,6 +158,10 @@ public class FormularioPrincipal extends JFrame {
 	
 	private void button5ActionPerformed(ActionEvent e) {
 		new FormularioQuintoPunto().setVisible(true);
+	}
+	
+	private void button6ActionPerformed(ActionEvent e) {
+		new FormularioSextoPunto().setVisible(true);
 	}
 
 }
