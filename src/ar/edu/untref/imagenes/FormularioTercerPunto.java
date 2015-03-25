@@ -45,7 +45,7 @@ public class FormularioTercerPunto extends JFrame {
 		buttonGuardar = new JButton();
 
 		//======== this ========
-		setTitle("Punto 3 - Imagen Binaria con Cuadrado en el medio");
+		setTitle("Punto 3");
 		Container contentPane = getContentPane();
 
 		//---- buttonCrearImagen ----

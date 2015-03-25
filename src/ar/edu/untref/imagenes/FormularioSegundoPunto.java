@@ -47,7 +47,7 @@ public class FormularioSegundoPunto extends JFrame {
 		buttonGuardar = new JButton();
 
 		//======== this ========
-		setTitle("Punto 2 - Imagen Binaria con Circulo en el medio");
+		setTitle("Punto 2");
 		Container contentPane = getContentPane();
 
 		//---- buttonCrearImagen ----

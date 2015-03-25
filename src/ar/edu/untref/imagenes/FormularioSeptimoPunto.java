@@ -166,7 +166,7 @@ public class FormularioSeptimoPunto extends JFrame {
 		labelPromedios = new JLabel();
 
 		//======== this ========
-		setTitle("Punto 7");
+		setTitle("Punto 8");
 		Container contentPane = getContentPane();
 
 		//---- button1 ----

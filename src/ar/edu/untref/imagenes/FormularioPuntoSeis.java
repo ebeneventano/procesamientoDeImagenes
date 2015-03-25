@@ -167,7 +167,7 @@ public class FormularioPuntoSeis extends JFrame {
 		label1 = new JLabel();
 
 		//======== this ========
-		setTitle("Punto 6");
+		setTitle("Punto 7");
 		Container contentPane = getContentPane();
 
 		//---- button1 ----
@@ -246,51 +246,6 @@ public class FormularioPuntoSeis extends JFrame {
 	private JLabel label1;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
 	
-	private void calcularPromedioEscalaDeGrises(){
-	       int grisAcumulado = 0 ;
-	       int contadorCantPixel = 0;
-	       int promedio = 0;
-	       
-	       int desdeX = 0;
-	       int hastaX = 0;
-	       int desdeY = 0;
-	       int hastaY = 0;
-	       
-	       if(primerPuntoX <= segundoPuntoX){
-	    	   desdeX = primerPuntoX;
-	    	   hastaX = segundoPuntoX;
-	       } else {
-	    	   desdeX = segundoPuntoX;
-	    	   hastaX = primerPuntoX;
-	       }
-	       
-	       if(primerPuntoY<= segundoPuntoY){
-	    	   desdeY = primerPuntoY;
-	    	   hastaY = segundoPuntoY;
-	       } else {
-	    	   desdeY = segundoPuntoY;
-	    	   hastaY = primerPuntoY;
-	       }
-	       
-	       int anchoSeleccionado = hastaX - desdeX;
-	       int altoSeleccionado = hastaY - desdeY;
-	       
-	       for(int i = desdeX; i<=hastaX;i++){
-	    	   for(int j = desdeY; j <= hastaY; j++){
-			       Color color = new Color(bmp.getRGB(i, j));
-			       int blue = color.getBlue();
-			       int green = color.getGreen();
-			       int red = color.getRed();
-			       
-			       grisAcumulado += (blue + green + red) / 3;
-			       contadorCantPixel++;
-	    	   }
-	       }
-	       
-	       promedio = grisAcumulado / contadorCantPixel;
-	       int pixelesSeleccionados = anchoSeleccionado * altoSeleccionado;
-	       System.out.println("promedio : " + promedio + " pixelesSeleccionados: " + pixelesSeleccionados);
-	}
 	
 	
 }

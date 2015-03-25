@@ -104,6 +104,7 @@ public class FormularioPrimerPunto extends JFrame {
 		crearImagenNuevaButton = new JButton();
 
 		//======== this ========
+		setTitle("Punto 1");
 		Container contentPane = getContentPane();
 
 		//---- buttonObtenerPixel ----

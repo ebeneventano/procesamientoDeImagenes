@@ -41,7 +41,7 @@ public class FormularioQuintoPunto extends JFrame {
 		imagenLabel = new JLabel();
 
 		// ======== this ========
-		setTitle("Punto 5 - Escala de Colores");
+		setTitle("Punto 5");
 		Container contentPane = getContentPane();
 
 		// ---- buttonCrearImagen ----

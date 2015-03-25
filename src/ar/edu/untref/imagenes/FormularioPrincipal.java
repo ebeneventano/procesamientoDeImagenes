@@ -96,7 +96,7 @@ public class FormularioPrincipal extends JFrame {
 			}
 		});
 		
-		button6.setText("Ejercicio 6");
+		button6.setText("Ejercicio 7");
 		button6.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -104,7 +104,7 @@ public class FormularioPrincipal extends JFrame {
 			}
 		});
 		
-		button7.setText("Ejercicio 7");
+		button7.setText("Ejercicio 8");
 		button7.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

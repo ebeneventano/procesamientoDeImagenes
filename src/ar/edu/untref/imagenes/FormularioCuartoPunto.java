@@ -41,7 +41,7 @@ public class FormularioCuartoPunto extends JFrame {
 		imagenLabel = new JLabel();
 
 		// ======== this ========
-		setTitle("Punto 4 - Escala de grises");
+		setTitle("Punto 4");
 		Container contentPane = getContentPane();
 
 		// ---- buttonCrearImagen ----
