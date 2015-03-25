@@ -235,7 +235,6 @@ public class FormularioSextoPunto extends JFrame {
 			       int green = color.getGreen();
 			       int red = color.getRed();
 			       
-//			       grisAcumulado += ColorProvider.getIntRgbGrayScale(red, green, blue);
 			       grisAcumulado += (blue + green + red) / 3;
 			       contadorCantPixel++;
 	    	   }

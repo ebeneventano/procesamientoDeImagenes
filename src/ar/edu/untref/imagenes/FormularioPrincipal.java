@@ -176,7 +176,7 @@ public class FormularioPrincipal extends JFrame {
 	}
 	
 	private void button6ActionPerformed(ActionEvent e) {
-		new FormularioSextoPunto().setVisible(true);
+		new FormularioPuntoSeis().setVisible(true);
 	}
 
 	private void button7ActionPerformed(ActionEvent e) {
