@@ -29,7 +29,10 @@ import javax.swing.LayoutStyle;
  * @author Emmanuel Beneventano
  */
 public class FormularioSeptimoPunto extends JFrame {
-    private BufferedImage bmp ;
+
+	private static final long serialVersionUID = 1L;
+	
+	private BufferedImage bmp ;
 	private File archivoSeleccionado;
 	private int primerPuntoX = -1;
 	private int primerPuntoY = -1;

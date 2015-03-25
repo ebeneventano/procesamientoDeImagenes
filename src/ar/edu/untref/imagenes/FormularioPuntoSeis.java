@@ -30,7 +30,9 @@ import javax.swing.LayoutStyle;
  */
 public class FormularioPuntoSeis extends JFrame {
 	
-    private BufferedImage bmp ;
+	private static final long serialVersionUID = 1L;
+	
+	private BufferedImage bmp ;
 	private File archivoSeleccionado;
 	private int primerPuntoX = -1;
 	private int primerPuntoY = -1;
