@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
@@ -118,21 +119,49 @@ public class PrincipalForm extends JFrame{
 		menuSumImages.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				sumImages();
+				
+				if(originalImage != null) {
+					
+					sumImages();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}
 			}
+			
 		});
 		
 		menuRestImages.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				restImages();
+				
+				if(originalImage != null) {
+					
+					restImages();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}
 			}
 		});
 		
 		menuMultiplicateImages.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				multiplicateImages();
+				
+				if(originalImage != null) {
+					
+					multiplicateImages();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}
 			}
 		});
 		
@@ -211,5 +240,9 @@ public class PrincipalForm extends JFrame{
 		
 		return imageToOperate;
     }
+    
+	private void showAlertOriginalImageNull() {
+		JOptionPane.showMessageDialog(null, "Primero debe abrir una imagen. Para ello, seleccione la opción ABRIR IMAGEN en el menu ARCHIVO.");				
+	}
 
 }
