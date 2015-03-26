@@ -342,7 +342,7 @@ public class FormularioPrimerPunto extends JFrame {
     	this.width = Integer.valueOf(widthTextField.getText());
     	this.lenght = Integer.valueOf(lenghtTextField.getText());
     	
-    	bmp = new BufferedImage(width, lenght, BufferedImage.TYPE_3BYTE_BGR);
+    	bmp = new BufferedImage(width, lenght, BufferedImage.TYPE_INT_RGB);
 
         JFileChooser selector=new JFileChooser();
         selector.setDialogTitle("Seleccione una imagen");
