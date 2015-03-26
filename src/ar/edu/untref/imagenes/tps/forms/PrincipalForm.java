@@ -18,15 +18,23 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
+import ar.edu.untref.imagenes.tps.utils.ImageOperations;
+
 @SuppressWarnings("serial")
 public class PrincipalForm extends JFrame{
 	
 	private JMenuBar menuBar;
+	
 	private JMenu menuArchivo;
 	private JMenu menuHistograma;
+	private JMenu menuOperations;
+	
 	private JMenuItem menuOpenImage;
 	private JMenuItem menuSaveAs;
 	private JMenuItem menuRefreshChanges;
+	private JMenuItem menuSumImages;
+	private JMenuItem menuRestImages;
+	private JMenuItem menuMultiplicateImages;
 
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
@@ -54,6 +62,7 @@ public class PrincipalForm extends JFrame{
 		contentPane.add(scrollPane, BorderLayout.CENTER);
 		
 		labelPrincipalImage = new JLabel();
+		labelPrincipalImage.setHorizontalAlignment(JLabel.CENTER);
 		scrollPane.setViewportView(labelPrincipalImage);
 	}
 
@@ -76,6 +85,18 @@ public class PrincipalForm extends JFrame{
 		
 		menuHistograma = new JMenu("Histograma");
 		menuBar.add(menuHistograma);
+		
+		menuOperations = new JMenu("Operaciones");
+		menuBar.add(menuOperations);
+		
+		menuSumImages = new JMenuItem("Sumar Imagenes");
+		menuOperations.add(menuSumImages);
+		
+		menuRestImages = new JMenuItem("Restar Imagenes");
+		menuOperations.add(menuRestImages);
+		
+		menuMultiplicateImages = new JMenuItem("Multiplicar Imagenes");
+		menuOperations.add(menuMultiplicateImages);
 	}
 	
 	private void addListenersToComponents() {
@@ -91,6 +112,27 @@ public class PrincipalForm extends JFrame{
 			
 			public void actionPerformed(ActionEvent e) {
 				refreshChanges();
+			}
+		});
+		
+		menuSumImages.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				sumImages();
+			}
+		});
+		
+		menuRestImages.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				restImages();
+			}
+		});
+		
+		menuMultiplicateImages.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				multiplicateImages();
 			}
 		});
 		
@@ -120,9 +162,54 @@ public class PrincipalForm extends JFrame{
 	}
     
     private void refreshChanges(){
+    	
 		labelPrincipalImage.setIcon(new ImageIcon(originalImage));
     }
+    
+    private void sumImages(){
+    	
+    	BufferedImage imageSum = getImageFromJFileChooser("Seleccione una imagen para la suma...");
+		
+    	ImageOperations io = new ImageOperations(originalImage, imageSum);
+    	labelPrincipalImage.setIcon(new ImageIcon(io.sumImages()));
+    }
+    
+    private void restImages(){
+    	
+    	BufferedImage imageRest = getImageFromJFileChooser("Seleccione una imagen para la resta...");
+		
+    	ImageOperations io = new ImageOperations(originalImage, imageRest);
+    	labelPrincipalImage.setIcon(new ImageIcon(io.restImages()));
+    }
+    
+    private void multiplicateImages(){
+    	
+    	BufferedImage imageMultip = getImageFromJFileChooser("Seleccione una imagen para la multiplicacion...");
+		
+    	ImageOperations io = new ImageOperations(originalImage, imageMultip);
+    	labelPrincipalImage.setIcon(new ImageIcon(io.multiplicateImages()));
+    }
+    
+    private BufferedImage getImageFromJFileChooser(String titleDialog){
+    	BufferedImage imageToOperate = null;
 
-	
+		JFileChooser selector = new JFileChooser();
+		selector.setDialogTitle(titleDialog);
+
+		int flag = selector.showOpenDialog(null);
+
+		if (flag == JFileChooser.APPROVE_OPTION) {
+			try {
+				
+				File archivoSeleccionado = selector.getSelectedFile();
+				imageToOperate = ImageIO.read(archivoSeleccionado);
+			} catch (Exception e) {
+
+				e.printStackTrace();
+			}
+		}
+		
+		return imageToOperate;
+    }
 
 }
