@@ -37,6 +37,7 @@ public class PrincipalForm extends JFrame{
 	private JMenuItem menuSumImages;
 	private JMenuItem menuRestImages;
 	private JMenuItem menuMultiplicateImages;
+	private JMenuItem menuScalarMultiplication;
 	
 	private JMenuItem menuCreateHistogram;
 
@@ -104,6 +105,9 @@ public class PrincipalForm extends JFrame{
 		
 		menuMultiplicateImages = new JMenuItem("Multiplicar Imagenes");
 		menuOperations.add(menuMultiplicateImages);
+		
+		menuScalarMultiplication = new JMenuItem("Multiplicar por Escalar");
+		menuOperations.add(menuScalarMultiplication);
 	}
 	
 	private void addListenersToComponents() {
@@ -171,6 +175,23 @@ public class PrincipalForm extends JFrame{
 			}
 		});
 		
+		menuScalarMultiplication.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					scalarMultiplication();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}
+			}
+
+		});
+		
 		menuCreateHistogram.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
@@ -219,7 +240,10 @@ public class PrincipalForm extends JFrame{
     	BufferedImage imageSum = getImageFromJFileChooser("Seleccione una imagen para la suma...");
 		
     	ImageOperations io = new ImageOperations(originalImage, imageSum);
-    	labelPrincipalImage.setIcon(new ImageIcon(io.sumImages()));
+    	
+    	imageInLabel = io.sumImages();
+    	
+    	labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
     }
     
     private void restImages(){
@@ -227,7 +251,10 @@ public class PrincipalForm extends JFrame{
     	BufferedImage imageRest = getImageFromJFileChooser("Seleccione una imagen para la resta...");
 		
     	ImageOperations io = new ImageOperations(originalImage, imageRest);
-    	labelPrincipalImage.setIcon(new ImageIcon(io.restImages()));
+    	
+    	imageInLabel = io.restImages();
+    	
+    	labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
     }
     
     private void multiplicateImages(){
@@ -235,10 +262,14 @@ public class PrincipalForm extends JFrame{
     	BufferedImage imageMultip = getImageFromJFileChooser("Seleccione una imagen para la multiplicacion...");
 		
     	ImageOperations io = new ImageOperations(originalImage, imageMultip);
-    	labelPrincipalImage.setIcon(new ImageIcon(io.multiplicateImages()));
+    	
+    	imageInLabel = io.multiplicateImages();
+    	
+    	labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
     }
     
     private BufferedImage getImageFromJFileChooser(String titleDialog){
+    	
     	BufferedImage imageToOperate = null;
 
 		JFileChooser selector = new JFileChooser();
@@ -261,7 +292,17 @@ public class PrincipalForm extends JFrame{
     }
     
 	private void showAlertOriginalImageNull() {
+		
 		JOptionPane.showMessageDialog(null, "Primero debe abrir una imagen. Para ello, seleccione la opción ABRIR IMAGEN en el menu ARCHIVO.");				
+	}
+	
+	private void scalarMultiplication() {
+		
+		ImageOperations io = new ImageOperations();
+		
+		imageInLabel = io.scalarMultiplication(2, imageInLabel);
+		
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 
 }
