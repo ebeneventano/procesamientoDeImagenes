@@ -33,9 +33,12 @@ public class PrincipalForm extends JFrame{
 	private JMenuItem menuOpenImage;
 	private JMenuItem menuSaveAs;
 	private JMenuItem menuRefreshChanges;
+	
 	private JMenuItem menuSumImages;
 	private JMenuItem menuRestImages;
 	private JMenuItem menuMultiplicateImages;
+	
+	private JMenuItem menuCreateHistogram;
 
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
@@ -86,6 +89,9 @@ public class PrincipalForm extends JFrame{
 		
 		menuHistograma = new JMenu("Histograma");
 		menuBar.add(menuHistograma);
+		
+		menuCreateHistogram = new JMenuItem("Crear Histograma");
+		menuHistograma.add(menuCreateHistogram);
 		
 		menuOperations = new JMenu("Operaciones");
 		menuBar.add(menuOperations);
@@ -165,6 +171,19 @@ public class PrincipalForm extends JFrame{
 			}
 		});
 		
+		menuCreateHistogram.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+										
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}
+			}
+		});
 	}
 	
 	public BufferedImage abrirImagen() {
