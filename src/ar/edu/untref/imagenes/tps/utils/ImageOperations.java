@@ -1,5 +1,6 @@
 package ar.edu.untref.imagenes.tps.utils;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 public class ImageOperations {
@@ -98,4 +99,23 @@ public class ImageOperations {
 			return null;
 		}
 	}
+	
+	public BufferedImage getNegativeImage (BufferedImage image) {
+        
+		BufferedImage imageResult = image;
+
+        for (int x = 0; x < imageResult.getWidth(); x++) {
+            for (int y = 0; y < imageResult.getHeight(); y++) {
+                int rgba = imageResult.getRGB(x, y);
+                Color col = new Color(rgba, true);
+                col = new Color(255 - col.getRed(),
+                                255 - col.getGreen(),
+                                255 - col.getBlue());
+                imageResult.setRGB(x, y, col.getRGB());
+            }
+        }
+        
+        return imageResult;
+    }
+	
 }

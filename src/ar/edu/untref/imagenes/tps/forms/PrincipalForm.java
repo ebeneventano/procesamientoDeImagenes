@@ -38,6 +38,7 @@ public class PrincipalForm extends JFrame{
 	private JMenuItem menuRestImages;
 	private JMenuItem menuMultiplicateImages;
 	private JMenuItem menuScalarMultiplication;
+	private JMenuItem menuNegativeImage;
 	
 	private JMenuItem menuCreateHistogram;
 
@@ -108,6 +109,9 @@ public class PrincipalForm extends JFrame{
 		
 		menuScalarMultiplication = new JMenuItem("Multiplicar por Escalar");
 		menuOperations.add(menuScalarMultiplication);
+		
+		menuNegativeImage = new JMenuItem("Obtener negativo");
+		menuOperations.add(menuNegativeImage);
 	}
 	
 	private void addListenersToComponents() {
@@ -182,6 +186,23 @@ public class PrincipalForm extends JFrame{
 				if(originalImage != null) {
 					
 					scalarMultiplication();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}
+			}
+
+		});
+		
+		menuNegativeImage.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					getNegative();
 					
 				} else {
 					
@@ -304,6 +325,14 @@ public class PrincipalForm extends JFrame{
 		
 		imageInLabel = io.scalarMultiplication(100, imageInLabel);
 		
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void getNegative() {
+		
+		ImageOperations io = new ImageOperations();
+		imageInLabel = io.getNegativeImage(imageInLabel);
+
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 
