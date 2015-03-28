@@ -1,6 +1,7 @@
 package ar.edu.untref.imagenes.utils;
 
 
+
 public class ColorProvider {
 
 	public static String getHexagesimal(int rgb) {
@@ -19,7 +20,6 @@ public class ColorProvider {
 	
 	public static int getIntRgbColorScale(int red, int green, int blue) {	
 		int color = (int)(red + green + blue);
-		
 		return color;
 	}
 

@@ -300,7 +300,7 @@ public class PrincipalForm extends JFrame{
 		
 		ImageOperations io = new ImageOperations();
 		
-		imageInLabel = io.scalarMultiplication(2, imageInLabel);
+		imageInLabel = io.scalarMultiplication(100, imageInLabel);
 		
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
