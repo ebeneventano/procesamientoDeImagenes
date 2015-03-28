@@ -197,7 +197,9 @@ public class PrincipalForm extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				
 				if(originalImage != null) {
-										
+					
+					new Formulario(imageInLabel);
+					
 				} else {
 					
 					showAlertOriginalImageNull();

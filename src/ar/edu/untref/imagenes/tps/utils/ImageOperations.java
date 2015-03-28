@@ -39,28 +39,32 @@ public class ImageOperations {
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 
-				int pix = 0;
 				int rgb = imageToMultiplicate.getRGB(i, j);
 				int alpha = 0xff & (rgb >> 24);
 				int red = 0xff & (rgb >> 16);
 				int green = 0xff & (rgb >> 8);
 				int blue = 0xff & rgb;
 
-				red = (int) Math.round(scalar * Math.log10((double) 1 + red));
-				green = (int) Math.round(scalar * Math.log10((double) 1 + green));
-				blue = (int) Math.round(scalar * Math.log10((double) 1 + blue));
+				red = (int) aplicarTransformacionLog(scalar, red);
+				green = (int) aplicarTransformacionLog(scalar, green);
+				blue = (int) aplicarTransformacionLog(scalar, blue);
 
-				pix = pix | blue;
-				pix = pix | (green << 8);
-				pix = pix | (red << 16);
-				pix = pix | (alpha << 24);
+				int newRgb = 0;
+				newRgb = newRgb | blue;
+				newRgb = newRgb | (green << 8);
+				newRgb = newRgb | (red << 16);
+				newRgb = newRgb | (alpha << 24);
 
-				imageResult.setRGB(i, j, pix);
-				pix = 0;
+				imageResult.setRGB(i, j, newRgb);
+				newRgb = 0;
 			}
 		}
 
 		return imageResult;
+	}
+
+	private long aplicarTransformacionLog(int scalar, int color) {
+		return Math.round(scalar * Math.log10((double) 1 + color));
 	}
 
 	private BufferedImage operateWithImage(String operator) {
