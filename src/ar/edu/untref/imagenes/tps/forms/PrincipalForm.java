@@ -39,6 +39,7 @@ public class PrincipalForm extends JFrame{
 	private JMenuItem menuMultiplicateImages;
 	private JMenuItem menuScalarMultiplication;
 	private JMenuItem menuNegativeImage;
+	private JMenuItem menuIncreaseContrast;
 	
 	private JMenuItem menuCreateHistogram;
 
@@ -112,6 +113,9 @@ public class PrincipalForm extends JFrame{
 		
 		menuNegativeImage = new JMenuItem("Obtener negativo");
 		menuOperations.add(menuNegativeImage);
+		
+		menuIncreaseContrast = new JMenuItem("Aumentar contraste");
+		menuOperations.add(menuIncreaseContrast);
 	}
 	
 	private void addListenersToComponents() {
@@ -203,6 +207,23 @@ public class PrincipalForm extends JFrame{
 				if(originalImage != null) {
 					
 					getNegative();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}
+			}
+
+		});
+		
+		menuIncreaseContrast.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					increaseContrast();
 					
 				} else {
 					
@@ -335,5 +356,16 @@ public class PrincipalForm extends JFrame{
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
+	
+
+	private void increaseContrast() {
+		
+		ImageOperations io = new ImageOperations();
+		imageInLabel = io.increaseImageContrast(imageInLabel, 1.2f);
+
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+		
+	}
+
 
 }

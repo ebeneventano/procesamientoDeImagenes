@@ -118,4 +118,37 @@ public class ImageOperations {
         return imageResult;
     }
 	
+	public BufferedImage increaseImageContrast(BufferedImage image, float increment){
+		
+		BufferedImage imageResult = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
+		for (int i = 0; i < image.getWidth(); i++) {
+			for (int j = 0; j < image.getHeight(); j++) {
+				
+				int rgb = image.getRGB(i, j);
+				float alpha = 0xff & (rgb >> 24);
+				float red = 0xff & (rgb >> 16);
+				float green = 0xff & (rgb >> 8);
+				float blue = 0xff & rgb;
+				
+				red = (int) applyTransformationToIncreaseContrast(increment, red);
+				green = (int) applyTransformationToIncreaseContrast(increment, green);
+				blue = (int) applyTransformationToIncreaseContrast(increment, blue);
+
+				int newRgb = 0;
+				newRgb = newRgb | (int) blue;
+				newRgb = newRgb | ((int) green << 8);
+				newRgb = newRgb | ((int) red << 16);
+				newRgb = newRgb | ((int) alpha << 24);
+
+				imageResult.setRGB(i, j, newRgb);
+				newRgb = 0;
+			}
+		}
+		
+		return imageResult;
+	}
+	
+	private float applyTransformationToIncreaseContrast(float increment, float valueRGB){
+		return (increment*(valueRGB - 128)) + 128;
+	}
 }
