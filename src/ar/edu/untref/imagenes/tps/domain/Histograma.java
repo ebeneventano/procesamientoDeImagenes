@@ -2,6 +2,7 @@ package ar.edu.untref.imagenes.tps.domain;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Histograma {
@@ -57,4 +58,41 @@ public class Histograma {
 		return array;
 	}
 
+	// Return an ArrayList containing histogram values for separate R, G, B
+	// channels
+	public static ArrayList<int[]> getImageHistogram(BufferedImage image) {
+		
+		int[] rhistogram = new int[256];
+		int[] ghistogram = new int[256];
+		int[] bhistogram = new int[256];
+		
+		for (int i = 0; i < rhistogram.length; i++)
+			rhistogram[i] = 0;
+		
+		for (int i = 0; i < ghistogram.length; i++)
+			ghistogram[i] = 0;
+		
+		for (int i = 0; i < bhistogram.length; i++)
+			bhistogram[i] = 0;
+		
+		for (int i = 0; i < image.getWidth(); i++) {
+			for (int j = 0; j < image.getHeight(); j++) {
+		
+				int red = new Color(image.getRGB(i, j)).getRed();
+				int green = new Color(image.getRGB(i, j)).getGreen();
+				int blue = new Color(image.getRGB(i, j)).getBlue();
+				// Increase the values of colors
+				rhistogram[red]++;
+				ghistogram[green]++;
+				bhistogram[blue]++;
+			}
+		}
+		
+		ArrayList<int[]> hist = new ArrayList<int[]>();
+		hist.add(rhistogram);
+		hist.add(ghistogram);
+		hist.add(bhistogram);
+		
+		return hist;
+	}
 }

@@ -54,12 +54,12 @@ public class Formulario extends JFrame {
         jButton1 = new JButton();
         JPanel_Gris = new JPanel();
 
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
         jLabel1_Imagen.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel1_Imagen.setIcon(new ImageIcon(this.imagen)); // NOI18N
-        jLabel1_Imagen.setText("JLabel_Imagen");
+        jLabel1_Imagen.setText("");
         jLabel1_Imagen.setToolTipText("");
         jScrollPane1.setViewportView(jLabel1_Imagen);
 

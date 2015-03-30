@@ -42,6 +42,7 @@ public class PrincipalForm extends JFrame{
 	private JMenuItem menuIncreaseContrast;
 	
 	private JMenuItem menuCreateHistogram;
+	private JMenuItem menuEqualizeHistogram;
 
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
@@ -95,6 +96,9 @@ public class PrincipalForm extends JFrame{
 		
 		menuCreateHistogram = new JMenuItem("Crear Histograma");
 		menuHistograma.add(menuCreateHistogram);
+		
+		menuEqualizeHistogram = new JMenuItem("Equalizar Histograma");
+		menuHistograma.add(menuEqualizeHistogram);
 		
 		menuOperations = new JMenu("Operaciones");
 		menuBar.add(menuOperations);
@@ -249,6 +253,22 @@ public class PrincipalForm extends JFrame{
 				}
 			}
 		});
+		
+		menuEqualizeHistogram.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					equalizeImage();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}
+			}
+		});
 	}
 	
 	public BufferedImage abrirImagen() {
@@ -275,6 +295,8 @@ public class PrincipalForm extends JFrame{
 	}
     
     private void refreshChanges(){
+    	
+    	imageInLabel = originalImage;
     	
 		labelPrincipalImage.setIcon(new ImageIcon(originalImage));
     }
@@ -367,5 +389,13 @@ public class PrincipalForm extends JFrame{
 		
 	}
 
+	private void equalizeImage() {
+		
+		ImageOperations io = new ImageOperations();
+		imageInLabel = io.histogramEqualization(imageInLabel);
+
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+		
+	}
 
 }
