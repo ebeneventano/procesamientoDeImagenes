@@ -24,25 +24,30 @@ import ar.edu.untref.imagenes.tps.utils.ImageOperations;
 @SuppressWarnings("serial")
 public class PrincipalForm extends JFrame{
 	
+	private static final int UMBRAL_PARA_UMBRALIZACION = 150;
+
+
 	private JMenuBar menuBar;
 	
-	private JMenu menuArchivo;
-	private JMenu menuHistograma;
-	private JMenu menuOperations;
 	
+	private JMenu menuArchivo;
 	private JMenuItem menuOpenImage;
 	private JMenuItem menuSaveAs;
 	private JMenuItem menuRefreshChanges;
 	
+	private JMenu menuHistograma;
+	private JMenuItem menuCreateHistogram;
+	private JMenuItem menuEqualizeHistogram;
+
+	private JMenu menuOperations;
 	private JMenuItem menuSumImages;
 	private JMenuItem menuRestImages;
 	private JMenuItem menuMultiplicateImages;
 	private JMenuItem menuScalarMultiplication;
 	private JMenuItem menuNegativeImage;
 	private JMenuItem menuIncreaseContrast;
+	private JMenuItem menuUmbralization;
 	
-	private JMenuItem menuCreateHistogram;
-	private JMenuItem menuEqualizeHistogram;
 
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
@@ -120,6 +125,9 @@ public class PrincipalForm extends JFrame{
 		
 		menuIncreaseContrast = new JMenuItem("Aumentar contraste");
 		menuOperations.add(menuIncreaseContrast);
+		
+		menuUmbralization = new JMenuItem("UmbralizaciÃ³n");
+		menuOperations.add(menuUmbralization);
 	}
 	
 	private void addListenersToComponents() {
@@ -269,6 +277,22 @@ public class PrincipalForm extends JFrame{
 				}
 			}
 		});
+		
+		menuUmbralization.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				if(originalImage != null) {
+					
+					umbralizate();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+				}
+			}
+		});
 	}
 	
 	public BufferedImage abrirImagen() {
@@ -365,12 +389,12 @@ public class PrincipalForm extends JFrame{
     
 	private void showAlertOriginalImageNull() {
 		
-		JOptionPane.showMessageDialog(null, "Primero debe abrir una imagen. Para ello, seleccione la opción ABRIR IMAGEN en el menu ARCHIVO.");				
+		JOptionPane.showMessageDialog(null, "Primero debe abrir una imagen. Para ello, seleccione la opciï¿½n ABRIR IMAGEN en el menu ARCHIVO.");				
 	}
 	
 	private void showAlertByDifferentSizeOrType() {
 		
-		JOptionPane.showMessageDialog(null, "Seleccione una imagen con el mismo tipo y tamaño de la que se encuentra en la pantalla principal.");				
+		JOptionPane.showMessageDialog(null, "Seleccione una imagen con el mismo tipo y tamaï¿½o de la que se encuentra en la pantalla principal.");				
 	}
 	
 	private void scalarMultiplication() {
@@ -407,6 +431,14 @@ public class PrincipalForm extends JFrame{
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 		
+	}
+	
+	private void umbralizate() {
+		
+		ImageOperations io = new ImageOperations();
+		imageInLabel = io.umbralization(imageInLabel, UMBRAL_PARA_UMBRALIZACION);
+		
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 
 }

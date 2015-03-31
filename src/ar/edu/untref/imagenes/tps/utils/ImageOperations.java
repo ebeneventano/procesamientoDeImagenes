@@ -250,4 +250,55 @@ public class ImageOperations {
 		return imageLUT;
 	}
 
+	/**
+	 * 
+	 * This method apply the Umbralization operation to the selected image, just in the Green channel.
+	 * The umbral must be a number between 0 and 255.
+	 * 
+	 * @param imageInLabel, umbral
+	 * @return the umbral aplicated to the image
+	 */
+	public BufferedImage umbralization(BufferedImage originalImage, int umbral) {
+
+		if (umbral < 0 || umbral > 255) {
+			throw new RuntimeException("El umbral debe ser un valor entre 0 y 255");
+		}
+		
+		BufferedImage newImage = new BufferedImage(originalImage.getWidth(),
+													originalImage.getHeight(),
+													originalImage.getType());
+		
+		Color black = new Color(0, 0, 0);
+		Color white = new Color(255, 255, 255);
+		
+		for(int i = 0; i < originalImage.getWidth(); i++) {
+			for(int j = 0; j < originalImage.getHeight(); j++) {
+				
+
+				int greenValue = new Color(originalImage.getRGB(i, j)).getGreen();
+				
+				int newValue = (greenValue > umbral) ? black.getRGB() : white.getRGB();
+				
+				newImage.setRGB(i, j, newValue);
+			}
+		}
+		
+		return newImage;
+	}
+
+	/**
+	 * This method returns the pixel value, between 0 and 255, integrating the RGB channels.
+	 * @returns an int value, between 0 and 255
+	 */
+	private int getPixelValue(BufferedImage originalImage, int i, int j) {
+		
+		int rgb = originalImage.getRGB(i, j);
+		int alpha = 0xff & (rgb >> 24);
+		int red = 0xff & (rgb >> 16);
+		int green = 0xff & (rgb >> 8);
+		int blue = 0xff & rgb;
+		
+		return ColorProvider.colorToRGB(alpha, red, green, blue);
+	}
+
 }
