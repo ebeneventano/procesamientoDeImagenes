@@ -252,7 +252,7 @@ public class ImageOperations {
 
 	/**
 	 * 
-	 * This method apply the Umbralization operation to the selected image, just in the Green channel.
+	 * This method apply the Umbralization operation to the selected image, comparing against the Green channel.
 	 * The umbral must be a number between 0 and 255.
 	 * 
 	 * @param imageInLabel, umbral
