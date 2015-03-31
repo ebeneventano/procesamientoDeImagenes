@@ -309,7 +309,13 @@ public class PrincipalForm extends JFrame{
     	
     	imageInLabel = io.sumImages();
     	
-    	labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+    	if(imageInLabel != null){
+    	
+    		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+    	}else{
+    		
+    		showAlertByDifferentSizeOrType();
+    	}
     }
     
     private void restImages(){
@@ -360,6 +366,11 @@ public class PrincipalForm extends JFrame{
 	private void showAlertOriginalImageNull() {
 		
 		JOptionPane.showMessageDialog(null, "Primero debe abrir una imagen. Para ello, seleccione la opción ABRIR IMAGEN en el menu ARCHIVO.");				
+	}
+	
+	private void showAlertByDifferentSizeOrType() {
+		
+		JOptionPane.showMessageDialog(null, "Seleccione una imagen con el mismo tipo y tamaño de la que se encuentra en la pantalla principal.");				
 	}
 	
 	private void scalarMultiplication() {
