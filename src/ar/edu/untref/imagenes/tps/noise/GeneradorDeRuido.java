@@ -2,14 +2,9 @@ package ar.edu.untref.imagenes.tps.noise;
 
 public class GeneradorDeRuido {
 
-	public double generarNumeroAleatorioGaussiano(double lambda) {
+	public double generarNumeroAleatorioGaussiano(double desviacionEstandar, double valorMedio) {
 		
-		double x = 0;
-		while (x == 0) {
-			x = Math.random();
-		}
-		
-		return ( (-1)/(lambda) ) * Math.log(x);
+		return 0;
 	}
 	
 	public double generarNumeroAleatorioRayleigh(double epsilon) {
