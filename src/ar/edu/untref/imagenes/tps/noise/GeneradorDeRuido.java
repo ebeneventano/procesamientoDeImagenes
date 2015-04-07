@@ -18,9 +18,19 @@ public class GeneradorDeRuido {
 		return coeficiente * Math.exp(numeradorDeLaPotencia / denominadorDeLaPotencia);
 	}
 	
-	public double generarNumeroAleatorioRayleigh(double epsilon) {
+	public double generarNumeroAleatorioRayleigh(double phi) {
 		
-		return 0;
+		double x = 0;
+		while (x == 0) {
+			x = Math.random();
+		} 
+
+		double coeficiente = x / (phi*phi);
+		
+		double numeradorDeLaPotencia = (-1) * (x * x);
+		double denominadorDelaPotencia = 2 * phi * phi;
+		
+		return coeficiente * Math.exp(numeradorDeLaPotencia / denominadorDelaPotencia);
 	}
 	
 }
