@@ -48,10 +48,14 @@ public class PrincipalForm extends JFrame{
 	private JMenuItem menuUmbralization;
 	
 	private JMenu menuRuido;
+	
 	private JMenu menuGeneradorDeNumeros;
 	private JMenuItem menuGenerarNumRuidoGaussiano;
 	private JMenuItem menuGenerarNumRuidoRayleigh;
 	private JMenuItem menuGenerarNumRuidoExponencial;
+
+	private JMenu menuGeneradorDeRuidos;
+	private JMenuItem menuGenerarRuidoGaussianoAditivo;
 
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
@@ -138,7 +142,7 @@ public class PrincipalForm extends JFrame{
 		
 		menuGeneradorDeNumeros = new JMenu("Generador De Numeros");
 		menuRuido.add(menuGeneradorDeNumeros);
-		
+	
 		menuGenerarNumRuidoGaussiano = new JMenuItem("Generar numero de ruido Gaussiano");
 		menuGeneradorDeNumeros.add(menuGenerarNumRuidoGaussiano);
 		
@@ -147,6 +151,13 @@ public class PrincipalForm extends JFrame{
 		
 		menuGenerarNumRuidoExponencial = new JMenuItem("Generar numero de ruido Exponencial");
 		menuGeneradorDeNumeros.add(menuGenerarNumRuidoExponencial);
+		
+		menuGeneradorDeRuidos = new JMenu("Generador De Ruidos");
+		menuRuido.add(menuGeneradorDeRuidos);
+		
+		menuGenerarRuidoGaussianoAditivo = new JMenuItem("Generar ruido Gaussiano Aditivo");
+		menuGeneradorDeRuidos.add(menuGenerarRuidoGaussianoAditivo);
+		
 	}
 	
 	private void addListenersToComponents() {
@@ -320,7 +331,7 @@ public class PrincipalForm extends JFrame{
 				    
 				String desviacionEstandar = JOptionPane.showInputDialog(
 				    		null, "Desviacion Estandar", "Generador de numero de ruido aleatorio Gaussiano", JOptionPane.DEFAULT_OPTION);
-				    String varianza = JOptionPane.showInputDialog(
+				String varianza = JOptionPane.showInputDialog(
 				    		null, "Varianza", "Generador de numero de ruido aleatorio Gaussiano", JOptionPane.DEFAULT_OPTION);
 				    
 				    GeneradorDeRuido generadorDeRuido = new GeneradorDeRuido();
@@ -359,6 +370,22 @@ public class PrincipalForm extends JFrame{
 				  
 				    JOptionPane.showMessageDialog(null,String.valueOf(ruidoGenerado));
 				}
+		});
+		
+		menuGenerarRuidoGaussianoAditivo.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(originalImage != null) {
+					
+					generarRuidoBlacoGaussiano();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}
+			}
 		});
 	}
 	
@@ -505,6 +532,20 @@ public class PrincipalForm extends JFrame{
 		ImageOperations io = new ImageOperations();
 		imageInLabel = io.umbralization(imageInLabel, UMBRAL_PARA_UMBRALIZACION);
 		
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void generarRuidoBlacoGaussiano() {
+		
+		double sigma = Double.valueOf(JOptionPane.showInputDialog(
+				null, "Sigma", "Generador de ruido blanco gaussiano", JOptionPane.DEFAULT_OPTION));
+		
+		double mu = Double.valueOf(JOptionPane.showInputDialog(
+				null, "Mu", "Generador de ruido blanco gaussiano", JOptionPane.DEFAULT_OPTION));
+
+		GeneradorDeRuido generadorDeRuido = new GeneradorDeRuido();
+		imageInLabel = generadorDeRuido.ruidoGaussianoAditivo(imageInLabel, sigma, mu);
+
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 
