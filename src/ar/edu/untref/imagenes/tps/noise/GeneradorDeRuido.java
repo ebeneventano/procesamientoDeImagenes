@@ -47,7 +47,7 @@ public class GeneradorDeRuido {
 		return lambda * Math.exp((-1) * lambda * x);
 	}
 	
-	public BufferedImage ruidoGaussianoAditivo(BufferedImage original) {
+	public BufferedImage ruidoGaussianoAditivo(BufferedImage original, double sigma, double mu) {
 
 		BufferedImage nuevaImagen = new BufferedImage(original.getWidth(),
 									original.getHeight(), original.getType());
@@ -60,7 +60,7 @@ public class GeneradorDeRuido {
 				
 				double x1 = Math.random();
 				double x2 = Math.random();
-				double ruido = Math.sqrt( (-2) * Math.log10(x1) ) * Math.cos(2 * Math.PI * x2);
+				double ruido = (Math.sqrt( (-2) * Math.log10(x1) ) * Math.cos(2 * Math.PI * x2) ) * sigma + mu;
 
 				int ruidoAditivo = (int) (nivelDeRojo + ruido);
 				
