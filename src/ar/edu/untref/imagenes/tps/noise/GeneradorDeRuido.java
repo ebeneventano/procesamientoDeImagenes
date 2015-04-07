@@ -33,4 +33,14 @@ public class GeneradorDeRuido {
 		return coeficiente * Math.exp(numeradorDeLaPotencia / denominadorDelaPotencia);
 	}
 	
+	public double generarNumeroAleatorioExponencial(double lambda) {
+		
+		double x = 0;
+		while (x == 0) {
+			x = Math.random();
+		} 
+
+		return lambda * Math.exp((-1) * lambda * x);
+	}
+	
 }
