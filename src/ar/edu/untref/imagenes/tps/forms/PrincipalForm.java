@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
+import ar.edu.untref.imagenes.tps.noise.GeneradorDeRuido;
 import ar.edu.untref.imagenes.tps.utils.ImageOperations;
 
 @SuppressWarnings("serial")
@@ -26,9 +27,7 @@ public class PrincipalForm extends JFrame{
 	
 	private static final int UMBRAL_PARA_UMBRALIZACION = 150;
 
-
 	private JMenuBar menuBar;
-	
 	
 	private JMenu menuArchivo;
 	private JMenuItem menuOpenImage;
@@ -48,6 +47,11 @@ public class PrincipalForm extends JFrame{
 	private JMenuItem menuIncreaseContrast;
 	private JMenuItem menuUmbralization;
 	
+	private JMenu menuRuido;
+	private JMenu menuGeneradorDeNumeros;
+	private JMenuItem menuGenerarNumRuidoGaussiano;
+	private JMenuItem menuGenerarNumRuidoRayleigh;
+	private JMenuItem menuGenerarNumRuidoExponencial;
 
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
@@ -126,8 +130,23 @@ public class PrincipalForm extends JFrame{
 		menuIncreaseContrast = new JMenuItem("Aumentar contraste");
 		menuOperations.add(menuIncreaseContrast);
 		
-		menuUmbralization = new JMenuItem("Umbralización");
+		menuUmbralization = new JMenuItem("Umbralizacion");
 		menuOperations.add(menuUmbralization);
+		
+		menuRuido = new JMenu("Ruidos");
+		menuBar.add(menuRuido);
+		
+		menuGeneradorDeNumeros = new JMenu("Generador De Numeros");
+		menuRuido.add(menuGeneradorDeNumeros);
+		
+		menuGenerarNumRuidoGaussiano = new JMenuItem("Generar numero de ruido Gaussiano");
+		menuGeneradorDeNumeros.add(menuGenerarNumRuidoGaussiano);
+		
+		menuGenerarNumRuidoRayleigh = new JMenuItem("Generar numero de ruido Rayleigh");
+		menuGeneradorDeNumeros.add(menuGenerarNumRuidoRayleigh);
+		
+		menuGenerarNumRuidoExponencial = new JMenuItem("Generar numero de ruido Exponencial");
+		menuGeneradorDeNumeros.add(menuGenerarNumRuidoExponencial);
 	}
 	
 	private void addListenersToComponents() {
@@ -293,6 +312,54 @@ public class PrincipalForm extends JFrame{
 				}
 			}
 		});
+
+		menuGenerarNumRuidoGaussiano.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				    
+				String desviacionEstandar = JOptionPane.showInputDialog(
+				    		null, "Desviacion Estandar", "Generador de numero de ruido aleatorio Gaussiano", JOptionPane.DEFAULT_OPTION);
+				    String varianza = JOptionPane.showInputDialog(
+				    		null, "Varianza", "Generador de numero de ruido aleatorio Gaussiano", JOptionPane.DEFAULT_OPTION);
+				    
+				    GeneradorDeRuido generadorDeRuido = new GeneradorDeRuido();
+				    double ruidoGenerado = generadorDeRuido.generarNumeroAleatorioGaussiano(Double.valueOf(desviacionEstandar), Double.valueOf(varianza));
+				    
+				    JOptionPane.showMessageDialog(null,String.valueOf(ruidoGenerado));
+				    
+				}
+		});
+		
+		menuGenerarNumRuidoRayleigh.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				    
+				String phi = JOptionPane.showInputDialog(
+				    		null, "Phi", "Generador de numero de ruido aleatorio Rayleigh", JOptionPane.DEFAULT_OPTION);
+				    
+				    GeneradorDeRuido generadorDeRuido = new GeneradorDeRuido();
+				    double ruidoGenerado = generadorDeRuido.generarNumeroAleatorioRayleigh(Double.valueOf(phi));
+				  
+				    JOptionPane.showMessageDialog(null,String.valueOf(ruidoGenerado));
+				}
+		});
+		
+		menuGenerarNumRuidoExponencial.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				    
+				String lambda = JOptionPane.showInputDialog(
+				    		null, "Lambda", "Generador de numero de ruido aleatorio Exponencial", JOptionPane.DEFAULT_OPTION);
+				    
+				    GeneradorDeRuido generadorDeRuido = new GeneradorDeRuido();
+				    double ruidoGenerado = generadorDeRuido.generarNumeroAleatorioExponencial(Double.valueOf(lambda));
+				  
+				    JOptionPane.showMessageDialog(null,String.valueOf(ruidoGenerado));
+				}
+		});
 	}
 	
 	public BufferedImage abrirImagen() {
@@ -389,7 +456,7 @@ public class PrincipalForm extends JFrame{
     
 	private void showAlertOriginalImageNull() {
 		
-		JOptionPane.showMessageDialog(null, "Primero debe abrir una imagen. Para ello, seleccione la opci�n ABRIR IMAGEN en el menu ARCHIVO.");				
+		JOptionPane.showMessageDialog(null, "Primero debe abrir una imagen. Para ello, seleccione la opcion ABRIR IMAGEN en el menu ARCHIVO.");				
 	}
 	
 	private void showAlertByDifferentSizeOrType() {
