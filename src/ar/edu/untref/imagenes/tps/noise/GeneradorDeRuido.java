@@ -88,7 +88,7 @@ public class GeneradorDeRuido {
 			for (int j = 0; j < original.getHeight(); j++) {
 
 				double x = Math.random();
-				double ruido = phi + Math.sqrt( (-2) * Math.log10(1-x) );
+				double ruido = phi * Math.sqrt( (-2) * Math.log10(1-x) );
 
 				double nivelDeRojo = new Color(original.getRGB(i, j)).getRed();
 				
