@@ -1,6 +1,10 @@
 package ar.edu.untref.imagenes.tps.noise;
 
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.util.Random;
+
+import ar.edu.untref.imagenes.utils.ColorProvider;
 
 public class GeneradorDeRuido {
 
@@ -41,6 +45,33 @@ public class GeneradorDeRuido {
 		} 
 
 		return lambda * Math.exp((-1) * lambda * x);
+	}
+	
+	public BufferedImage ruidoGaussianoAditivo(BufferedImage original) {
+
+		BufferedImage nuevaImagen = new BufferedImage(original.getWidth(),
+									original.getHeight(), original.getType());
+		
+		for (int i = 0; i < original.getWidth(); i++) {
+			for (int j = 0; j < original.getHeight(); j++) {
+		
+				double nivelDeRojo = new Color(original.getRGB(i, j)).getRed();
+				
+				
+				double x1 = Math.random();
+				double x2 = Math.random();
+				double ruido = Math.sqrt( (-2) * Math.log10(x1) ) * Math.cos(2 * Math.PI * x2);
+
+				int ruidoAditivo = (int) (nivelDeRojo + ruido);
+				
+				int alpha = new Color(original.getRGB(i, j)).getAlpha();
+				int nuevoPixel = ColorProvider.colorToRGB(alpha, ruidoAditivo, ruidoAditivo, ruidoAditivo);
+
+				nuevaImagen.setRGB(i, j, nuevoPixel);
+			}
+		}
+		
+		return nuevaImagen;
 	}
 	
 }
