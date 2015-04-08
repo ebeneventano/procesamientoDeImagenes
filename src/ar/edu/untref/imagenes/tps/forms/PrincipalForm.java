@@ -62,6 +62,7 @@ public class PrincipalForm extends JFrame{
 	private JMenuItem menuGenerarRuidoExponencialMultiplicativo;
 
 	private JMenuItem menuGenerarImagenSintetica;
+	private JMenuItem menuGenerarRuidoSalYPimienta;
 
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
@@ -172,6 +173,9 @@ public class PrincipalForm extends JFrame{
 		
 		menuGenerarImagenSintetica = new JMenuItem("Generar imagen sintetica 100x100");
 		menuRuido.add(menuGenerarImagenSintetica);
+		
+		menuGenerarRuidoSalYPimienta = new JMenuItem("Generar ruido Sal y Pimienta");
+		menuRuido.add(menuGenerarRuidoSalYPimienta);
 		
 	}
 	
@@ -433,6 +437,7 @@ public class PrincipalForm extends JFrame{
 					
 				}
 			}
+
 		});
 		
 		menuGenerarImagenSintetica.addActionListener(new ActionListener() {
@@ -441,6 +446,15 @@ public class PrincipalForm extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				    
 				crearImagenSintetica();
+			}
+		});
+		
+		menuGenerarRuidoSalYPimienta.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				    
+				generarRuidoSalYPimienta();
 			}
 		});
 	}
@@ -635,7 +649,7 @@ public class PrincipalForm extends JFrame{
 
         for(int i = 0; i < 100 ; i++){
         	for(int j = 0; j < 100; j++){
-        		bmp.setRGB(j, i, 255);
+        		bmp.setRGB(i, j, 0);
         	}
         }
         
@@ -648,5 +662,15 @@ public class PrincipalForm extends JFrame{
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 
+	private void generarRuidoSalYPimienta() {
+		
+		int densidadContaminacion = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Densidad de Contaminacion", "Generador de ruido Sal y Pimienta", JOptionPane.DEFAULT_OPTION));
+
+		GeneradorDeRuido generadorDeRuido = new GeneradorDeRuido();
+		imageInLabel = generadorDeRuido.ruidoImpulsivo(imageInLabel, densidadContaminacion);
+
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
 
 }

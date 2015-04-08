@@ -147,8 +147,6 @@ public class GeneradorDeRuido {
 		BufferedImage nuevaImagen = new BufferedImage(original.getWidth(),
 				original.getHeight(), original.getType());
 		
-		Set<Point> pixelesContaminados = new HashSet<Point>();
-
 		int cantidadDePixelesDeLaImagen = original.getWidth() * original.getHeight();
 		int cantidadDePixelesAContaminar = densidadDeContaminacion * cantidadDePixelesDeLaImagen / 100;
 
@@ -160,20 +158,12 @@ public class GeneradorDeRuido {
 		}
 		
 		while (cantidadDePixelesAContaminar > 0) {
+
+			System.out.println("cantidadDePixelesAContaminar: " + cantidadDePixelesAContaminar);
 			
-			// Se busca contaminar un punto al azar, el cual no se haya contaminado hasta el momento.
-			int i = (int) Math.random() * original.getWidth() ;
-			int j = (int) Math.random() * original.getHeight();
-			Point punto = new Point(i, j);
-			
-			while(pixelesContaminados.contains(punto)) {
-				i = (int) Math.random() * original.getWidth() ;
-				j = (int) Math.random() * original.getHeight();
-				punto = new Point(i, j);
-			}
-			
-			pixelesContaminados.add(punto);
-			
+			int i = (int) (Math.random() * original.getWidth()) ;
+			int j = (int) (Math.random() * original.getHeight());
+
 			// Contaminación
 			double x = Math.random();
 
@@ -183,8 +173,6 @@ public class GeneradorDeRuido {
 			while (p1 <= p0) {
 				p1 = Math.random();
 			}
-			
-			System.out.println("Sal y pimienta!. p0 = " + p0 + ", p1 = " + p1);
 			
 			int pixelBlanco = ColorProvider.colorToRGB(255, 255, 255, 255);
 			int pixelNegro = ColorProvider.colorToRGB(255, 0, 0, 0);
