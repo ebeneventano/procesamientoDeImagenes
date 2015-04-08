@@ -1,6 +1,8 @@
 package ar.edu.untref.imagenes.tps.forms;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -58,6 +60,8 @@ public class PrincipalForm extends JFrame{
 	private JMenuItem menuGenerarRuidoGaussianoAditivo;
 	private JMenuItem menuGenerarRuidoRayleighMultiplicativo;
 	private JMenuItem menuGenerarRuidoExponencialMultiplicativo;
+
+	private JMenuItem menuGenerarImagenSintetica;
 
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
@@ -165,6 +169,9 @@ public class PrincipalForm extends JFrame{
 		
 		menuGenerarRuidoExponencialMultiplicativo = new JMenuItem("Generar ruido Exponencial Multiplicativo");
 		menuGeneradorDeRuidos.add(menuGenerarRuidoExponencialMultiplicativo);
+		
+		menuGenerarImagenSintetica = new JMenuItem("Generar imagen sintetica 100x100");
+		menuRuido.add(menuGenerarImagenSintetica);
 		
 	}
 	
@@ -427,6 +434,15 @@ public class PrincipalForm extends JFrame{
 				}
 			}
 		});
+		
+		menuGenerarImagenSintetica.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				    
+				crearImagenSintetica();
+			}
+		});
 	}
 	
 	public BufferedImage abrirImagen() {
@@ -612,6 +628,24 @@ public class PrincipalForm extends JFrame{
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 		
+	}
+	
+	private void crearImagenSintetica() {
+    	BufferedImage bmp = new BufferedImage(100, 100, BufferedImage.TYPE_BYTE_BINARY);
+
+        for(int i = 0; i < 100 ; i++){
+        	for(int j = 0; j < 100; j++){
+        		bmp.setRGB(j, i, 255);
+        	}
+        }
+        
+        Graphics2D g = bmp.createGraphics();
+        g.setColor(Color.WHITE);
+        g.fillOval(50, 50, 15, 15);
+        
+        originalImage = bmp;
+		imageInLabel = bmp;
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 
 
