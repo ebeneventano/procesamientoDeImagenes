@@ -151,6 +151,13 @@ public class GeneradorDeRuido {
 
 		int cantidadDePixelesDeLaImagen = original.getWidth() * original.getHeight();
 		int cantidadDePixelesAContaminar = densidadDeContaminacion * cantidadDePixelesDeLaImagen / 100;
+
+		// Copiar imagen antes de contaminarla
+		for(int ancho = 0; ancho < original.getWidth() ; ancho++) {
+			for(int alto = 0; alto < original.getHeight() ; alto++) {
+				nuevaImagen.setRGB(ancho, alto, original.getRGB(ancho, alto));
+			}
+		}
 		
 		while (cantidadDePixelesAContaminar > 0) {
 			
@@ -183,11 +190,11 @@ public class GeneradorDeRuido {
 			if (x <= p0) {
 				nuevaImagen.setRGB(i, j, pixelNegro);
 
-			} else if (x >= p1) {
-				nuevaImagen.setRGB(i, j, pixelBlanco);
-
+			/* Consultar: ¿Qué hacemos con los valores intermedios? */
+//			} else if (x >= p1) {
 			} else {
-				nuevaImagen.setRGB(i, j, original.getRGB(i, j));
+
+				nuevaImagen.setRGB(i, j, pixelBlanco);
 			}
 			// Fin contaminación
 			
