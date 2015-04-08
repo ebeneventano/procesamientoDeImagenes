@@ -172,6 +172,8 @@ public class GeneradorDeRuido {
 				punto = new Point(i, j);
 			}
 			
+			pixelesContaminados.add(punto);
+			
 			// Contaminación
 			double x = Math.random();
 
