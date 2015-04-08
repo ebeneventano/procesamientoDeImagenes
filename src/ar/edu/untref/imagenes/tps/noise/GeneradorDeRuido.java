@@ -183,11 +183,11 @@ public class GeneradorDeRuido {
 			if (x <= p0) {
 				nuevaImagen.setRGB(i, j, pixelNegro);
 
-			/* Consultar: ¿Qué hacemos con los valores intermedios? */
-//			} else if (x >= p1) {
-			} else {
-
+			} else if (x >= p1) {
 				nuevaImagen.setRGB(i, j, pixelBlanco);
+
+			} else {
+				nuevaImagen.setRGB(i, j, original.getRGB(i, j));
 			}
 			// Fin contaminación
 			
