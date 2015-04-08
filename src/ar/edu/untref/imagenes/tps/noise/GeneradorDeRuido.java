@@ -107,4 +107,36 @@ public class GeneradorDeRuido {
 		return nuevaImagen;
 	}
 
+	public BufferedImage ruidoExponencialMultiplicativo(BufferedImage original, double lambda) {
+
+		BufferedImage nuevaImagen = new BufferedImage(original.getWidth(),
+				original.getHeight(), original.getType());
+
+		for (int i = 0; i < original.getWidth(); i++) {
+			for (int j = 0; j < original.getHeight(); j++) {
+
+				double x = Math.random();
+				while (x == 0) {
+					x = Math.random();
+				}
+
+				double ruido = ((-1) / lambda) * Math.log10(x);
+
+				double nivelDeRojo = new Color(original.getRGB(i, j)).getRed();
+				
+				int ruidoMultiplicativo = (int) (nivelDeRojo * ruido);
+
+				int alpha = new Color(original.getRGB(i, j)).getAlpha();
+				int nuevoPixel = ColorProvider.colorToRGB(alpha, ruidoMultiplicativo,
+														ruidoMultiplicativo, ruidoMultiplicativo);
+
+				nuevaImagen.setRGB(i, j, nuevoPixel);
+				
+			}
+		}
+
+
+		return nuevaImagen;
+	}
+
 }
