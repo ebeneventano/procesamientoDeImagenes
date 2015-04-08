@@ -194,7 +194,7 @@ public class GeneradorDeRuido {
 		return nuevaImagen;
 	}
 	
-	public BufferedImage suavizadoConFiltroDeLaMedia(BufferedImage original, int altoMascara, int anchoMascara) {
+	public BufferedImage suavizadoConFiltroDeLaMedia(BufferedImage original, int anchoMascara, int altoMascara) {
 
 		BufferedImage nuevaImagen = new BufferedImage(original.getWidth(),
 				original.getHeight(), original.getType());
