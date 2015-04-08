@@ -150,7 +150,7 @@ public class GeneradorDeRuido {
 		Set<Point> pixelesContaminados = new HashSet<Point>();
 
 		int cantidadDePixelesDeLaImagen = original.getWidth() * original.getHeight();
-		int cantidadDePixelesAContaminar = cantidadDePixelesDeLaImagen * (densidadDeContaminacion / 100);
+		int cantidadDePixelesAContaminar = densidadDeContaminacion * cantidadDePixelesDeLaImagen / 100;
 		
 		while (cantidadDePixelesAContaminar > 0) {
 			
@@ -196,6 +196,5 @@ public class GeneradorDeRuido {
 		
 		return nuevaImagen;
 	}
-		
-
+	
 }
