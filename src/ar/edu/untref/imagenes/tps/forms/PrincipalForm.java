@@ -60,9 +60,12 @@ public class PrincipalForm extends JFrame{
 	private JMenuItem menuGenerarRuidoGaussianoAditivo;
 	private JMenuItem menuGenerarRuidoRayleighMultiplicativo;
 	private JMenuItem menuGenerarRuidoExponencialMultiplicativo;
+	private JMenuItem menuGenerarRuidoSalYPimienta;
 
 	private JMenuItem menuGenerarImagenSintetica;
-	private JMenuItem menuGenerarRuidoSalYPimienta;
+	
+	private JMenu menuFiltros;
+	private JMenuItem menuGenerarFiltroDeLaMedia;
 
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
@@ -171,12 +174,17 @@ public class PrincipalForm extends JFrame{
 		menuGenerarRuidoExponencialMultiplicativo = new JMenuItem("Generar ruido Exponencial Multiplicativo");
 		menuGeneradorDeRuidos.add(menuGenerarRuidoExponencialMultiplicativo);
 		
-		menuGenerarImagenSintetica = new JMenuItem("Generar imagen sintetica 100x100");
-		menuRuido.add(menuGenerarImagenSintetica);
-		
 		menuGenerarRuidoSalYPimienta = new JMenuItem("Generar ruido Sal y Pimienta");
-		menuRuido.add(menuGenerarRuidoSalYPimienta);
+		menuGeneradorDeRuidos.add(menuGenerarRuidoSalYPimienta);
 		
+		menuFiltros = new JMenu("Generador De Filtros");
+		menuRuido.add(menuFiltros);
+		
+		menuGenerarFiltroDeLaMedia = new JMenuItem("Generar filtro de la media");
+		menuFiltros.add(menuGenerarFiltroDeLaMedia);
+		
+		menuGenerarImagenSintetica = new JMenuItem("Generar imagen sintetica 100x100");
+		menuRuido.add(menuGenerarImagenSintetica);		
 	}
 	
 	private void addListenersToComponents() {
@@ -453,8 +461,32 @@ public class PrincipalForm extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				    
-				generarRuidoSalYPimienta();
+				if(originalImage != null) {
+					
+					generarRuidoSalYPimienta();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}
+			}
+		});
+		
+		menuGenerarFiltroDeLaMedia.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					generarFiltroDeLaMedia();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
 			}
 		});
 	}
@@ -671,6 +703,22 @@ public class PrincipalForm extends JFrame{
 		imageInLabel = generadorDeRuido.ruidoImpulsivo(imageInLabel, densidadContaminacion);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void generarFiltroDeLaMedia() {
+		
+		int ancho = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Ancho", "Generador de Filtro de la Media", JOptionPane.DEFAULT_OPTION));
+		
+		int alto = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Alto", "Generador de Filtro de la Media", JOptionPane.DEFAULT_OPTION));
+		
+		GeneradorDeRuido generadorDeRuido = new GeneradorDeRuido();
+		
+		imageInLabel = generadorDeRuido.suavizadoConFiltroDeLaMedia(imageInLabel, ancho, alto);
+
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+		
 	}
 
 }
