@@ -56,6 +56,7 @@ public class PrincipalForm extends JFrame{
 
 	private JMenu menuGeneradorDeRuidos;
 	private JMenuItem menuGenerarRuidoGaussianoAditivo;
+	private JMenuItem menuGenerarRuidoRayleighMultiplicativo;
 
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
@@ -157,6 +158,9 @@ public class PrincipalForm extends JFrame{
 		
 		menuGenerarRuidoGaussianoAditivo = new JMenuItem("Generar ruido Gaussiano Aditivo");
 		menuGeneradorDeRuidos.add(menuGenerarRuidoGaussianoAditivo);
+		
+		menuGenerarRuidoRayleighMultiplicativo = new JMenuItem("Generar ruido Rayleigh Multiplicativo");
+		menuGeneradorDeRuidos.add(menuGenerarRuidoRayleighMultiplicativo);
 		
 	}
 	
@@ -387,6 +391,22 @@ public class PrincipalForm extends JFrame{
 				}
 			}
 		});
+		
+		menuGenerarRuidoRayleighMultiplicativo.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(originalImage != null) {
+					
+					generarRuidoRayleighMultiplicativo();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}
+			}
+		});
 	}
 	
 	public BufferedImage abrirImagen() {
@@ -547,6 +567,19 @@ public class PrincipalForm extends JFrame{
 		imageInLabel = generadorDeRuido.ruidoGaussianoAditivo(imageInLabel, sigma, mu);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+
+	private void generarRuidoRayleighMultiplicativo() {
+		
+		double phi = Double.valueOf(JOptionPane.showInputDialog(
+				null, "phi", "Generador de ruido Rayleigh Multiplicativo", JOptionPane.DEFAULT_OPTION));
+
+		GeneradorDeRuido generadorDeRuido = new GeneradorDeRuido();
+		imageInLabel = generadorDeRuido.ruidoRayleighMultiplicativo(imageInLabel, phi);
+
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+		
 	}
 
 }
