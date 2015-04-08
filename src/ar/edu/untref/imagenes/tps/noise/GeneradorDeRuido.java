@@ -241,7 +241,7 @@ public class GeneradorDeRuido {
 				}
 				
 				int alpha = new Color(original.getRGB(i, j)).getAlpha();
-				sumatoria = sumatoria / (anchoMascara + altoMascara);
+				sumatoria = sumatoria / (anchoMascara * altoMascara);
 				int nuevoPixel = ColorProvider.colorToRGB(alpha, sumatoria,
 															sumatoria, sumatoria);
 
