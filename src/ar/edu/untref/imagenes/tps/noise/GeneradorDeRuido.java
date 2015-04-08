@@ -227,7 +227,7 @@ public class GeneradorDeRuido {
 					for(int iAltoMascara = 0; iAltoMascara < altoMascara; iAltoMascara++) {
 						
 						// Opero si no es el punto central de la máscara
-						if(iAnchoMascara != (anchoMascara / 2) && iAltoMascara != (altoMascara / 2)) {
+						if(!(iAnchoMascara == (anchoMascara / 2) && iAltoMascara == (altoMascara / 2))) {
 							
 							int indiceIDeLaImagen = i + sumarEnAncho + iAnchoMascara;
 							int indiceJDeLaImagen = j + sumarEnAlto + iAltoMascara;
