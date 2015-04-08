@@ -194,4 +194,62 @@ public class GeneradorDeRuido {
 		return nuevaImagen;
 	}
 	
+	public BufferedImage suavizadoConFiltroDeLaMedia(BufferedImage original, int altoMascara, int anchoMascara) {
+
+		BufferedImage nuevaImagen = new BufferedImage(original.getWidth(),
+				original.getHeight(), original.getType());
+		
+		// Crear la máscara de la mediana
+		int[][] mascara = new int[anchoMascara][altoMascara];
+		for (int i = 0; i < anchoMascara; i++) {
+			for(int j = 0; j < altoMascara; j++) {
+				mascara[i][j] = 1;
+			}
+		}
+		
+		// Copiar imagen antes de filtrarla
+		for(int ancho = 0; ancho < original.getWidth() ; ancho++) {
+			for(int alto = 0; alto < original.getHeight() ; alto++) {
+				nuevaImagen.setRGB(ancho, alto, original.getRGB(ancho, alto));
+			}
+		}
+
+		// Iterar la imagen
+		for(int i = anchoMascara / 2; i < original.getWidth() - (anchoMascara / 2); i++) {
+			for(int j = altoMascara / 2; j < original.getHeight() - (altoMascara / 2); j++) {
+				
+				int sumarEnAncho = (-1) * (anchoMascara / 2);
+				int sumarEnAlto = (-1) * (altoMascara / 2);
+				
+				int sumatoria = 0;
+				// Iterar la máscara
+				for(int iAnchoMascara = 0; iAnchoMascara < anchoMascara; iAnchoMascara++) {
+					for(int iAltoMascara = 0; iAltoMascara < altoMascara; iAltoMascara++) {
+						
+						// Opero si no es el punto central de la máscara
+						if(iAnchoMascara != (anchoMascara / 2) && iAltoMascara != (altoMascara / 2)) {
+							
+							int indiceIDeLaImagen = i + sumarEnAncho + iAnchoMascara;
+							int indiceJDeLaImagen = j + sumarEnAlto + iAltoMascara;
+				
+							double nivelDeRojo = new Color(original.getRGB(indiceIDeLaImagen, indiceJDeLaImagen)).getRed();
+							sumatoria += nivelDeRojo + mascara[iAnchoMascara][iAltoMascara];
+							
+						}
+						
+					}
+				}
+				
+				int alpha = new Color(original.getRGB(i, j)).getAlpha();
+				sumatoria = sumatoria / (anchoMascara + altoMascara);
+				int nuevoPixel = ColorProvider.colorToRGB(alpha, sumatoria,
+															sumatoria, sumatoria);
+
+				nuevaImagen.setRGB(i, j, nuevoPixel);
+			}
+		}
+		
+		return nuevaImagen;
+	}
+	
 }
