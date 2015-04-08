@@ -1,8 +1,11 @@
 package ar.edu.untref.imagenes.tps.noise;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import ar.edu.untref.imagenes.utils.ColorProvider;
 
@@ -138,5 +141,61 @@ public class GeneradorDeRuido {
 
 		return nuevaImagen;
 	}
+	
+	public BufferedImage ruidoImpulsivo(BufferedImage original, int densidadDeContaminacion) {
+
+		BufferedImage nuevaImagen = new BufferedImage(original.getWidth(),
+				original.getHeight(), original.getType());
+		
+		Set<Point> pixelesContaminados = new HashSet<Point>();
+
+		int cantidadDePixelesDeLaImagen = original.getWidth() * original.getHeight();
+		int cantidadDePixelesAContaminar = cantidadDePixelesDeLaImagen * (densidadDeContaminacion / 100);
+		
+		while (cantidadDePixelesAContaminar > 0) {
+			
+			// Se busca contaminar un punto al azar, el cual no se haya contaminado hasta el momento.
+			int i = (int) Math.random() * original.getWidth() ;
+			int j = (int) Math.random() * original.getHeight();
+			Point punto = new Point(i, j);
+			
+			while(pixelesContaminados.contains(punto)) {
+				i = (int) Math.random() * original.getWidth() ;
+				j = (int) Math.random() * original.getHeight();
+				punto = new Point(i, j);
+			}
+			
+			// Contaminación
+			double x = Math.random();
+
+			double p0 = Math.random();
+			
+			double p1 = Math.random();
+			while (p1 <= p0) {
+				p1 = Math.random();
+			}
+			
+			System.out.println("Sal y pimienta!. p0 = " + p0 + ", p1 = " + p1);
+			
+			int pixelBlanco = ColorProvider.colorToRGB(255, 255, 255, 255);
+			int pixelNegro = ColorProvider.colorToRGB(255, 0, 0, 0);
+			
+			if (x <= p0) {
+				nuevaImagen.setRGB(i, j, pixelNegro);
+
+			/* Consultar: ¿Qué hacemos con los valores intermedios? */
+//			} else if (x >= p1) {
+			} else {
+
+				nuevaImagen.setRGB(i, j, pixelBlanco);
+			}
+			// Fin contaminación
+			
+			cantidadDePixelesAContaminar--;
+		}
+		
+		return nuevaImagen;
+	}
+		
 
 }
