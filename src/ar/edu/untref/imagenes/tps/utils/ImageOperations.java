@@ -93,30 +93,34 @@ public class ImageOperations {
 	}
 
 	private BufferedImage operateWithImage(String operator) {
+		BufferedImage imagenResultado = new BufferedImage(image1.getWidth(), image1.getHeight(), image1.getType());
 
 		if (image1.getWidth() == image2.getWidth()
 				&& image1.getHeight() == image2.getHeight()) {
 
-			BufferedImage imageSum = new BufferedImage(image1.getWidth(),
-					image1.getHeight(), image1.getType());
+			int [][] matrizResultado = new int [image1.getWidth()][image1.getHeight()];
+
+			int [][] matrizDeImagen1 = calcularMatrizDeUnaImagenGris(image1);
+			int [][] matrizDeImagen2 = calcularMatrizDeUnaImagenGris(image2);
 
 			for (int i = 0; i < image1.getWidth(); i++) {
 				for (int j = 0; j < image1.getHeight(); j++) {
-
-					int rgbImage1 = image1.getRGB(i, j);
-					int rgbImage2 = image2.getRGB(i, j);
-
+					
 					if ("+".equals(operator)) {
-						imageSum.setRGB(i, j, rgbImage1 + rgbImage2);
+						matrizResultado[i][j] = matrizDeImagen1[i][j] + matrizDeImagen2[i][j];
 					} else if ("-".equals(operator)) {
-						imageSum.setRGB(i, j, rgbImage1 - rgbImage2);
+						matrizResultado[i][j] = matrizDeImagen1[i][j] - matrizDeImagen2[i][j];
 					} else if ("*".equals(operator)) {
-						imageSum.setRGB(i, j, rgbImage1 * rgbImage2);
+						matrizResultado[i][j] = matrizDeImagen1[i][j] * matrizDeImagen2[i][j];
 					}
 				}
 			}
 
-			return imageSum;
+			//TODO ACA QUEDA LA MATRIZ RESULTADO CON LOS VALORES DE LO PIXELES SIN LA TRANSFORMACION, ES DECIR, CON VALORES QUE SE PASAN DE 255.
+			//LUEGO DE APLICAR LA TRANSFORMACION Y OPERAR CON LAS MATRICES, HAY QUE LLAMAR AL METODO QUE TE DEVUELVE UN BUFFERIMAGE A PARTIR DE UNA MATRIZ Y DEVOLVER ESA IMAGEN.
+			//FUNCIONA SOLO CON IMAGENES GRISES
+			
+			return imagenResultado;
 
 		} else {
 
@@ -343,6 +347,22 @@ public class ImageOperations {
 			int newRgb = ColorProvider.getRGB(blue, green, red, alpha);
 			
 			matriz[i][j] = newRgb;
+		}
+	}
+		return matriz;
+	}
+	
+	public int[][] calcularMatrizDeUnaImagenGris(BufferedImage image) {
+
+	int [][] matriz = new int [image.getWidth()][image.getHeight()];
+
+	for(int i = 0; i < image.getWidth() ; i++){
+		for(int j = 0; j < image.getHeight() ; j++){
+			
+			int rgb = image.getRGB(i, j);
+			int red = 0xff & (rgb >> 16);
+			
+			matriz[i][j] = red;
 		}
 	}
 		return matriz;

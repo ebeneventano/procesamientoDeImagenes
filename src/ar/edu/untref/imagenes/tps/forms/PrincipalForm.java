@@ -618,7 +618,22 @@ public class PrincipalForm extends JFrame{
 			try {
 				
 				File archivoSeleccionado = selector.getSelectedFile();
-				imageToOperate = ImageIO.read(archivoSeleccionado);
+				String extension = getFileExtension(archivoSeleccionado);
+
+				if(extension.equalsIgnoreCase("raw")){
+					int width = Integer.valueOf(JOptionPane.showInputDialog(
+							null, "Width", "Abrir imagen RAW", JOptionPane.DEFAULT_OPTION));
+					
+					int height = Integer.valueOf(JOptionPane.showInputDialog(
+							null, "Height", "Abrir imagen RAW", JOptionPane.DEFAULT_OPTION));
+					
+					imageToOperate = leerUnaImagenRAW(archivoSeleccionado, width, height);
+					
+				}else{
+					
+					imageToOperate = ImageIO.read(archivoSeleccionado);
+				}
+
 			} catch (Exception e) {
 
 				e.printStackTrace();
@@ -797,8 +812,6 @@ public class PrincipalForm extends JFrame{
 			int contador = 0;
 			for (int i = 0; i < height; i++) {
 				for (int j = 0; j < width; j++) {
-					
-					//TODO - NO FUNCIONA EL ABRIR RAW, NO CARGA BIEN LA IMAGEN.
 					
 					int alpha = 0 << 24;
 		            int red = bytes[contador] << 16;
