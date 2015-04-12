@@ -32,14 +32,15 @@ public class ImageOperations {
 		return operateWithImage("*");
 	}
 
-	public BufferedImage scalarMultiplication(int scalar,
-			BufferedImage imageToMultiplicate) {
+	public BufferedImage compresionRangoDinamico(BufferedImage imageToMultiplicate) {
 
 		int width = imageToMultiplicate.getWidth();
 		int height = imageToMultiplicate.getHeight();
 
 		BufferedImage imageResult = new BufferedImage(width, height,
 				imageToMultiplicate.getType());
+		
+		int scalar = (int) (255 / (Math.log10(1 + calculateScalar(imageToMultiplicate))));
 
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
@@ -53,6 +54,7 @@ public class ImageOperations {
 				red = (int) aplicarTransformacionLog(scalar, red);
 				green = (int) aplicarTransformacionLog(scalar, green);
 				blue = (int) aplicarTransformacionLog(scalar, blue);
+				alpha = (int) aplicarTransformacionLog(scalar, alpha);
 
 				int newRgb = ColorProvider.getRGB(blue, green, red, alpha);
 
@@ -62,6 +64,28 @@ public class ImageOperations {
 		}
 
 		return imageResult;
+	}
+
+	private int calculateScalar(BufferedImage imageResult) {
+		
+		int rgb = imageResult.getRGB(0, 0);
+		int red = 0xff & (rgb >> 16);
+
+		int max = red;
+		for ( int i = 0; i < imageResult.getWidth(); i++) {
+			for (int j = 0; j < imageResult.getHeight(); j++){
+				
+				int rgb2 = imageResult.getRGB(i, j);
+				int red2 = 0xff & (rgb2 >> 16);
+
+				int max2 = red2;
+				
+				if ( max2 > max) {
+					max = max2;
+				}
+			}
+		}		
+		return max;
 	}
 
 	private long aplicarTransformacionLog(int scalar, int color) {
@@ -118,21 +142,22 @@ public class ImageOperations {
         return imageResult;
     }
 	
-	public BufferedImage increaseImageContrast(BufferedImage image, float increment){
+	public BufferedImage increaseImageContrast(BufferedImage image, int increment){
 		
 		BufferedImage imageResult = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
 		for (int i = 0; i < image.getWidth(); i++) {
 			for (int j = 0; j < image.getHeight(); j++) {
 				
 				int rgb = image.getRGB(i, j);
-				float alpha = 0xff & (rgb >> 24);
-				float red = 0xff & (rgb >> 16);
-				float green = 0xff & (rgb >> 8);
-				float blue = 0xff & rgb;
+				int alpha = 0xff & (rgb >> 24);
+				int red = 0xff & (rgb >> 16);
+				int green = 0xff & (rgb >> 8);
+				int blue = 0xff & rgb;
 				
-				red = (int) applyTransformationToIncreaseContrast(increment, red);
-				green = (int) applyTransformationToIncreaseContrast(increment, green);
-				blue = (int) applyTransformationToIncreaseContrast(increment, blue);
+				alpha = applyTransformationToIncreaseContrast(increment, alpha);
+				red = applyTransformationToIncreaseContrast(increment, red);
+				green = applyTransformationToIncreaseContrast(increment, green);
+				blue = applyTransformationToIncreaseContrast(increment, blue);
 
 				int newRgb = ColorProvider.getRGB(blue, green, red, alpha);
 
@@ -145,7 +170,7 @@ public class ImageOperations {
 		return imageResult;
 	}
 	
-	private float applyTransformationToIncreaseContrast(float increment, float valueRGB){
+	private int applyTransformationToIncreaseContrast(int increment, int valueRGB){
 		return (increment*(valueRGB - 128)) + 128;
 	}
 
@@ -299,6 +324,58 @@ public class ImageOperations {
 		int blue = 0xff & rgb;
 		
 		return ColorProvider.colorToRGB(alpha, red, green, blue);
+	}
+
+	public BufferedImage multiplicateImagesByScalar(int scalar, int [][] matrizDeImagen) {
+
+		int[][] matrizResult = new int [matrizDeImagen.length][matrizDeImagen[0].length];
+
+		for (int i = 0; i < matrizDeImagen.length; i++) {
+			for (int j = 0; j < matrizDeImagen[0].length; j++) {
+				
+				matrizResult [i][j] = matrizDeImagen[i][j] * scalar;
+
+			}
+		}
+
+		return getBufferedImageDeMatriz(matrizResult, matrizDeImagen.length, matrizDeImagen[0].length);
+
+	}
+	
+	public int[][] calcularMatrizDeLaImagen(BufferedImage image) {
+
+	int [][] matriz = new int [image.getWidth()][image.getHeight()];
+
+	for(int i = 0; i < image.getWidth() ; i++){
+		for(int j = 0; j < image.getHeight() ; j++){
+			
+			int rgb = image.getRGB(i, j);
+			int alpha = 0xff & (rgb >> 24);
+			int red = 0xff & (rgb >> 16);
+			int green = 0xff & (rgb >> 8);
+			int blue = 0xff & rgb;
+			
+			int newRgb = ColorProvider.getRGB(blue, green, red, alpha);
+			
+			matriz[i][j] = newRgb;
+		}
+	}
+		return matriz;
+	}
+
+	public BufferedImage getBufferedImageDeMatriz(int[][] matriz, int ancho,
+			int alto) {
+
+		BufferedImage bufferedImage = new BufferedImage(ancho, alto,
+				BufferedImage.TYPE_BYTE_GRAY);
+		for (int i = 0; i < matriz.length; i++) {
+			for (int j = 0; j < matriz[0].length; j++) {
+				int pixel = matriz[i][j];
+				bufferedImage.setRGB(i, j, pixel);
+			}
+		}
+
+		return bufferedImage;
 	}
 
 }

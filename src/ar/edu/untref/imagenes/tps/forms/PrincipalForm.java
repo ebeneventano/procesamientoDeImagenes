@@ -25,7 +25,6 @@ import javax.swing.border.EmptyBorder;
 
 import ar.edu.untref.imagenes.tps.noise.GeneradorDeRuido;
 import ar.edu.untref.imagenes.tps.utils.ImageOperations;
-import ar.edu.untref.imagenes.utils.ColorProvider;
 
 @SuppressWarnings("serial")
 public class PrincipalForm extends JFrame{
@@ -47,7 +46,8 @@ public class PrincipalForm extends JFrame{
 	private JMenuItem menuSumImages;
 	private JMenuItem menuRestImages;
 	private JMenuItem menuMultiplicateImages;
-	private JMenuItem menuScalarMultiplication;
+	private JMenuItem menuMultiplicateByScalar;
+	private JMenuItem menuCompresionRangoDinamico;
 	private JMenuItem menuNegativeImage;
 	private JMenuItem menuIncreaseContrast;
 	private JMenuItem menuUmbralization;
@@ -138,8 +138,11 @@ public class PrincipalForm extends JFrame{
 		menuMultiplicateImages = new JMenuItem("Multiplicar Imagenes");
 		menuOperations.add(menuMultiplicateImages);
 		
-		menuScalarMultiplication = new JMenuItem("Multiplicar por Escalar");
-		menuOperations.add(menuScalarMultiplication);
+		menuMultiplicateByScalar = new JMenuItem("Multiplicar por Escalar");
+		menuOperations.add(menuMultiplicateByScalar);
+		
+		menuCompresionRangoDinamico = new JMenuItem("Compresion de rango dinamico");
+		menuOperations.add(menuCompresionRangoDinamico);
 		
 		menuNegativeImage = new JMenuItem("Obtener negativo");
 		menuOperations.add(menuNegativeImage);
@@ -255,13 +258,29 @@ public class PrincipalForm extends JFrame{
 			}
 		});
 		
-		menuScalarMultiplication.addActionListener(new ActionListener() {
+		menuMultiplicateByScalar.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
 				
 				if(originalImage != null) {
 					
-					scalarMultiplication();
+					multiplicarPorEscalar();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}
+			}
+		});
+		
+		menuCompresionRangoDinamico.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					compresionRangoDinamico();
 					
 				} else {
 					
@@ -621,11 +640,26 @@ public class PrincipalForm extends JFrame{
 		JOptionPane.showMessageDialog(null, "Seleccione una imagen con el mismo tipo y tama�o de la que se encuentra en la pantalla principal.");				
 	}
 	
-	private void scalarMultiplication() {
+	private void multiplicarPorEscalar() {
+
+		int scalar = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Escalar", "Multiplicar por escalar", JOptionPane.DEFAULT_OPTION));
 		
 		ImageOperations io = new ImageOperations();
+		int[][] matrixOfImage = io.calcularMatrizDeLaImagen(imageInLabel);
 		
-		imageInLabel = io.scalarMultiplication(100, imageInLabel);
+		imageInLabel = io.multiplicateImagesByScalar(scalar, matrixOfImage);
+		
+		imageInLabel = io.compresionRangoDinamico(imageInLabel);
+		
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void compresionRangoDinamico() {
+
+		ImageOperations io = new ImageOperations();
+		
+		imageInLabel = io.compresionRangoDinamico(imageInLabel);
 		
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
@@ -642,7 +676,7 @@ public class PrincipalForm extends JFrame{
 	private void increaseContrast() {
 		
 		ImageOperations io = new ImageOperations();
-		imageInLabel = io.increaseImageContrast(imageInLabel, 1.2f);
+		imageInLabel = io.increaseImageContrast(imageInLabel, 2);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 		
@@ -758,21 +792,21 @@ public class PrincipalForm extends JFrame{
 			bytes = Files.readAllBytes(archivoActual.toPath());
 			
 			imagen = new BufferedImage(width, height,
-					BufferedImage.TYPE_INT_RGB);
+					BufferedImage.TYPE_BYTE_GRAY);
 			int contador = 0;
 			for (int i = 0; i < height; i++) {
 				for (int j = 0; j < width; j++) {
 					
 					//TODO - NO FUNCIONA EL ABRIR RAW, NO CARGA BIEN LA IMAGEN.
 					
-//					int alpha = 0xff & (bytes[contador] << 24);
-//					int red = 0xff & (bytes[contador] << 16);
-//					int green = 0xff & (bytes[contador] << 8);
-//					int blue = 0xff & bytes[contador];
-//					
-//					int newRgb = ColorProvider.getRGB(blue, green, red, alpha);
-//		            
-//					imagen.setRGB(j, i, newRgb);
+					int alpha = 0 << 24;
+		            int red = bytes[contador] << 16;
+		            int green = bytes[contador] << 8;
+		            int blue = bytes[contador];
+		            int color = alpha + red + green + blue;
+					
+		            imagen.setRGB(j, i, color);
+
 					contador++;
 				}
 			}
