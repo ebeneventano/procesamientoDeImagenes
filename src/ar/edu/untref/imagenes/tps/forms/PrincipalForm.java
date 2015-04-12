@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -23,6 +25,7 @@ import javax.swing.border.EmptyBorder;
 
 import ar.edu.untref.imagenes.tps.noise.GeneradorDeRuido;
 import ar.edu.untref.imagenes.tps.utils.ImageOperations;
+import ar.edu.untref.imagenes.utils.ColorProvider;
 
 @SuppressWarnings("serial")
 public class PrincipalForm extends JFrame{
@@ -502,9 +505,24 @@ public class PrincipalForm extends JFrame{
 			try {
 
 				File archivoSeleccionado = selector.getSelectedFile();
-				imageInLabel = ImageIO.read(archivoSeleccionado);
-				originalImage = ImageIO.read(archivoSeleccionado);
-
+				
+				String extension = getFileExtension(archivoSeleccionado);
+				
+				if(extension.equalsIgnoreCase("raw")){
+					int width = Integer.valueOf(JOptionPane.showInputDialog(
+							null, "Width", "Abrir imagen RAW", JOptionPane.DEFAULT_OPTION));
+					
+					int height = Integer.valueOf(JOptionPane.showInputDialog(
+							null, "Height", "Abrir imagen RAW", JOptionPane.DEFAULT_OPTION));
+					
+					imageInLabel = leerUnaImagenRAW(archivoSeleccionado, width, height);
+					originalImage = leerUnaImagenRAW(archivoSeleccionado, width, height);
+					
+				} else {
+				
+					imageInLabel = ImageIO.read(archivoSeleccionado);
+					originalImage = ImageIO.read(archivoSeleccionado);
+				}
 			} catch (Exception e) {
 
 				e.printStackTrace();
@@ -512,6 +530,16 @@ public class PrincipalForm extends JFrame{
 		}
 
 		return imageInLabel;
+	}
+
+	private String getFileExtension(File archivoSeleccionado) {
+		String extension = "";
+
+		int i = archivoSeleccionado.getName().lastIndexOf('.');
+		if (i > 0) {
+		    extension = archivoSeleccionado.getName().substring(i+1);
+		}
+		return extension;
 	}
     
     private void refreshChanges(){
@@ -719,6 +747,41 @@ public class PrincipalForm extends JFrame{
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 		
+	}
+	
+	private BufferedImage leerUnaImagenRAW(File archivoActual, int width,
+			int height) {
+
+		BufferedImage imagen = null;
+		byte[] bytes;
+		try {
+			bytes = Files.readAllBytes(archivoActual.toPath());
+			
+			imagen = new BufferedImage(width, height,
+					BufferedImage.TYPE_INT_RGB);
+			int contador = 0;
+			for (int i = 0; i < height; i++) {
+				for (int j = 0; j < width; j++) {
+					
+					//TODO - NO FUNCIONA EL ABRIR RAW, NO CARGA BIEN LA IMAGEN.
+					
+//					int alpha = 0xff & (bytes[contador] << 24);
+//					int red = 0xff & (bytes[contador] << 16);
+//					int green = 0xff & (bytes[contador] << 8);
+//					int blue = 0xff & bytes[contador];
+//					
+//					int newRgb = ColorProvider.getRGB(blue, green, red, alpha);
+//		            
+//					imagen.setRGB(j, i, newRgb);
+					contador++;
+				}
+			}
+			
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+		return imagen;
 	}
 
 }
