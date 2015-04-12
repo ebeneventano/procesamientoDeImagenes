@@ -29,8 +29,6 @@ import ar.edu.untref.imagenes.tps.utils.ImageOperations;
 @SuppressWarnings("serial")
 public class PrincipalForm extends JFrame{
 	
-	private static final int UMBRAL_PARA_UMBRALIZACION = 150;
-
 	private JMenuBar menuBar;
 	
 	private JMenu menuArchivo;
@@ -692,9 +690,12 @@ public class PrincipalForm extends JFrame{
 	}
 	
 	private void umbralizate() {
+
+		int umbral = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Umbral (entre 0 y 255)", "Umbralizacion", JOptionPane.DEFAULT_OPTION));
 		
 		ImageOperations io = new ImageOperations();
-		imageInLabel = io.umbralization(imageInLabel, UMBRAL_PARA_UMBRALIZACION);
+		imageInLabel = io.umbralization(imageInLabel, umbral);
 		
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}

@@ -311,21 +311,6 @@ public class ImageOperations {
 		return newImage;
 	}
 
-	/**
-	 * This method returns the pixel value, between 0 and 255, integrating the RGB channels.
-	 * @returns an int value, between 0 and 255
-	 */
-	private int getPixelValue(BufferedImage originalImage, int i, int j) {
-		
-		int rgb = originalImage.getRGB(i, j);
-		int alpha = 0xff & (rgb >> 24);
-		int red = 0xff & (rgb >> 16);
-		int green = 0xff & (rgb >> 8);
-		int blue = 0xff & rgb;
-		
-		return ColorProvider.colorToRGB(alpha, red, green, blue);
-	}
-
 	public BufferedImage multiplicateImagesByScalar(int scalar, int [][] matrizDeImagen) {
 
 		int[][] matrizResult = new int [matrizDeImagen.length][matrizDeImagen[0].length];
