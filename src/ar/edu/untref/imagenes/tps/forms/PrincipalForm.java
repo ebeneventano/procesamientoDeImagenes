@@ -532,8 +532,8 @@ public class PrincipalForm extends JFrame{
 					int height = Integer.valueOf(JOptionPane.showInputDialog(
 							null, "Height", "Abrir imagen RAW", JOptionPane.DEFAULT_OPTION));
 					
-					imageInLabel = leerUnaImagenRAW(archivoSeleccionado, width, height);
-					originalImage = leerUnaImagenRAW(archivoSeleccionado, width, height);
+					imageInLabel = abrirImagenRaw(archivoSeleccionado, width, height);
+					originalImage = abrirImagenRaw(archivoSeleccionado, width, height);
 					
 				} else {
 				
@@ -627,7 +627,7 @@ public class PrincipalForm extends JFrame{
 					int height = Integer.valueOf(JOptionPane.showInputDialog(
 							null, "Height", "Abrir imagen RAW", JOptionPane.DEFAULT_OPTION));
 					
-					imageToOperate = leerUnaImagenRAW(archivoSeleccionado, width, height);
+					imageToOperate = abrirImagenRaw(archivoSeleccionado, width, height);
 					
 				}else{
 					
@@ -799,7 +799,7 @@ public class PrincipalForm extends JFrame{
 		
 	}
 	
-	private BufferedImage leerUnaImagenRAW(File archivoActual, int width,
+	private BufferedImage abrirImagenRaw(File archivoActual, int width,
 			int height) {
 
 		BufferedImage imagen = null;

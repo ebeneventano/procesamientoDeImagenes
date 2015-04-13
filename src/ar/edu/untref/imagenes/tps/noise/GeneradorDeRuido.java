@@ -1,11 +1,8 @@
 package ar.edu.untref.imagenes.tps.noise;
 
 import java.awt.Color;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 import ar.edu.untref.imagenes.utils.ColorProvider;
 
