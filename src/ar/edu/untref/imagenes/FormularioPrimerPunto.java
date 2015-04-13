@@ -363,7 +363,14 @@ public class FormularioPrimerPunto extends JFrame {
                 for(int i = 0; i < lenght ; i++){
                 	for(int j = 0; j < width; j++){
                 		matrizDeImagen[j][i] = bytes[contador];
-                		bmp.setRGB(j, i, bytes[contador]);
+                		
+                		int alpha = 0 << 24;
+                		int red = bytes[contador] << 16;
+                		int green = bytes[contador] << 8;
+                		int blue = bytes[contador];
+                		int color = alpha + red + green + blue;
+                		
+                		bmp.setRGB(j, i, color);
                 		contador++;
                 	}
                 }
