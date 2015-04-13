@@ -808,15 +808,16 @@ public class PrincipalForm extends JFrame{
 			bytes = Files.readAllBytes(archivoActual.toPath());
 			
 			imagen = new BufferedImage(width, height,
-					BufferedImage.TYPE_BYTE_GRAY);
+					BufferedImage.TYPE_3BYTE_BGR);
 			int contador = 0;
 			for (int i = 0; i < height; i++) {
 				for (int j = 0; j < width; j++) {
 					
-					int alpha = 0 << 24;
-		            int red = bytes[contador] << 16;
-		            int green = bytes[contador] << 8;
-		            int blue = bytes[contador];
+					int alpha = -16777216;
+		            int red = ((int) bytes[contador] & 0xff) << 16;
+		            int green = ((int) bytes[contador] & 0xff) << 8;
+		            int blue = ((int) bytes[contador] & 0xff);
+		            
 		            int color = alpha + red + green + blue;
 					
 		            imagen.setRGB(j, i, color);
