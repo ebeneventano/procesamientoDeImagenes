@@ -572,7 +572,7 @@ public class PrincipalForm extends JFrame{
 		
     	ImageOperations io = new ImageOperations(originalImage, imageSum);
     	
-    	imageInLabel = io.sumImages();
+    	imageInLabel = io.aplicarTransformacionLineal(io.sumImages());
     	
     	if(imageInLabel != null){
     	
