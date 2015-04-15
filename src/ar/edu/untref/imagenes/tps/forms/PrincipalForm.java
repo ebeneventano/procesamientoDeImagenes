@@ -23,6 +23,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
+import ar.edu.untref.imagenes.tps.noise.FiltroGaussiano;
+import ar.edu.untref.imagenes.tps.noise.FiltroPasaAltos;
+import ar.edu.untref.imagenes.tps.noise.FiltroPasaBajos;
 import ar.edu.untref.imagenes.tps.noise.GeneradorDeRuido;
 import ar.edu.untref.imagenes.tps.utils.ImageOperations;
 
@@ -67,6 +70,9 @@ public class PrincipalForm extends JFrame{
 	
 	private JMenu menuFiltros;
 	private JMenuItem menuGenerarFiltroDeLaMedia;
+	private JMenuItem menuGenerarFiltroDeGauss;
+	private JMenuItem menuGenerarFiltroPasaBajos;
+	private JMenuItem menuGenerarFiltroPasaAltos;
 
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
@@ -186,6 +192,15 @@ public class PrincipalForm extends JFrame{
 		
 		menuGenerarFiltroDeLaMedia = new JMenuItem("Generar filtro de la media");
 		menuFiltros.add(menuGenerarFiltroDeLaMedia);
+		
+		menuGenerarFiltroDeGauss = new JMenuItem("Generar filtro de Gauss");
+		menuFiltros.add(menuGenerarFiltroDeGauss);
+		
+		menuGenerarFiltroPasaAltos = new JMenuItem("Generar filtro Pasa Altos");
+		menuFiltros.add(menuGenerarFiltroPasaAltos);
+		
+		menuGenerarFiltroPasaBajos = new JMenuItem("Generar filtro Pasa Bajos");
+		menuFiltros.add(menuGenerarFiltroPasaBajos);
 		
 		menuGenerarImagenSintetica = new JMenuItem("Generar imagen sintetica 100x100");
 		menuRuido.add(menuGenerarImagenSintetica);		
@@ -509,6 +524,60 @@ public class PrincipalForm extends JFrame{
 				}				    
 			}
 		});
+		
+		menuGenerarFiltroDeGauss.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					generarFiltroDeGauss();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuGenerarFiltroPasaAltos.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					generarFiltroPasaAltos();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+
+
+		});
+		
+		menuGenerarFiltroPasaBajos.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					generarFiltroPasaBajos();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+
+		});
 	}
 	
 	public BufferedImage abrirImagen() {
@@ -687,9 +756,13 @@ public class PrincipalForm extends JFrame{
 	
 
 	private void increaseContrast() {
+
+		int increment = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Increment", "Contraste", JOptionPane.DEFAULT_OPTION));
 		
 		ImageOperations io = new ImageOperations();
-		imageInLabel = io.increaseImageContrast(imageInLabel, 2);
+		
+		imageInLabel = io.changeBrightness(imageInLabel, increment);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 		
@@ -745,7 +818,7 @@ public class PrincipalForm extends JFrame{
 	private void generarRuidoExponencialMultiplicativo() {
 		
 		double lambda = Double.valueOf(JOptionPane.showInputDialog(
-				null, "Lambda", "Generador de ruido Rayleigh Multiplicativo", JOptionPane.DEFAULT_OPTION));
+				null, "Lambda", "Generador de ruido Exponencial Multiplicativo", JOptionPane.DEFAULT_OPTION));
 
 		GeneradorDeRuido generadorDeRuido = new GeneradorDeRuido();
 		imageInLabel = generadorDeRuido.ruidoExponencialMultiplicativo(imageInLabel, lambda);
@@ -832,5 +905,33 @@ public class PrincipalForm extends JFrame{
 		}
 		return imagen;
 	}
+	
+	private void generarFiltroDeGauss() {
 
+		int sigma = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Sigma", "Aplicar filtro de Gauss", JOptionPane.DEFAULT_OPTION));
+		
+		imageInLabel = FiltroGaussiano.aplicarFiltroGaussiano(imageInLabel, sigma);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void generarFiltroPasaAltos() {
+
+		int longitudMascara = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Longitud de Mascara", "Aplicar filtro Pasa Altos", JOptionPane.DEFAULT_OPTION));
+
+		imageInLabel = FiltroPasaAltos.aplicarFiltroPasaAltos(imageInLabel, longitudMascara);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+
+	}
+
+	private void generarFiltroPasaBajos() {
+		
+		int longitudMascara = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Longitud de Mascara", "Aplicar filtro Pasa Bajos", JOptionPane.DEFAULT_OPTION));
+		
+		imageInLabel = FiltroPasaBajos.aplicarFiltroPasaBajos(imageInLabel, longitudMascara);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+		
+	}
 }

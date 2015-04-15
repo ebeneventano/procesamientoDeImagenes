@@ -89,12 +89,13 @@ public class GeneradorDeRuido {
 
 				double x = Math.random();
 				double ruido = phi * Math.sqrt( (-2) * Math.log10(1-x) );
+//				double ruido = 1 - (Math.exp(-((x*x)/(2*phi*phi))));
 
 				double nivelDeRojo = new Color(original.getRGB(i, j)).getRed();
 				
 				int ruidoMultiplicativo = (int) (nivelDeRojo * ruido);
 
-				int alpha = new Color(original.getRGB(i, j)).getAlpha();
+				int alpha = (int) (new Color(original.getRGB(i, j)).getAlpha() * ruido);
 				int nuevoPixel = ColorProvider.colorToRGB(alpha, ruidoMultiplicativo,
 														ruidoMultiplicativo, ruidoMultiplicativo);
 
@@ -196,6 +197,13 @@ public class GeneradorDeRuido {
 		BufferedImage nuevaImagen = new BufferedImage(original.getWidth(),
 				original.getHeight(), original.getType());
 		
+		// Copiar imagen antes de filtrarla
+		for(int ancho = 0; ancho < original.getWidth() ; ancho++) {
+			for(int alto = 0; alto < original.getHeight() ; alto++) {
+				nuevaImagen.setRGB(ancho, alto, original.getRGB(ancho, alto));
+			}
+		}
+
 		// Crear la máscara de la mediana
 		int[][] mascara = new int[anchoMascara][altoMascara];
 		for (int i = 0; i < anchoMascara; i++) {
@@ -204,19 +212,30 @@ public class GeneradorDeRuido {
 			}
 		}
 		
-		// Copiar imagen antes de filtrarla
-		for(int ancho = 0; ancho < original.getWidth() ; ancho++) {
-			for(int alto = 0; alto < original.getHeight() ; alto++) {
-				nuevaImagen.setRGB(ancho, alto, original.getRGB(ancho, alto));
+		int sumarEnAncho = (-1) * (anchoMascara / 2);
+		int sumarEnAlto = (-1) * (altoMascara / 2);
+		
+		// Agregar borde zero-padding
+		int pixelNegro = ColorProvider.colorToRGB(255, 0, 0, 0);
+		for (int i = 0; i < anchoMascara / 2; i++) {
+			for (int j = 0 ; j < nuevaImagen.getHeight() ; j++) {
+				
+				nuevaImagen.setRGB(i, j, pixelNegro);
+				nuevaImagen.setRGB(nuevaImagen.getWidth() - 1 - i, nuevaImagen.getHeight() - 1 - j, pixelNegro);
 			}
 		}
-
-		// Iterar la imagen
+		
+		for (int i = 0; i < nuevaImagen.getWidth(); i++) {
+			for (int j = 0 ; j < altoMascara / 2 ; j++) {
+				
+				nuevaImagen.setRGB(i, j, pixelNegro);
+				nuevaImagen.setRGB(nuevaImagen.getWidth() - 1 - i, nuevaImagen.getHeight() - 1 - j, pixelNegro);
+			}
+		}
+		
+		// Iterar la imagen, sacando los bordes.
 		for(int i = anchoMascara / 2; i < original.getWidth() - (anchoMascara / 2); i++) {
 			for(int j = altoMascara / 2; j < original.getHeight() - (altoMascara / 2); j++) {
-				
-				int sumarEnAncho = (-1) * (anchoMascara / 2);
-				int sumarEnAlto = (-1) * (altoMascara / 2);
 				
 				int sumatoria = 0;
 				// Iterar la máscara
@@ -230,7 +249,7 @@ public class GeneradorDeRuido {
 							int indiceJDeLaImagen = j + sumarEnAlto + iAltoMascara;
 				
 							double nivelDeRojo = new Color(original.getRGB(indiceIDeLaImagen, indiceJDeLaImagen)).getRed();
-							sumatoria += nivelDeRojo + mascara[iAnchoMascara][iAltoMascara];
+							sumatoria += nivelDeRojo * mascara[iAnchoMascara][iAltoMascara];
 							
 						}
 						

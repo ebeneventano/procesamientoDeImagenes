@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import ar.edu.untref.imagenes.tps.domain.Histograma;
+import ar.edu.untref.imagenes.tps.transformations.LinealTransformation;
 import ar.edu.untref.imagenes.utils.ColorProvider;
 
 public class ImageOperations {
@@ -93,7 +94,6 @@ public class ImageOperations {
 	}
 
 	private BufferedImage operateWithImage(String operator) {
-		BufferedImage imagenResultado = new BufferedImage(image1.getWidth(), image1.getHeight(), image1.getType());
 
 		if (image1.getWidth() == image2.getWidth()
 				&& image1.getHeight() == image2.getHeight()) {
@@ -119,9 +119,10 @@ public class ImageOperations {
 			//TODO ACA QUEDA LA MATRIZ RESULTADO CON LOS VALORES DE LO PIXELES SIN LA TRANSFORMACION, ES DECIR, CON VALORES QUE SE PASAN DE 255.
 			//LUEGO DE APLICAR LA TRANSFORMACION Y OPERAR CON LAS MATRICES, HAY QUE LLAMAR AL METODO QUE TE DEVUELVE UN BUFFERIMAGE A PARTIR DE UNA MATRIZ Y DEVOLVER ESA IMAGEN.
 			//FUNCIONA SOLO CON IMAGENES GRISES
+			BufferedImage imagenTransformada = LinealTransformation.aplicarTransformacionLineal(getBufferedImageDeMatriz(matrizResultado, image1.getWidth(), image1.getHeight()));
 			
-			return imagenResultado;
-
+			return imagenTransformada;
+			
 		} else {
 
 			return null;
@@ -166,8 +167,6 @@ public class ImageOperations {
 				int newRgb = ColorProvider.getRGB(blue, green, red, alpha);
 
 				imageResult.setRGB(i, j, newRgb);
-				
-				newRgb = 0;
 			}
 		}
 		
@@ -176,6 +175,60 @@ public class ImageOperations {
 	
 	private int applyTransformationToIncreaseContrast(int increment, int valueRGB){
 		return (increment*(valueRGB - 128)) + 128;
+	}
+	
+	public BufferedImage changeBrightness(BufferedImage inImage,
+			int increasingFactor) {
+
+		// size of input image
+		int w = inImage.getWidth();
+		int h = inImage.getHeight();
+
+		BufferedImage outImage = new BufferedImage(w, h,
+				BufferedImage.TYPE_3BYTE_BGR);
+
+		// Pixel by pixel navigation loop
+		for (int i = 0; i < w; i++) {
+			for (int j = 0; j < h; j++) {
+
+				// get the RGB component of input imge pixel
+				Color color = new Color(inImage.getRGB(i, j));
+
+				int r, g, b;
+
+				// change the value of each component
+				r = color.getRed() * increasingFactor;
+				g = color.getGreen() * increasingFactor;
+				b = color.getBlue() * increasingFactor;
+				
+
+				// r,g,b values which are out of the range 0 to 255 should set
+				// to 0 or 255
+				if (r >= 256) {
+					r = 255;
+				} else if (r < 0) {
+					r = 0;
+				}
+
+				if (g >= 256) {
+					g = 255;
+				} else if (g < 0) {
+					g = 0;
+				}
+
+				if (b >= 256) {
+					b = 255;
+				} else if (b < 0) {
+					b = 0;
+				}
+
+				// set output image pixel component
+				outImage.setRGB(i, j, new Color(r, g, b).getRGB());
+
+			}
+		}
+
+		return LinealTransformation.aplicarTransformacionLineal(outImage);
 	}
 
 	public BufferedImage histogramEqualization(BufferedImage original) {
