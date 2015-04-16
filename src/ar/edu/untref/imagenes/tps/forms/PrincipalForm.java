@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
+import ar.edu.untref.imagenes.tps.bordes.Borde;
 import ar.edu.untref.imagenes.tps.noise.FiltroGaussiano;
 import ar.edu.untref.imagenes.tps.noise.FiltroPasaAltos;
 import ar.edu.untref.imagenes.tps.noise.FiltroPasaBajos;
@@ -1050,11 +1051,33 @@ public class PrincipalForm extends JFrame{
 	}
 	
 	private void aplicarDetectorDeBordePrewitt() {
-		// TODO Auto-generated method stub
+	    int mascaraX[][] = {
+	    	      { -1, 0, 1 },
+	    	      { -1, 0, 1 },
+	    	      { -1, 0, 1 } };
+	    
+	    int mascaraY[][] = {
+	    	      { -1, -1, -1 },
+	    	      { 0, 0, 0 },
+	    	      { 1, 1, 1 } };
+	    
+		imageInLabel = Borde.detectarBorde(imageInLabel, mascaraX, mascaraY);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 
 	private void aplicarDetectorDeBordeSobel() {
-		// TODO Auto-generated method stub
+	    int mascaraX[][] = {
+	      { 1, 0, -1 },
+	      { 2, 0, -2 },
+	      { 1, 0, -1 } };
+
+	    int mascaraY[][] = {
+	      { 1, 2, 1 },
+	      { 0, 0, 0 },
+	      { -1, -2, -1 } };
+	    
+		imageInLabel = Borde.detectarBorde(imageInLabel, mascaraX, mascaraY);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));	
 	}
 
 	private void aplicarMetodoLaplaciano() {
