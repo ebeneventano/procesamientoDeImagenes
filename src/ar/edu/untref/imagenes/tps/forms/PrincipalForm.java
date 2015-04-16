@@ -78,6 +78,8 @@ public class PrincipalForm extends JFrame{
 	private JMenu menuDeteccionDeBordes;
 	private JMenuItem menuDetectorBordePrewitt;
 	private JMenuItem menuDetectorBordeSobel;
+	private JMenuItem menuDetectorBordePrewittColor;
+	private JMenuItem menuDetectorBordeSobelColor;
 	private JMenuItem menuMetodoLaplaciano;
 	private JMenuItem menuMetodoLaplacianoConPendiente;
 	private JMenuItem menuMetodoLaplacianoDelGausiano;
@@ -224,6 +226,12 @@ public class PrincipalForm extends JFrame{
 		
 		menuDetectorBordeSobel = new JMenuItem("Detector de Bordes Sobel");
 		menuDeteccionDeBordes.add(menuDetectorBordeSobel);
+		
+		menuDetectorBordePrewittColor = new JMenuItem("Detector de Bordes Prewitt (Color)");
+		menuDeteccionDeBordes.add(menuDetectorBordePrewittColor);
+		
+		menuDetectorBordeSobelColor = new JMenuItem("Detector de Bordes Sobel (Color)");
+		menuDeteccionDeBordes.add(menuDetectorBordeSobelColor);
 		
 		menuMetodoLaplaciano = new JMenuItem("Metodo del Laplaciano");
 		menuDeteccionDeBordes.add(menuMetodoLaplaciano);
@@ -625,6 +633,23 @@ public class PrincipalForm extends JFrame{
 			}
 		});
 		
+		menuDetectorBordePrewittColor.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarDetectorDeBordePrewittColor();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
 		menuDetectorBordeSobel.addActionListener(new ActionListener() {
 			
 			@Override
@@ -633,6 +658,23 @@ public class PrincipalForm extends JFrame{
 				if(originalImage != null) {
 					
 					aplicarDetectorDeBordeSobel();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuDetectorBordeSobelColor.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarDetectorDeBordeSobelColor();
 					
 				} else {
 					
@@ -1051,7 +1093,8 @@ public class PrincipalForm extends JFrame{
 	}
 	
 	private void aplicarDetectorDeBordePrewitt() {
-	    int mascaraX[][] = {
+	   
+		int mascaraX[][] = {
 	    	      { -1, 0, 1 },
 	    	      { -1, 0, 1 },
 	    	      { -1, 0, 1 } };
@@ -1064,6 +1107,23 @@ public class PrincipalForm extends JFrame{
 		imageInLabel = Borde.detectarBorde(imageInLabel, mascaraX, mascaraY);
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
+	
+	private void aplicarDetectorDeBordePrewittColor() {
+		   
+		int mascaraX[][] = {
+	    	      { -1, 0, 1 },
+	    	      { -1, 0, 1 },
+	    	      { -1, 0, 1 } };
+	    
+	    int mascaraY[][] = {
+	    	      { -1, -1, -1 },
+	    	      { 0, 0, 0 },
+	    	      { 1, 1, 1 } };
+	    
+		imageInLabel = Borde.detectarBordeColor(imageInLabel, mascaraX, mascaraY);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+
 
 	private void aplicarDetectorDeBordeSobel() {
 	    int mascaraX[][] = {
@@ -1077,6 +1137,21 @@ public class PrincipalForm extends JFrame{
 	      { -1, -2, -1 } };
 	    
 		imageInLabel = Borde.detectarBorde(imageInLabel, mascaraX, mascaraY);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));	
+	}
+	
+	private void aplicarDetectorDeBordeSobelColor() {
+	    int mascaraX[][] = {
+	      { 1, 0, -1 },
+	      { 2, 0, -2 },
+	      { 1, 0, -1 } };
+
+	    int mascaraY[][] = {
+	      { 1, 2, 1 },
+	      { 0, 0, 0 },
+	      { -1, -2, -1 } };
+	    
+		imageInLabel = Borde.detectarBordeColor(imageInLabel, mascaraX, mascaraY);
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));	
 	}
 
