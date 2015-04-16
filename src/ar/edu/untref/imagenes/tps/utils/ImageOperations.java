@@ -42,6 +42,7 @@ public class ImageOperations {
 				imageToMultiplicate.getType());
 		
 		int scalar = (int) (255 / (Math.log10(1 + calculateScalar(imageToMultiplicate))));
+//		int scalar = 1;
 
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
@@ -163,6 +164,11 @@ public class ImageOperations {
 				red = applyTransformationToIncreaseContrast(increment, red);
 				green = applyTransformationToIncreaseContrast(increment, green);
 				blue = applyTransformationToIncreaseContrast(increment, blue);
+				
+				red = (int) aplicarTransformacionLog(1, red);
+				green = (int) aplicarTransformacionLog(1, green);
+				blue = (int) aplicarTransformacionLog(1, blue);
+
 
 				int newRgb = ColorProvider.getRGB(blue, green, red, alpha);
 

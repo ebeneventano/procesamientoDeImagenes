@@ -74,6 +74,16 @@ public class PrincipalForm extends JFrame{
 	private JMenuItem menuGenerarFiltroPasaBajos;
 	private JMenuItem menuGenerarFiltroPasaAltos;
 
+	private JMenu menuDeteccionDeBordes;
+	private JMenuItem menuDetectorBordePrewitt;
+	private JMenuItem menuDetectorBordeSobel;
+	private JMenuItem menuMetodoLaplaciano;
+	private JMenuItem menuMetodoLaplacianoConPendiente;
+	private JMenuItem menuMetodoLaplacianoDelGausiano;
+
+
+
+
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
 	
@@ -203,7 +213,25 @@ public class PrincipalForm extends JFrame{
 		menuFiltros.add(menuGenerarFiltroPasaBajos);
 		
 		menuGenerarImagenSintetica = new JMenuItem("Generar imagen sintetica 100x100");
-		menuRuido.add(menuGenerarImagenSintetica);		
+		menuRuido.add(menuGenerarImagenSintetica);
+		
+		menuDeteccionDeBordes = new JMenu("Bordes");
+		menuBar.add(menuDeteccionDeBordes);
+		
+		menuDetectorBordePrewitt = new JMenuItem("Detector de Bordes Prewitt");
+		menuDeteccionDeBordes.add(menuDetectorBordePrewitt);
+		
+		menuDetectorBordeSobel = new JMenuItem("Detector de Bordes Sobel");
+		menuDeteccionDeBordes.add(menuDetectorBordeSobel);
+		
+		menuMetodoLaplaciano = new JMenuItem("Metodo del Laplaciano");
+		menuDeteccionDeBordes.add(menuMetodoLaplaciano);
+		
+		menuMetodoLaplacianoConPendiente = new JMenuItem("Metodo del Laplaciano con Pendiente");
+		menuDeteccionDeBordes.add(menuMetodoLaplacianoConPendiente);
+		
+		menuMetodoLaplacianoDelGausiano = new JMenuItem("Metodo del Laplaciano del Gausiano");
+		menuDeteccionDeBordes.add(menuMetodoLaplacianoDelGausiano);
 	}
 	
 	private void addListenersToComponents() {
@@ -578,6 +606,91 @@ public class PrincipalForm extends JFrame{
 			}
 
 		});
+		
+		menuDetectorBordePrewitt.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarDetectorDeBordePrewitt();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuDetectorBordeSobel.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarDetectorDeBordeSobel();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuMetodoLaplaciano.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarMetodoLaplaciano();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuMetodoLaplacianoConPendiente.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarMetodoLaplacianoConPendiente();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuMetodoLaplacianoDelGausiano.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarMetodoLaplacianoDelGausiano();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
 	}
 	
 	public BufferedImage abrirImagen() {
@@ -763,6 +876,7 @@ public class PrincipalForm extends JFrame{
 		ImageOperations io = new ImageOperations();
 		
 		imageInLabel = io.changeBrightness(imageInLabel, increment);
+//		imageInLabel = io.increaseImageContrast(imageInLabel, increment);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 		
@@ -933,5 +1047,25 @@ public class PrincipalForm extends JFrame{
 		imageInLabel = FiltroPasaBajos.aplicarFiltroPasaBajos(imageInLabel, longitudMascara);
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 		
+	}
+	
+	private void aplicarDetectorDeBordePrewitt() {
+		// TODO Auto-generated method stub
+	}
+
+	private void aplicarDetectorDeBordeSobel() {
+		// TODO Auto-generated method stub
+	}
+
+	private void aplicarMetodoLaplaciano() {
+		// TODO Auto-generated method stub
+	}
+	
+	private void aplicarMetodoLaplacianoConPendiente() {
+		// TODO Auto-generated method stub
+	}
+	
+	private void aplicarMetodoLaplacianoDelGausiano() {
+		// TODO Auto-generated method stub
 	}
 }
