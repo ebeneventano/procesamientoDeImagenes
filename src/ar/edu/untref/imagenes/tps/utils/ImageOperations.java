@@ -36,62 +36,69 @@ public class ImageOperations {
 	public BufferedImage compresionRangoDinamico(
 			BufferedImage imageToMultiplicate) {
 
-		int width = imageToMultiplicate.getWidth();
-		int height = imageToMultiplicate.getHeight();
-
-		BufferedImage imageResult = new BufferedImage(width, height,
-				imageToMultiplicate.getType());
-
-		int scalar = (int) (255 / (Math.log10(1 + calculateScalar(imageToMultiplicate))));
-
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-
-				int rgb = imageToMultiplicate.getRGB(i, j);
-				int alpha = 0xff & (rgb >> 24);
-				int red = 0xff & (rgb >> 16);
-				int green = 0xff & (rgb >> 8);
-				int blue = 0xff & rgb;
-
-				red = (int) aplicarTransformacionLog(scalar, red);
-				green = (int) aplicarTransformacionLog(scalar, green);
-				blue = (int) aplicarTransformacionLog(scalar, blue);
-				alpha = (int) aplicarTransformacionLog(scalar, alpha);
-
-				int newRgb = ColorProvider.getRGB(blue, green, red, alpha);
-
-				imageResult.setRGB(i, j, newRgb);
-				newRgb = 0;
-			}
-		}
-
-		return imageResult;
-	}
-
-	private int calculateScalar(BufferedImage imageResult) {
-
-		int rgb = imageResult.getRGB(0, 0);
-		int red = 0xff & (rgb >> 16);
-
-		int max = red;
-		for (int i = 0; i < imageResult.getWidth(); i++) {
-			for (int j = 0; j < imageResult.getHeight(); j++) {
-
-				int rgb2 = imageResult.getRGB(i, j);
-				int red2 = 0xff & (rgb2 >> 16);
-
-				int max2 = red2;
-
-				if (max2 > max) {
-					max = max2;
-				}
-			}
-		}
-		return max;
+		return aplicarTransformacionLog(imageToMultiplicate);
 	}
 
 	private long aplicarTransformacionLog(int scalar, int color) {
 		return Math.round(scalar * Math.log10((double) 1 + color));
+	}
+
+	public BufferedImage aplicarTransformacionLog(BufferedImage bufferedImage) {
+
+		BufferedImage imgFinal = new BufferedImage(bufferedImage.getWidth(),
+				bufferedImage.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+
+		Color color = new Color(bufferedImage.getRGB(0, 0));
+		float rojoMax = color.getRed();
+		float verdeMax = color.getGreen();
+		float azulMax = color.getBlue();
+
+		for (int f = 0; f < bufferedImage.getWidth(); f++) {
+			for (int g = 0; g < bufferedImage.getHeight(); g++) {
+
+				Color colorActual = new Color(bufferedImage.getRGB(f, g));
+				int rojoActual = colorActual.getRed();
+				int verdeActual = colorActual.getGreen();
+				int azulActual = colorActual.getBlue();
+
+				if (rojoMax < rojoActual) {
+					rojoMax = rojoActual;
+				}
+
+				if (verdeMax < verdeActual) {
+					verdeMax = verdeActual;
+				}
+
+				if (azulMax < azulActual) {
+					azulMax = azulActual;
+				}
+
+			}
+
+		}
+
+		for (int i = 0; i < bufferedImage.getWidth(); i++) {
+			for (int j = 0; j < bufferedImage.getHeight(); j++) {
+
+				Color colorActual = new Color(bufferedImage.getRGB(i, j));
+				int rojoActual = colorActual.getRed();
+				int verdeActual = colorActual.getGreen();
+				int azulActual = colorActual.getBlue();
+
+				int rojoTransformado = (int) ((255f / (Math.log(rojoMax))) * Math
+						.log(1 + rojoActual));
+				int verdeTransformado = (int) ((255f / (Math.log(verdeMax))) * Math
+						.log(1 + verdeActual));
+				int azulTransformado = (int) ((255f / (Math.log(azulMax))) * Math
+						.log(1 + azulActual));
+
+				Color colorModificado = new Color(rojoTransformado,
+						verdeTransformado, azulTransformado);
+				imgFinal.setRGB(i, j, colorModificado.getRGB());
+			}
+		}
+
+		return imgFinal;
 	}
 
 	private BufferedImage operateWithImage(String operator) {
@@ -120,13 +127,19 @@ public class ImageOperations {
 				}
 			}
 
-			//TODO ACA QUEDA LA MATRIZ RESULTADO CON LOS VALORES DE LO PIXELES SIN LA TRANSFORMACION, ES DECIR, CON VALORES QUE SE PASAN DE 255.
-			//LUEGO DE APLICAR LA TRANSFORMACION Y OPERAR CON LAS MATRICES, HAY QUE LLAMAR AL METODO QUE TE DEVUELVE UN BUFFERIMAGE A PARTIR DE UNA MATRIZ Y DEVOLVER ESA IMAGEN.
-			//FUNCIONA SOLO CON IMAGENES GRISES
-			BufferedImage imagenTransformada = LinealTransformation.aplicarTransformacionLineal(getBufferedImageDeMatriz(matrizResultado, image1.getWidth(), image1.getHeight()));
-			
+			// TODO ACA QUEDA LA MATRIZ RESULTADO CON LOS VALORES DE LO PIXELES
+			// SIN LA TRANSFORMACION, ES DECIR, CON VALORES QUE SE PASAN DE 255.
+			// LUEGO DE APLICAR LA TRANSFORMACION Y OPERAR CON LAS MATRICES, HAY
+			// QUE LLAMAR AL METODO QUE TE DEVUELVE UN BUFFERIMAGE A PARTIR DE
+			// UNA MATRIZ Y DEVOLVER ESA IMAGEN.
+			// FUNCIONA SOLO CON IMAGENES GRISES
+			BufferedImage imagenTransformada = LinealTransformation
+					.aplicarTransformacionLineal(getBufferedImageDeMatriz(
+							matrizResultado, image1.getWidth(),
+							image1.getHeight()));
+
 			return imagenTransformada;
-			
+
 		} else {
 
 			return null;
@@ -168,11 +181,10 @@ public class ImageOperations {
 				red = applyTransformationToIncreaseContrast(increment, red);
 				green = applyTransformationToIncreaseContrast(increment, green);
 				blue = applyTransformationToIncreaseContrast(increment, blue);
-				
+
 				red = (int) aplicarTransformacionLog(1, red);
 				green = (int) aplicarTransformacionLog(1, green);
 				blue = (int) aplicarTransformacionLog(1, blue);
-
 
 				int newRgb = ColorProvider.getRGB(blue, green, red, alpha);
 
@@ -188,7 +200,7 @@ public class ImageOperations {
 			int valueRGB) {
 		return (increment * (valueRGB - 128)) + 128;
 	}
-	
+
 	public BufferedImage changeBrightness(BufferedImage inImage,
 			int increasingFactor) {
 
@@ -212,7 +224,6 @@ public class ImageOperations {
 				r = color.getRed() * increasingFactor;
 				g = color.getGreen() * increasingFactor;
 				b = color.getBlue() * increasingFactor;
-				
 
 				// r,g,b values which are out of the range 0 to 255 should set
 				// to 0 or 255
