@@ -70,8 +70,9 @@ public class PrincipalForm extends JFrame{
 	private JMenuItem menuGenerarImagenSintetica;
 	
 	private JMenu menuFiltros;
-	private JMenuItem menuGenerarFiltroDeLaMedia;
 	private JMenuItem menuGenerarFiltroDeGauss;
+	private JMenuItem menuGenerarFiltroDeLaMedia;
+	private JMenuItem menuGenerarFiltroDeLaMediana;
 	private JMenuItem menuGenerarFiltroPasaBajos;
 	private JMenuItem menuGenerarFiltroPasaAltos;
 
@@ -205,6 +206,9 @@ public class PrincipalForm extends JFrame{
 		
 		menuGenerarFiltroDeLaMedia = new JMenuItem("Generar filtro de la media");
 		menuFiltros.add(menuGenerarFiltroDeLaMedia);
+		
+		menuGenerarFiltroDeLaMediana = new JMenuItem("Generar filtro de la mediana");
+		menuFiltros.add(menuGenerarFiltroDeLaMediana);
 		
 		menuGenerarFiltroDeGauss = new JMenuItem("Generar filtro de Gauss");
 		menuFiltros.add(menuGenerarFiltroDeGauss);
@@ -553,6 +557,23 @@ public class PrincipalForm extends JFrame{
 				if(originalImage != null) {
 					
 					generarFiltroDeLaMedia();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuGenerarFiltroDeLaMediana.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					generarFiltroDeLaMediana();
 					
 				} else {
 					
@@ -1028,7 +1049,22 @@ public class PrincipalForm extends JFrame{
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 		
 	}
-	
+
+	private void generarFiltroDeLaMediana() {
+		
+		int ancho = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Ancho", "Generador de Filtro de la Media", JOptionPane.DEFAULT_OPTION));
+		
+		int alto = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Alto", "Generador de Filtro de la Media", JOptionPane.DEFAULT_OPTION));
+		
+		GeneradorDeRuido generadorDeRuido = new GeneradorDeRuido();
+		
+		imageInLabel = generadorDeRuido.suavizadoConFiltroDeLaMediana(imageInLabel, ancho, alto);
+
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+		
+	}
 	private BufferedImage abrirImagenRaw(File archivoActual, int width,
 			int height) {
 

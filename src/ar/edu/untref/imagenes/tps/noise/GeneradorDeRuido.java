@@ -267,5 +267,12 @@ public class GeneradorDeRuido {
 		
 		return nuevaImagen;
 	}
-	
+
+	public BufferedImage suavizadoConFiltroDeLaMediana(BufferedImage original, int anchoMascara, int altoMascara) {
+
+		BufferedImage nuevaImagen = new BufferedImage(original.getWidth(),
+				original.getHeight(), original.getType());
+		
+		return nuevaImagen;
+	}
 }
