@@ -309,26 +309,23 @@ public class GeneradorDeRuido {
 				Integer idxVal = 0;
 				float[] valores = new float[anchoMascara*altoMascara];
 				
-				// Generar mascara
+				// Generaro mascara
 				for(int iAnchoMascara = 0; iAnchoMascara < anchoMascara; iAnchoMascara++) {
 					for(int iAltoMascara = 0; iAltoMascara < altoMascara; iAltoMascara++) {
 						
-						// Opero si no es el punto central de la máscara
-						if(!(iAnchoMascara == (anchoMascara / 2) && iAltoMascara == (altoMascara / 2))) {
-							
-							int indiceIDeLaImagen = i + sumarEnAncho + iAnchoMascara;
-							int indiceJDeLaImagen = j + sumarEnAlto + iAltoMascara;
+						int indiceIDeLaImagen = i + sumarEnAncho + iAnchoMascara;
+						int indiceJDeLaImagen = j + sumarEnAlto + iAltoMascara;
 				
-							float nivelDeRojo = new Color(original.getRGB(indiceIDeLaImagen, indiceJDeLaImagen)).getRed();
-							valores[idxVal] = nivelDeRojo;							
-						}
+						float nivelDeRojo = new Color(original.getRGB(indiceIDeLaImagen, indiceJDeLaImagen)).getRed();
+						valores[idxVal] = nivelDeRojo;	
+						idxVal++;
 						
 					}
 				}
 				
 				int alpha = new Color(original.getRGB(i, j)).getAlpha();
 				float mediana = obtenerValorMedio(valores);
-				int nuevoPixel = ColorProvider.getRGB(alpha, mediana, mediana, mediana);
+				int nuevoPixel = ColorProvider.colorToRGB(alpha, (int)mediana, (int)mediana, (int)mediana);
 
 				nuevaImagen.setRGB(i, j, nuevoPixel);
 			}
