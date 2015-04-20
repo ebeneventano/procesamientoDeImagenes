@@ -2,6 +2,7 @@ package ar.edu.untref.imagenes.tps.noise;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.Random;
 
 import ar.edu.untref.imagenes.utils.ColorProvider;
@@ -273,6 +274,78 @@ public class GeneradorDeRuido {
 		BufferedImage nuevaImagen = new BufferedImage(original.getWidth(),
 				original.getHeight(), original.getType());
 		
+		// Copiar imagen antes de filtrarla
+		for(int ancho = 0; ancho < original.getWidth() ; ancho++) {
+			for(int alto = 0; alto < original.getHeight() ; alto++) {
+				nuevaImagen.setRGB(ancho, alto, original.getRGB(ancho, alto));
+			}
+		}
+
+		int sumarEnAncho = (-1) * (anchoMascara / 2);
+		int sumarEnAlto = (-1) * (altoMascara / 2);
+		
+		// Agregar borde zero-padding
+		int pixelNegro = ColorProvider.colorToRGB(255, 0, 0, 0);
+		for (int i = 0; i < anchoMascara / 2; i++) {
+			for (int j = 0 ; j < nuevaImagen.getHeight() ; j++) {
+				
+				nuevaImagen.setRGB(i, j, pixelNegro);
+				nuevaImagen.setRGB(nuevaImagen.getWidth() - 1 - i, nuevaImagen.getHeight() - 1 - j, pixelNegro);
+			}
+		}
+		
+		for (int i = 0; i < nuevaImagen.getWidth(); i++) {
+			for (int j = 0 ; j < altoMascara / 2 ; j++) {
+				
+				nuevaImagen.setRGB(i, j, pixelNegro);
+				nuevaImagen.setRGB(nuevaImagen.getWidth() - 1 - i, nuevaImagen.getHeight() - 1 - j, pixelNegro);
+			}
+		}
+		
+		// Iterar la imagen, sacando los bordes.
+		for(int i = anchoMascara / 2; i < original.getWidth() - (anchoMascara / 2); i++) {
+			for(int j = altoMascara / 2; j < original.getHeight() - (altoMascara / 2); j++) {
+				
+				Integer idxVal = 0;
+				float[] valores = new float[anchoMascara*altoMascara];
+				
+				// Generar mascara
+				for(int iAnchoMascara = 0; iAnchoMascara < anchoMascara; iAnchoMascara++) {
+					for(int iAltoMascara = 0; iAltoMascara < altoMascara; iAltoMascara++) {
+						
+						// Opero si no es el punto central de la máscara
+						if(!(iAnchoMascara == (anchoMascara / 2) && iAltoMascara == (altoMascara / 2))) {
+							
+							int indiceIDeLaImagen = i + sumarEnAncho + iAnchoMascara;
+							int indiceJDeLaImagen = j + sumarEnAlto + iAltoMascara;
+				
+							float nivelDeRojo = new Color(original.getRGB(indiceIDeLaImagen, indiceJDeLaImagen)).getRed();
+							valores[idxVal] = nivelDeRojo;							
+						}
+						
+					}
+				}
+				
+				int alpha = new Color(original.getRGB(i, j)).getAlpha();
+				float mediana = obtenerValorMedio(valores);
+				int nuevoPixel = ColorProvider.getRGB(alpha, mediana, mediana, mediana);
+
+				nuevaImagen.setRGB(i, j, nuevoPixel);
+			}
+		}
+		
 		return nuevaImagen;
+	}
+	
+	public float obtenerValorMedio(float[] valores) {
+
+		Arrays.sort(valores);
+		float mediana;
+		if (valores.length % 2 == 0)
+		    mediana = ((float)valores[valores.length/2] + (float)valores[valores.length/2 - 1])/2;
+		else
+		    mediana = (float) valores[valores.length/2];
+		
+		return mediana;
 	}
 }
