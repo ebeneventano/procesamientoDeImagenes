@@ -23,6 +23,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
+import ar.edu.untref.imagenes.tps.bordes.Borde;
+import ar.edu.untref.imagenes.tps.noise.FiltroGaussiano;
+import ar.edu.untref.imagenes.tps.noise.FiltroPasaAltos;
+import ar.edu.untref.imagenes.tps.noise.FiltroPasaBajos;
 import ar.edu.untref.imagenes.tps.noise.GeneradorDeRuido;
 import ar.edu.untref.imagenes.tps.utils.ImageOperations;
 
@@ -66,7 +70,23 @@ public class PrincipalForm extends JFrame{
 	private JMenuItem menuGenerarImagenSintetica;
 	
 	private JMenu menuFiltros;
+	private JMenuItem menuGenerarFiltroDeGauss;
 	private JMenuItem menuGenerarFiltroDeLaMedia;
+	private JMenuItem menuGenerarFiltroDeLaMediana;
+	private JMenuItem menuGenerarFiltroPasaBajos;
+	private JMenuItem menuGenerarFiltroPasaAltos;
+
+	private JMenu menuDeteccionDeBordes;
+	private JMenuItem menuDetectorBordePrewitt;
+	private JMenuItem menuDetectorBordeSobel;
+	private JMenuItem menuDetectorBordePrewittColor;
+	private JMenuItem menuDetectorBordeSobelColor;
+	private JMenuItem menuMetodoLaplaciano;
+	private JMenuItem menuMetodoLaplacianoConPendiente;
+	private JMenuItem menuMetodoLaplacianoDelGausiano;
+
+
+
 
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
@@ -187,8 +207,44 @@ public class PrincipalForm extends JFrame{
 		menuGenerarFiltroDeLaMedia = new JMenuItem("Generar filtro de la media");
 		menuFiltros.add(menuGenerarFiltroDeLaMedia);
 		
+		menuGenerarFiltroDeLaMediana = new JMenuItem("Generar filtro de la mediana");
+		menuFiltros.add(menuGenerarFiltroDeLaMediana);
+		
+		menuGenerarFiltroDeGauss = new JMenuItem("Generar filtro de Gauss");
+		menuFiltros.add(menuGenerarFiltroDeGauss);
+		
+		menuGenerarFiltroPasaAltos = new JMenuItem("Generar filtro Pasa Altos");
+		menuFiltros.add(menuGenerarFiltroPasaAltos);
+		
+		menuGenerarFiltroPasaBajos = new JMenuItem("Generar filtro Pasa Bajos");
+		menuFiltros.add(menuGenerarFiltroPasaBajos);
+		
 		menuGenerarImagenSintetica = new JMenuItem("Generar imagen sintetica 100x100");
-		menuRuido.add(menuGenerarImagenSintetica);		
+		menuRuido.add(menuGenerarImagenSintetica);
+		
+		menuDeteccionDeBordes = new JMenu("Bordes");
+		menuBar.add(menuDeteccionDeBordes);
+		
+		menuDetectorBordePrewitt = new JMenuItem("Detector de Bordes Prewitt");
+		menuDeteccionDeBordes.add(menuDetectorBordePrewitt);
+		
+		menuDetectorBordeSobel = new JMenuItem("Detector de Bordes Sobel");
+		menuDeteccionDeBordes.add(menuDetectorBordeSobel);
+		
+		menuDetectorBordePrewittColor = new JMenuItem("Detector de Bordes Prewitt (Color)");
+		menuDeteccionDeBordes.add(menuDetectorBordePrewittColor);
+		
+		menuDetectorBordeSobelColor = new JMenuItem("Detector de Bordes Sobel (Color)");
+		menuDeteccionDeBordes.add(menuDetectorBordeSobelColor);
+		
+		menuMetodoLaplaciano = new JMenuItem("Metodo del Laplaciano");
+		menuDeteccionDeBordes.add(menuMetodoLaplaciano);
+		
+		menuMetodoLaplacianoConPendiente = new JMenuItem("Metodo del Laplaciano con Pendiente");
+		menuDeteccionDeBordes.add(menuMetodoLaplacianoConPendiente);
+		
+		menuMetodoLaplacianoDelGausiano = new JMenuItem("Metodo del Laplaciano del Gausiano");
+		menuDeteccionDeBordes.add(menuMetodoLaplacianoDelGausiano);
 	}
 	
 	private void addListenersToComponents() {
@@ -509,6 +565,196 @@ public class PrincipalForm extends JFrame{
 				}				    
 			}
 		});
+		
+		menuGenerarFiltroDeLaMediana.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					generarFiltroDeLaMediana();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuGenerarFiltroDeGauss.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					generarFiltroDeGauss();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuGenerarFiltroPasaAltos.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					generarFiltroPasaAltos();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+
+
+		});
+		
+		menuGenerarFiltroPasaBajos.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					generarFiltroPasaBajos();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+
+		});
+		
+		menuDetectorBordePrewitt.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarDetectorDeBordePrewitt();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuDetectorBordePrewittColor.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarDetectorDeBordePrewittColor();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuDetectorBordeSobel.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarDetectorDeBordeSobel();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuDetectorBordeSobelColor.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarDetectorDeBordeSobelColor();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuMetodoLaplaciano.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarMetodoLaplaciano();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuMetodoLaplacianoConPendiente.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarMetodoLaplacianoConPendiente();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuMetodoLaplacianoDelGausiano.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarMetodoLaplacianoDelGausiano();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
 	}
 	
 	public BufferedImage abrirImagen() {
@@ -687,9 +933,14 @@ public class PrincipalForm extends JFrame{
 	
 
 	private void increaseContrast() {
+
+		int increment = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Increment", "Contraste", JOptionPane.DEFAULT_OPTION));
 		
 		ImageOperations io = new ImageOperations();
-		imageInLabel = io.increaseImageContrast(imageInLabel, 2);
+		
+		imageInLabel = io.changeBrightness(imageInLabel, increment);
+//		imageInLabel = io.increaseImageContrast(imageInLabel, increment);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 		
@@ -745,7 +996,7 @@ public class PrincipalForm extends JFrame{
 	private void generarRuidoExponencialMultiplicativo() {
 		
 		double lambda = Double.valueOf(JOptionPane.showInputDialog(
-				null, "Lambda", "Generador de ruido Rayleigh Multiplicativo", JOptionPane.DEFAULT_OPTION));
+				null, "Lambda", "Generador de ruido Exponencial Multiplicativo", JOptionPane.DEFAULT_OPTION));
 
 		GeneradorDeRuido generadorDeRuido = new GeneradorDeRuido();
 		imageInLabel = generadorDeRuido.ruidoExponencialMultiplicativo(imageInLabel, lambda);
@@ -798,7 +1049,22 @@ public class PrincipalForm extends JFrame{
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 		
 	}
-	
+
+	private void generarFiltroDeLaMediana() {
+		
+		int ancho = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Ancho", "Generador de Filtro de la Media", JOptionPane.DEFAULT_OPTION));
+		
+		int alto = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Alto", "Generador de Filtro de la Media", JOptionPane.DEFAULT_OPTION));
+		
+		GeneradorDeRuido generadorDeRuido = new GeneradorDeRuido();
+		
+		imageInLabel = generadorDeRuido.suavizadoConFiltroDeLaMediana(imageInLabel, ancho, alto);
+
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+		
+	}
 	private BufferedImage abrirImagenRaw(File archivoActual, int width,
 			int height) {
 
@@ -832,5 +1098,108 @@ public class PrincipalForm extends JFrame{
 		}
 		return imagen;
 	}
+	
+	private void generarFiltroDeGauss() {
 
+		int sigma = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Sigma", "Aplicar filtro de Gauss", JOptionPane.DEFAULT_OPTION));
+		
+		imageInLabel = FiltroGaussiano.aplicarFiltroGaussiano(imageInLabel, sigma);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void generarFiltroPasaAltos() {
+
+		int longitudMascara = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Longitud de Mascara", "Aplicar filtro Pasa Altos", JOptionPane.DEFAULT_OPTION));
+
+		imageInLabel = FiltroPasaAltos.aplicarFiltroPasaAltos(imageInLabel, longitudMascara);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+
+	}
+
+	private void generarFiltroPasaBajos() {
+		
+		int longitudMascara = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Longitud de Mascara", "Aplicar filtro Pasa Bajos", JOptionPane.DEFAULT_OPTION));
+		
+		imageInLabel = FiltroPasaBajos.aplicarFiltroPasaBajos(imageInLabel, longitudMascara);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+		
+	}
+	
+	private void aplicarDetectorDeBordePrewitt() {
+	   
+		int mascaraX[][] = {
+	    	      { -1, 0, 1 },
+	    	      { -1, 0, 1 },
+	    	      { -1, 0, 1 } };
+	    
+	    int mascaraY[][] = {
+	    	      { -1, -1, -1 },
+	    	      { 0, 0, 0 },
+	    	      { 1, 1, 1 } };
+	    
+		imageInLabel = Borde.detectarBorde(imageInLabel, mascaraX, mascaraY);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void aplicarDetectorDeBordePrewittColor() {
+		   
+		int mascaraX[][] = {
+	    	      { -1, 0, 1 },
+	    	      { -1, 0, 1 },
+	    	      { -1, 0, 1 } };
+	    
+	    int mascaraY[][] = {
+	    	      { -1, -1, -1 },
+	    	      { 0, 0, 0 },
+	    	      { 1, 1, 1 } };
+	    
+		imageInLabel = Borde.detectarBordeColor(imageInLabel, mascaraX, mascaraY);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+
+
+	private void aplicarDetectorDeBordeSobel() {
+	    int mascaraX[][] = {
+	      { 1, 0, -1 },
+	      { 2, 0, -2 },
+	      { 1, 0, -1 } };
+
+	    int mascaraY[][] = {
+	      { 1, 2, 1 },
+	      { 0, 0, 0 },
+	      { -1, -2, -1 } };
+	    
+		imageInLabel = Borde.detectarBorde(imageInLabel, mascaraX, mascaraY);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));	
+	}
+	
+	private void aplicarDetectorDeBordeSobelColor() {
+	    int mascaraX[][] = {
+	      { 1, 0, -1 },
+	      { 2, 0, -2 },
+	      { 1, 0, -1 } };
+
+	    int mascaraY[][] = {
+	      { 1, 2, 1 },
+	      { 0, 0, 0 },
+	      { -1, -2, -1 } };
+	    
+		imageInLabel = Borde.detectarBordeColor(imageInLabel, mascaraX, mascaraY);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));	
+	}
+
+	private void aplicarMetodoLaplaciano() {
+		// TODO Auto-generated method stub
+	}
+	
+	private void aplicarMetodoLaplacianoConPendiente() {
+		// TODO Auto-generated method stub
+	}
+	
+	private void aplicarMetodoLaplacianoDelGausiano() {
+		// TODO Auto-generated method stub
+	}
 }
