@@ -4,6 +4,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import ar.edu.untref.imagenes.tps.domain.Operations;
+
 public class ImageComparator {
 
 	private static List<BufferedImage> images = new ArrayList<>();
@@ -20,7 +22,7 @@ public class ImageComparator {
 			
 			ImageOperations imageOperations = new ImageOperations(last, atLast);
 
-			BufferedImage result = imageOperations.operateWithImage("-");
+			BufferedImage result = imageOperations.operateWithImage(Operations.ADD);
 
 			int[][] matrizDeUnaImagenGris = imageOperations
 					.calcularMatrizDeUnaImagenGris(result);

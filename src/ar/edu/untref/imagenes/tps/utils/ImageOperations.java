@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import ar.edu.untref.imagenes.tps.domain.Histograma;
+import ar.edu.untref.imagenes.tps.domain.Operations;
 import ar.edu.untref.imagenes.tps.transformations.LinealTransformation;
 import ar.edu.untref.imagenes.utils.ColorProvider;
 
@@ -22,15 +23,15 @@ public class ImageOperations {
 	}
 
 	public BufferedImage sumImages() {
-		return operateWithImage("+");
+		return operateWithImage(Operations.ADD);
 	}
 
 	public BufferedImage restImages() {
-		return operateWithImage("-");
+		return operateWithImage(Operations.SUBTRACT);
 	}
 
 	public BufferedImage multiplicateImages() {
-		return operateWithImage("*");
+		return operateWithImage(Operations.MULTIPLY);
 	}
 
 	public BufferedImage compresionRangoDinamico(
@@ -101,7 +102,7 @@ public class ImageOperations {
 		return imgFinal;
 	}
 
-	public BufferedImage operateWithImage(String operator) {
+	public BufferedImage operateWithImage(Operations operator) {
 		if (image1.getWidth() == image2.getWidth()
 				&& image1.getHeight() == image2.getHeight()) {
 
@@ -114,31 +115,25 @@ public class ImageOperations {
 			for (int i = 0; i < image1.getWidth(); i++) {
 				for (int j = 0; j < image1.getHeight(); j++) {
 
-					if ("+".equals(operator)) {
-						matrizResultado[i][j] = matrizDeImagen1[i][j]
-								+ matrizDeImagen2[i][j];
-					} else if ("-".equals(operator)) {
-						matrizResultado[i][j] = matrizDeImagen1[i][j]
-								- matrizDeImagen2[i][j];
-					} else if ("*".equals(operator)) {
-						matrizResultado[i][j] = matrizDeImagen1[i][j]
-								* matrizDeImagen2[i][j];
+					if (Operations.ADD.equals(operator)) {
+						matrizResultado[i][j] = Operations.ADD.apply(
+								matrizDeImagen1[i][j], matrizDeImagen2[i][j]);
+					} else if (Operations.SUBTRACT.equals(operator)) {
+						matrizResultado[i][j] = Operations.SUBTRACT.apply(
+								matrizDeImagen1[i][j], matrizDeImagen2[i][j]);
+					} else if (Operations.MULTIPLY.equals(operator)) {
+						matrizResultado[i][j] = Operations.MULTIPLY.apply(
+								matrizDeImagen1[i][j], matrizDeImagen2[i][j]);
 					}
 				}
 			}
 
-			// TODO ACA QUEDA LA MATRIZ RESULTADO CON LOS VALORES DE LO PIXELES
-			// SIN LA TRANSFORMACION, ES DECIR, CON VALORES QUE SE PASAN DE 255.
-			// LUEGO DE APLICAR LA TRANSFORMACION Y OPERAR CON LAS MATRICES, HAY
-			// QUE LLAMAR AL METODO QUE TE DEVUELVE UN BUFFERIMAGE A PARTIR DE
-			// UNA MATRIZ Y DEVOLVER ESA IMAGEN.
-			// FUNCIONA SOLO CON IMAGENES GRISES
-			BufferedImage imagenTransformada = LinealTransformation
+			BufferedImage transformada = LinealTransformation
 					.aplicarTransformacionLineal(getBufferedImageDeMatriz(
 							matrizResultado, image1.getWidth(),
 							image1.getHeight()));
 
-			return imagenTransformada;
+			return transformada;
 
 		} else {
 
@@ -288,9 +283,9 @@ public class ImageOperations {
 				histogramEQ.setRGB(i, j, newPixel);
 			}
 		}
-		
-    	ImageComparator.holdImages(histogramEQ);
-    	ImageComparator.equals();
+
+		ImageComparator.holdImages(histogramEQ);
+		ImageComparator.equals();
 
 		return histogramEQ;
 	}
