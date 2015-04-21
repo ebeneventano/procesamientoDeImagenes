@@ -4,6 +4,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import ar.edu.untref.imagenes.tps.domain.Operations;
 
 public class ImageComparator {
@@ -14,7 +16,7 @@ public class ImageComparator {
 		images.add(image);
 	}
 
-	public static Boolean equals() {
+	public static void equals() {
 		if (images.size() >= 2) {
 			
 			BufferedImage last = images.get(images.size() - 1);
@@ -27,10 +29,13 @@ public class ImageComparator {
 			int[][] matrizDeUnaImagenGris = imageOperations
 					.calcularMatrizDeUnaImagenGris(result);
 
-			return checkEqual(result, matrizDeUnaImagenGris);
-		
+			if(checkEqual(result, matrizDeUnaImagenGris)){
+				JOptionPane.showMessageDialog(null, "LAS IMAGENES SON IGUALES");				
+			}else {
+				JOptionPane.showMessageDialog(null, "LAS IMAGENES SON DISTINTAS");
+			}
+
 		} else {
-			return false;
 		}
 	}
 
