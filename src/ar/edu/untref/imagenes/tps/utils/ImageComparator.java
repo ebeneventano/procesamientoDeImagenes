@@ -22,7 +22,7 @@ public class ImageComparator {
 			
 			ImageOperations imageOperations = new ImageOperations(last, atLast);
 
-			BufferedImage result = imageOperations.operateWithImage(Operations.ADD);
+			BufferedImage result = imageOperations.operateWithImage(Operations.SUBTRACT);
 
 			int[][] matrizDeUnaImagenGris = imageOperations
 					.calcularMatrizDeUnaImagenGris(result);
