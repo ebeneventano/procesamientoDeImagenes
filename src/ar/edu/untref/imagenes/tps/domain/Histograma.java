@@ -25,7 +25,7 @@ public class Histograma {
      * @return Devuelve una variable int[5][256], donde el primer campo[0] corresponde
      * al canal Rojo, [1]=verde [2]=azul [3]=alfa [4]=escala grises
      */
-    public int[][] completarHistograma(BufferedImage imagen){
+    public int[][] completarHistograma(BufferedImage imagen){    	
         Color colorAuxiliar;
         int histogramaReturn[][]=new int[5][256];
         //Recorremos la imagen

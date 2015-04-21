@@ -101,7 +101,7 @@ public class ImageOperations {
 		return imgFinal;
 	}
 
-	private BufferedImage operateWithImage(String operator) {
+	public BufferedImage operateWithImage(String operator) {
 		if (image1.getWidth() == image2.getWidth()
 				&& image1.getHeight() == image2.getHeight()) {
 
@@ -288,6 +288,10 @@ public class ImageOperations {
 				histogramEQ.setRGB(i, j, newPixel);
 			}
 		}
+		
+    	ImageComparator.holdImages(histogramEQ);
+    	ImageComparator.equals();
+
 		return histogramEQ;
 	}
 
