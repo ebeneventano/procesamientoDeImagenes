@@ -968,14 +968,13 @@ public class PrincipalForm extends JFrame{
 	
 	private void generarRuidoBlacoGaussiano() {
 		
-		double sigma = Double.valueOf(JOptionPane.showInputDialog(
+		int sigma = Integer.valueOf(JOptionPane.showInputDialog(
 				null, "Sigma", "Generador de ruido blanco gaussiano", JOptionPane.DEFAULT_OPTION));
 		
-		double mu = Double.valueOf(JOptionPane.showInputDialog(
+		int mu = Integer.valueOf(JOptionPane.showInputDialog(
 				null, "Mu", "Generador de ruido blanco gaussiano", JOptionPane.DEFAULT_OPTION));
 
-		GeneradorDeRuido generadorDeRuido = new GeneradorDeRuido();
-		imageInLabel = generadorDeRuido.ruidoGaussianoAditivo(imageInLabel, sigma, mu);
+		imageInLabel = GeneradorDeRuido.generarRuidoGauss(imageInLabel, sigma, mu);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
