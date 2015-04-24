@@ -78,6 +78,8 @@ public class PrincipalForm extends JFrame{
 
 	private JMenu menuDeteccionDeBordes;
 	private JMenuItem menuDetectorBordePrewitt;
+	private JMenuItem menuDetectorBordePrewittX;
+	private JMenuItem menuDetectorBordePrewittY;
 	private JMenuItem menuDetectorBordeSobel;
 	private JMenuItem menuDetectorBordePrewittColor;
 	private JMenuItem menuDetectorBordeSobelColor;
@@ -227,6 +229,12 @@ public class PrincipalForm extends JFrame{
 		
 		menuDetectorBordePrewitt = new JMenuItem("Detector de Bordes Prewitt");
 		menuDeteccionDeBordes.add(menuDetectorBordePrewitt);
+		
+		menuDetectorBordePrewittX = new JMenuItem("Detector de Bordes Prewitt X");
+		menuDeteccionDeBordes.add(menuDetectorBordePrewittX);
+		
+		menuDetectorBordePrewittY = new JMenuItem("Detector de Bordes Prewitt Y");
+		menuDeteccionDeBordes.add(menuDetectorBordePrewittY);
 		
 		menuDetectorBordeSobel = new JMenuItem("Detector de Bordes Sobel");
 		menuDeteccionDeBordes.add(menuDetectorBordeSobel);
@@ -645,6 +653,40 @@ public class PrincipalForm extends JFrame{
 				if(originalImage != null) {
 					
 					aplicarDetectorDeBordePrewitt();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuDetectorBordePrewittX.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarDetectorDeBordePrewittX();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuDetectorBordePrewittY.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarDetectorDeBordePrewittY();
 					
 				} else {
 					
@@ -1140,6 +1182,28 @@ public class PrincipalForm extends JFrame{
 	    	      { 1, 1, 1 } };
 	    
 		imageInLabel = Borde.detectarBorde(imageInLabel, mascaraX, mascaraY);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void aplicarDetectorDeBordePrewittX() {
+		   
+		int mascaraX[][] = {
+	    	      { -1, 0, 1 },
+	    	      { -1, 0, 1 },
+	    	      { -1, 0, 1 } };
+	    
+		imageInLabel = Borde.detectarBordeX(imageInLabel, mascaraX);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void aplicarDetectorDeBordePrewittY() {
+		   
+	    int mascaraY[][] = {
+	    	      { -1, -1, -1 },
+	    	      { 0, 0, 0 },
+	    	      { 1, 1, 1 } };
+	    
+		imageInLabel = Borde.detectarBordeY(imageInLabel, mascaraY);
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 	
