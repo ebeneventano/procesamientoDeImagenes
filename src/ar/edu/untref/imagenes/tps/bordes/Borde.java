@@ -93,7 +93,7 @@ public class Borde {
 					}
 				}
 				
-				matriz[i][j] = sumatoriaX / 9;
+				matriz[i][j] = sumatoriaX;
 			}
 		}
 
@@ -141,7 +141,7 @@ public class Borde {
 					}
 				}
 				
-				matriz[i][j] = sumatoriaY / 9;
+				matriz[i][j] = sumatoriaY;
 			}
 		}
 
