@@ -1255,7 +1255,13 @@ public class PrincipalForm extends JFrame{
 	}
 
 	private void aplicarMetodoLaplaciano() {
-		// TODO Auto-generated method stub
+	    int mascara[][] = {
+	  	      { 0, -1 , 0 },
+	  	      { -1, 4 , -1 },
+	  	      { 0, -1, 0 } };
+	  	    
+	  		imageInLabel = Borde.detectarBordeLaplaciano(imageInLabel, mascara);
+	  		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));	
 	}
 	
 	private void aplicarMetodoLaplacianoConPendiente() {
