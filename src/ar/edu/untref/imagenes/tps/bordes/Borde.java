@@ -95,13 +95,17 @@ public class Borde {
 				
 				matriz[i][j] = sumatoriaX;
 			}
-		}
+		}		
+		
+		int rojoMax = max(matriz);
+		int rojoMin = min(matriz);
 
 		for (int i = 0; i < image.getWidth(); i++) {
 			for (int j = 0; j < image.getHeight(); j++) {
 				int alpha = new Color(image.getRGB(i, j)).getAlpha();
 				int colorPixel = matriz[i][j];
-				imagenResultado.setRGB(i, j, ColorProvider.colorToRGB(alpha,  colorPixel,  colorPixel,  colorPixel));
+				colorPixel = getPixelTransformado(rojoMax, rojoMin, colorPixel);
+				imagenResultado.setRGB(i, j, ColorProvider.colorToRGB(alpha, colorPixel, colorPixel, colorPixel));
 			}
 
 		}
@@ -145,10 +149,14 @@ public class Borde {
 			}
 		}
 
+		int rojoMax = max(matriz);
+		int rojoMin = min(matriz);
+		
 		for (int i = 0; i < image.getWidth(); i++) {
 			for (int j = 0; j < image.getHeight(); j++) {
 				int alpha = new Color(image.getRGB(i, j)).getAlpha();
 				int colorPixel = matriz[i][j];
+				colorPixel = getPixelTransformado(rojoMax, rojoMin, colorPixel);
 				imagenResultado.setRGB(i, j, ColorProvider.colorToRGB(alpha, colorPixel, colorPixel, colorPixel));
 			}
 
@@ -184,10 +192,6 @@ public class Borde {
 				for (int iAnchoMascara = 0; iAnchoMascara < anchoMascara; iAnchoMascara++) {
 					for (int iAltoMascara = 0; iAltoMascara < altoMascara; iAltoMascara++) {
 
-						// Opero si no es el punto central de la máscara
-						// if (!(iAnchoMascara == (anchoMascara / 2) &&
-						// iAltoMascara == (altoMascara / 2))) {
-
 						int indiceIDeLaImagen = i + sumarEnAncho
 								+ iAnchoMascara;
 						int indiceJDeLaImagen = j + sumarEnAlto + iAltoMascara;
@@ -215,8 +219,6 @@ public class Borde {
 								* mascaraX[iAnchoMascara][iAltoMascara];
 						sumatoriaYBlue += nivelDeAzul
 								* mascaraY[iAnchoMascara][iAltoMascara];
-						// }
-
 					}
 				}
 
@@ -248,29 +250,29 @@ public class Borde {
 		return imagenResultado;
 	}
 
-//	private static int min(int[][] matrix) {
-//		int min = matrix[0][0];
-//		for (int col = 0; col < matrix.length; col++) {
-//			for (int row = 0; row < matrix[col].length; row++) {
-//				if (min > matrix[col][row]) {
-//					min = matrix[col][row];
-//				}
-//			}
-//		}
-//		return min;
-//	}
+	private static int min(int[][] matrix) {
+		int min = matrix[0][0];
+		for (int col = 0; col < matrix.length; col++) {
+			for (int row = 0; row < matrix[col].length; row++) {
+				if (min > matrix[col][row]) {
+					min = matrix[col][row];
+				}
+			}
+		}
+		return min;
+	}
 
-//	private static int max(int[][] matrix) {
-//		int max = matrix[0][0];
-//		for (int col = 0; col < matrix.length; col++) {
-//			for (int row = 0; row < matrix[col].length; row++) {
-//				if (max < matrix[col][row]) {
-//					max = matrix[col][row];
-//				}
-//			}
-//		}
-//		return max;
-//	}
+	private static int max(int[][] matrix) {
+		int max = matrix[0][0];
+		for (int col = 0; col < matrix.length; col++) {
+			for (int row = 0; row < matrix[col].length; row++) {
+				if (max < matrix[col][row]) {
+					max = matrix[col][row];
+				}
+			}
+		}
+		return max;
+	}
 	
 	public static BufferedImage detectarBordeLaplaciano(BufferedImage image,
 			int mascara[][]) {
@@ -321,9 +323,6 @@ public class Borde {
 				int alpha = new Color(image.getRGB(i, j)).getAlpha();
 				int colorPixel = matrizCrucePorCero[i][j];
 				imagenResultado.setRGB(i, j, ColorProvider.colorToRGB(alpha,  colorPixel,  colorPixel,  colorPixel));
-
-//				int colorPixel = matriz[i][j];
-//				imagenResultado.setRGB(i, j, ColorProvider.colorToRGB(alpha,  colorPixel,  colorPixel,  colorPixel));
 			}
 
 		}
@@ -349,5 +348,13 @@ public class Borde {
 		
 		return false;
 		
+	}
+	
+	public static int getPixelTransformado(int rojoMax, int rojoMin, int rojoActual){
+		
+		int rojoTransformado = (int) ((((255f) / (rojoMax - rojoMin)) * rojoActual) - ((rojoMin * 255f) / (rojoMax - rojoMin)));
+		
+		return rojoTransformado;
+
 	}
 }
