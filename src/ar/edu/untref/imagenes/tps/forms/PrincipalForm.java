@@ -80,6 +80,8 @@ public class PrincipalForm extends JFrame{
 	private JMenuItem menuDetectorBordePrewitt;
 	private JMenuItem menuDetectorBordePrewittX;
 	private JMenuItem menuDetectorBordePrewittY;
+	private JMenuItem menuDetectorBordePrewitt45Grados;
+	private JMenuItem menuDetectorBordePrewitt135Grados;
 	private JMenuItem menuDetectorBordeSobel;
 	private JMenuItem menuDetectorBordePrewittColor;
 	private JMenuItem menuDetectorBordeSobelColor;
@@ -235,6 +237,12 @@ public class PrincipalForm extends JFrame{
 		
 		menuDetectorBordePrewittY = new JMenuItem("Detector de Bordes Prewitt Y");
 		menuDeteccionDeBordes.add(menuDetectorBordePrewittY);
+		
+		menuDetectorBordePrewitt45Grados = new JMenuItem("Detector de Bordes Prewitt 45 Grados");
+		menuDeteccionDeBordes.add(menuDetectorBordePrewitt45Grados);
+		
+		menuDetectorBordePrewitt135Grados = new JMenuItem("Detector de Bordes Prewitt 135 Grados");
+		menuDeteccionDeBordes.add(menuDetectorBordePrewitt135Grados);
 		
 		menuDetectorBordeSobel = new JMenuItem("Detector de Bordes Sobel");
 		menuDeteccionDeBordes.add(menuDetectorBordeSobel);
@@ -669,7 +677,7 @@ public class PrincipalForm extends JFrame{
 				
 				if(originalImage != null) {
 					
-					aplicarDetectorDeBordePrewittX();
+					aplicarDetectorDeBordePrewittHorizontal();
 					
 				} else {
 					
@@ -686,7 +694,41 @@ public class PrincipalForm extends JFrame{
 				
 				if(originalImage != null) {
 					
-					aplicarDetectorDeBordePrewittY();
+					aplicarDetectorDeBordePrewittVertical();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuDetectorBordePrewitt45Grados.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarDetectorDeBordePrewitt45Grados();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuDetectorBordePrewitt135Grados.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarDetectorDeBordePrewitt135Grados();
 					
 				} else {
 					
@@ -1185,25 +1227,49 @@ public class PrincipalForm extends JFrame{
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 	
-	private void aplicarDetectorDeBordePrewittX() {
+	private void aplicarDetectorDeBordePrewittHorizontal() {
 		   
-		int mascaraX[][] = {
+		int mascaraHorizontal[][] = {
 	    	      { -1, 0, 1 },
 	    	      { -1, 0, 1 },
 	    	      { -1, 0, 1 } };
 	    
-		imageInLabel = Borde.detectarBordeX(imageInLabel, mascaraX);
+		imageInLabel = Borde.detectarBordeDireccional(imageInLabel, mascaraHorizontal);
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 	
-	private void aplicarDetectorDeBordePrewittY() {
+	private void aplicarDetectorDeBordePrewitt45Grados() {
 		   
-	    int mascaraY[][] = {
+		int mascara[][] = {
+		    	      { 0, -1, -1 },
+		    	      { 1, 0, -1 },
+		    	      { 1, 1, 0 }
+		    	    };
+	    
+		imageInLabel = Borde.detectarBordeDireccional(imageInLabel, mascara);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void aplicarDetectorDeBordePrewitt135Grados() {
+		   
+		int mascara[][] = {
+		    	      { -1, -1, 0 },
+		    	      { -1, 0, 1 },
+		    	      { 0, 1, 1 }
+		    	    };
+	    
+		imageInLabel = Borde.detectarBordeDireccional(imageInLabel, mascara);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void aplicarDetectorDeBordePrewittVertical() {
+		   
+	    int mascaraVertical[][] = {
 	    	      { -1, -1, -1 },
 	    	      { 0, 0, 0 },
 	    	      { 1, 1, 1 } };
 	    
-		imageInLabel = Borde.detectarBordeY(imageInLabel, mascaraY);
+		imageInLabel = Borde.detectarBordeDireccional(imageInLabel, mascaraVertical);
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 	
@@ -1265,7 +1331,16 @@ public class PrincipalForm extends JFrame{
 	}
 	
 	private void aplicarMetodoLaplacianoConPendiente() {
-		// TODO Auto-generated method stub
+
+		int umbral = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Umbral", "Borde Laplaciano con Derivada Direccional", JOptionPane.DEFAULT_OPTION));
+		
+	    int mascara[][] = {
+		  	      { 0, -1 , 0 },
+		  	      { -1, 4 , -1 },
+		  	      { 0, -1, 0 } };
+  		imageInLabel = Borde.detectarBordeLaplacianoConDerivadaDireccional(imageInLabel, mascara, umbral);
+  		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));	
 	}
 	
 	private void aplicarMetodoLaplacianoDelGausiano() {
