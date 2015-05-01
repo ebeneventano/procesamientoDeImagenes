@@ -82,9 +82,17 @@ public class PrincipalForm extends JFrame{
 	private JMenuItem menuDetectorBordePrewittY;
 	private JMenuItem menuDetectorBordePrewitt45Grados;
 	private JMenuItem menuDetectorBordePrewitt135Grados;
-	private JMenuItem menuDetectorBordeSobel;
 	private JMenuItem menuDetectorBordePrewittColor;
+	private JMenuItem menuDetectorBordeSobel;
+	private JMenuItem menuDetectorBordeSobelVertical;
+	private JMenuItem menuDetectorBordeSobel45Grados;
+	private JMenuItem menuDetectorBordeSobel135Grados;
 	private JMenuItem menuDetectorBordeSobelColor;
+
+	private JMenuItem menuDetectorBordeKirshVertical;
+	private JMenuItem menuDetectorBordeKirsh45Grados;
+	private JMenuItem menuDetectorBordeKirsh135Grados;
+
 	private JMenuItem menuMetodoLaplaciano;
 	private JMenuItem menuMetodoLaplacianoConPendiente;
 	private JMenuItem menuMetodoLaplacianoDelGausiano;
@@ -243,15 +251,33 @@ public class PrincipalForm extends JFrame{
 		
 		menuDetectorBordePrewitt135Grados = new JMenuItem("Detector de Bordes Prewitt 135 Grados");
 		menuDeteccionDeBordes.add(menuDetectorBordePrewitt135Grados);
-		
-		menuDetectorBordeSobel = new JMenuItem("Detector de Bordes Sobel");
-		menuDeteccionDeBordes.add(menuDetectorBordeSobel);
-		
+
 		menuDetectorBordePrewittColor = new JMenuItem("Detector de Bordes Prewitt (Color)");
 		menuDeteccionDeBordes.add(menuDetectorBordePrewittColor);
+
+		menuDetectorBordeSobel = new JMenuItem("Detector de Bordes Sobel");
+		menuDeteccionDeBordes.add(menuDetectorBordeSobel);
+	
+		menuDetectorBordeSobelVertical = new JMenuItem("Detector de Bordes Sobel Vertical");
+		menuDeteccionDeBordes.add(menuDetectorBordeSobelVertical);
+		
+		menuDetectorBordeSobel45Grados = new JMenuItem("Detector de Bordes Sobel 45 Grados");
+		menuDeteccionDeBordes.add(menuDetectorBordeSobel45Grados);
+		
+		menuDetectorBordeSobel135Grados = new JMenuItem("Detector de Bordes Sobel 135 Grados");
+		menuDeteccionDeBordes.add(menuDetectorBordeSobel135Grados);
 		
 		menuDetectorBordeSobelColor = new JMenuItem("Detector de Bordes Sobel (Color)");
 		menuDeteccionDeBordes.add(menuDetectorBordeSobelColor);
+		
+		menuDetectorBordeKirshVertical = new JMenuItem("Detector de Bordes Kirsh Vertical");
+		menuDeteccionDeBordes.add(menuDetectorBordeKirshVertical);
+		
+		menuDetectorBordeKirsh45Grados = new JMenuItem("Detector de Bordes Kirsh 45 Grados");
+		menuDeteccionDeBordes.add(menuDetectorBordeKirsh45Grados);
+		
+		menuDetectorBordeKirsh135Grados = new JMenuItem("Detector de Bordes Kirsh 135 Grados");
+		menuDeteccionDeBordes.add(menuDetectorBordeKirsh135Grados);
 		
 		menuMetodoLaplaciano = new JMenuItem("Metodo del Laplaciano");
 		menuDeteccionDeBordes.add(menuMetodoLaplaciano);
@@ -704,6 +730,74 @@ public class PrincipalForm extends JFrame{
 			}
 		});
 		
+		menuDetectorBordeSobelVertical.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarDetectorDeBordeSobelVertical();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuDetectorBordeKirshVertical.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarDetectorDeBordeKirshVertical();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuDetectorBordeKirsh45Grados.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarDetectorDeBordeKirsh45Grados();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuDetectorBordeKirsh135Grados.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarDetectorDeBordeKirsh135Grados();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
 		menuDetectorBordePrewitt45Grados.addActionListener(new ActionListener() {
 			
 			@Override
@@ -729,6 +823,40 @@ public class PrincipalForm extends JFrame{
 				if(originalImage != null) {
 					
 					aplicarDetectorDeBordePrewitt135Grados();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuDetectorBordeSobel45Grados.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarDetectorDeBordeSobel45Grados();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuDetectorBordeSobel135Grados.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					aplicarDetectorDeBordeSobel135Grados();
 					
 				} else {
 					
@@ -1341,6 +1469,74 @@ public class PrincipalForm extends JFrame{
 		  	      { 0, -1, 0 } };
   		imageInLabel = Borde.detectarBordeLaplacianoConDerivadaDireccional(imageInLabel, mascara, umbral);
   		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));	
+	}
+	
+	private void aplicarDetectorDeBordeSobelVertical() {
+		   
+	    int mascaraVertical[][] = {
+	    	      { 1, 2, 1 },
+	    	      { 0, 0, 0 },
+	    	      { -1, -2, -1 } };
+	    
+		imageInLabel = Borde.detectarBordeDireccional(imageInLabel, mascaraVertical);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void aplicarDetectorDeBordeSobel45Grados() {
+		   
+		int mascara[][] = {
+		    	      { 0, -1, -2 },
+		    	      { 1, 0, -1 },
+		    	      { 2, 1, 0 }
+		    	    };
+	    
+		imageInLabel = Borde.detectarBordeDireccional(imageInLabel, mascara);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void aplicarDetectorDeBordeSobel135Grados() {
+		   
+		int mascara[][] = {
+		    	      { -2, -1, 0 },
+		    	      { -1, 0, 1 },
+		    	      { 0, 1, 2 }
+		    	    };
+	    
+		imageInLabel = Borde.detectarBordeDireccional(imageInLabel, mascara);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void aplicarDetectorDeBordeKirshVertical() {
+		   
+	    int mascaraVertical[][] = {
+	    	      { 5, 5, 5 },
+	    	      { -3, 0, -3 },
+	    	      { -3, -3, -3 } };
+	    
+		imageInLabel = Borde.detectarBordeDireccional(imageInLabel, mascaraVertical);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void aplicarDetectorDeBordeKirsh45Grados() {
+		   
+	    int mascaraVertical[][] = {
+	    	      { -3, -3, -3 },
+	    	      { 5, 0, -3 },
+	    	      { 5, 5,  -3} };
+	    
+		imageInLabel = Borde.detectarBordeDireccional(imageInLabel, mascaraVertical);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void aplicarDetectorDeBordeKirsh135Grados() {
+		   
+	    int mascaraVertical[][] = {
+	    	      { -3, -3, -3 },
+	    	      { -3, 0, 5 },
+	    	      { -3, 5, 5 } };
+	    
+		imageInLabel = Borde.detectarBordeDireccional(imageInLabel, mascaraVertical);
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 	
 	private void aplicarMetodoLaplacianoDelGausiano() {
