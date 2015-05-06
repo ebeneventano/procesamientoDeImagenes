@@ -61,8 +61,9 @@ public class Borde {
 		return imagenResultado;
 	}
 
-	public static BufferedImage detectarBordeDireccional(BufferedImage image, int mascara[][]) {
-		
+	public static BufferedImage aplicarMascara(BufferedImage image,
+			int mascara[][]) {
+
 		BufferedImage imagenResultado = new BufferedImage(image.getWidth(),
 				image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
 
@@ -89,14 +90,16 @@ public class Borde {
 
 						double nivelDeRojo = new Color(image.getRGB(
 								indiceIDeLaImagen, indiceJDeLaImagen)).getRed();
-						sumatoriaX += nivelDeRojo * mascara[iAnchoMascara][iAltoMascara];;
+						sumatoriaX += nivelDeRojo
+								* mascara[iAnchoMascara][iAltoMascara];
+						;
 					}
 				}
-				
+
 				matriz[i][j] = sumatoriaX;
 			}
-		}		
-		
+		}
+
 		int rojoMax = max(matriz);
 		int rojoMin = min(matriz);
 
@@ -105,12 +108,69 @@ public class Borde {
 				int alpha = new Color(image.getRGB(i, j)).getAlpha();
 				int colorPixel = matriz[i][j];
 				colorPixel = getPixelTransformado(rojoMax, rojoMin, colorPixel);
-				imagenResultado.setRGB(i, j, ColorProvider.colorToRGB(alpha, colorPixel, colorPixel, colorPixel));
+				imagenResultado.setRGB(i, j, ColorProvider.colorToRGB(alpha,
+						colorPixel, colorPixel, colorPixel));
 			}
 
 		}
 		return imagenResultado;
 	}
+
+	public static BufferedImage aplicarMascara(BufferedImage image,
+			double mascara[][]) {
+
+		BufferedImage imagenResultado = new BufferedImage(image.getWidth(),
+				image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+
+		int anchoMascara = 7;
+		int altoMascara = 7;
+		int sumarEnAncho = (-1) * (anchoMascara / 2);
+		int sumarEnAlto = (-1) * (altoMascara / 2);
+		double[][] matriz = new double[image.getWidth()][image.getHeight()];
+
+		// Iterar la imagen, sacando los bordes.
+		for (int i = anchoMascara / 2; i < image.getWidth()
+				- (anchoMascara / 2); i++) {
+			for (int j = altoMascara / 2; j < image.getHeight()
+					- (altoMascara / 2); j++) {
+
+				double sumatoriaX = 0;
+				// Iterar la máscara
+				for (int iAnchoMascara = 0; iAnchoMascara < anchoMascara; iAnchoMascara++) {
+					for (int iAltoMascara = 0; iAltoMascara < altoMascara; iAltoMascara++) {
+
+						int indiceIDeLaImagen = i + sumarEnAncho
+								+ iAnchoMascara;
+						int indiceJDeLaImagen = j + sumarEnAlto + iAltoMascara;
+
+						double nivelDeRojo = new Color(image.getRGB(
+								indiceIDeLaImagen, indiceJDeLaImagen)).getRed();
+						sumatoriaX += nivelDeRojo
+								* mascara[iAnchoMascara][iAltoMascara];
+						;
+					}
+				}
+
+				matriz[i][j] = sumatoriaX;
+			}
+		}
+
+		double rojoMax = max(matriz);
+		double rojoMin = min(matriz);
+
+		for (int i = 0; i < image.getWidth(); i++) {
+			for (int j = 0; j < image.getHeight(); j++) {
+				int alpha = new Color(image.getRGB(i, j)).getAlpha();
+				int colorPixel = (int) matriz[i][j];
+				colorPixel = getPixelTransformado((int)rojoMax, (int)rojoMin, colorPixel);
+				imagenResultado.setRGB(i, j, ColorProvider.colorToRGB(alpha,
+						colorPixel, colorPixel, colorPixel));
+			}
+
+		}
+		return imagenResultado;
+	}
+
 	
 	public static BufferedImage detectarBordeColor(BufferedImage image,
 			int mascaraX[][], int mascaraY[][]) {
@@ -209,6 +269,18 @@ public class Borde {
 		}
 		return min;
 	}
+	
+	private static double min(double[][] matrix) {
+		double min = matrix[0][0];
+		for (int col = 0; col < matrix.length; col++) {
+			for (int row = 0; row < matrix[col].length; row++) {
+				if (min > matrix[col][row]) {
+					min = matrix[col][row];
+				}
+			}
+		}
+		return min;
+	}
 
 	private static int max(int[][] matrix) {
 		int max = matrix[0][0];
@@ -222,6 +294,18 @@ public class Borde {
 		return max;
 	}
 	
+	private static double max(double[][] matrix) {
+		double max = matrix[0][0];
+		for (int col = 0; col < matrix.length; col++) {
+			for (int row = 0; row < matrix[col].length; row++) {
+				if (max < matrix[col][row]) {
+					max = matrix[col][row];
+				}
+			}
+		}
+		return max;
+	}
+
 	public static BufferedImage detectarBordeLaplaciano(BufferedImage image,
 			int mascara[][]) {
 		BufferedImage imagenResultado = new BufferedImage(image.getWidth(),
@@ -250,34 +334,39 @@ public class Borde {
 
 						double nivelDeRojo = new Color(image.getRGB(
 								indiceIDeLaImagen, indiceJDeLaImagen)).getRed();
-						sumatoria += nivelDeRojo * mascara[iAnchoMascara][iAltoMascara];;
+						sumatoria += nivelDeRojo
+								* mascara[iAnchoMascara][iAltoMascara];
+						;
 					}
 				}
-				
+
 				matriz[i][j] = sumatoria;
 			}
 		}
 
-		int [][] matrizCrucePorCero = new int [image.getWidth()][image.getHeight()];
+		int[][] matrizCrucePorCero = new int[image.getWidth()][image
+				.getHeight()];
 		for (int i = 0; i < image.getWidth(); i++) {
 			for (int j = 0; j < image.getHeight(); j++) {
-				
-				if(hayCambioDeSignoPorFila(matriz, i, j)){
+
+				if (hayCambioDeSignoPorFila(matriz, i, j)) {
 					matrizCrucePorCero[i][j] = 255;
-				}else{
+				} else {
 					matrizCrucePorCero[i][j] = 0;
 				}
-				
+
 				int alpha = new Color(image.getRGB(i, j)).getAlpha();
 				int colorPixel = matrizCrucePorCero[i][j];
-				imagenResultado.setRGB(i, j, ColorProvider.colorToRGB(alpha,  colorPixel,  colorPixel,  colorPixel));
+				imagenResultado.setRGB(i, j, ColorProvider.colorToRGB(alpha,
+						colorPixel, colorPixel, colorPixel));
 			}
 
 		}
 		return imagenResultado;
 	}
-	
-	public static BufferedImage detectarBordeLaplacianoConDerivadaDireccional(BufferedImage image, int mascara[][], int umbral) {
+
+	public static BufferedImage detectarBordeLaplacianoConDerivadaDireccional(
+			BufferedImage image, int mascara[][], int umbral) {
 		BufferedImage imagenResultado = new BufferedImage(image.getWidth(),
 				image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
 
@@ -304,82 +393,180 @@ public class Borde {
 
 						double nivelDeRojo = new Color(image.getRGB(
 								indiceIDeLaImagen, indiceJDeLaImagen)).getRed();
-						sumatoria += nivelDeRojo * mascara[iAnchoMascara][iAltoMascara];;
+						sumatoria += nivelDeRojo
+								* mascara[iAnchoMascara][iAltoMascara];
+						;
 					}
 				}
-				
+
 				matriz[i][j] = sumatoria;
 			}
 		}
 
-		int [][] matrizCrucePorCero = new int [image.getWidth()][image.getHeight()];
+		int[][] matrizCrucePorCero = new int[image.getWidth()][image
+				.getHeight()];
 		for (int i = 0; i < image.getWidth(); i++) {
 			for (int j = 0; j < image.getHeight(); j++) {
-				
-				if(hayCambioDeSignoPorFilaYUmbral(matriz, i, j, umbral)){
+
+				if (hayCambioDeSignoPorFilaYUmbral(matriz, i, j, umbral)) {
 					matrizCrucePorCero[i][j] = 255;
-				}else{
+				} else {
 					matrizCrucePorCero[i][j] = 0;
 				}
-				
+
 				int alpha = new Color(image.getRGB(i, j)).getAlpha();
 				int colorPixel = matrizCrucePorCero[i][j];
-				imagenResultado.setRGB(i, j, ColorProvider.colorToRGB(alpha,  colorPixel,  colorPixel,  colorPixel));
+				imagenResultado.setRGB(i, j, ColorProvider.colorToRGB(alpha,
+						colorPixel, colorPixel, colorPixel));
 			}
 
 		}
 		return imagenResultado;
 	}
 
-	private static boolean hayCambioDeSignoPorFila(int [][] matriz, int i, int j) {
-		
+	private static boolean hayCambioDeSignoPorFila(int[][] matriz, int i, int j) {
+
 		if (j - 1 >= 0) {
-			
+
 			int valorActual = matriz[i][j];
 
 			int valorAnterior = matriz[i][j - 1];
-			if (valorAnterior == 0 && j -2 >= 0) {
+			if (valorAnterior == 0 && j - 2 >= 0) {
 				valorAnterior = matriz[i][j - 2];
 			}
-			
-			if ((valorAnterior < 0 && valorActual > 0) || (valorAnterior > 0 && valorActual < 0)) {
+
+			if ((valorAnterior < 0 && valorActual > 0)
+					|| (valorAnterior > 0 && valorActual < 0)) {
 				return true;
 			}
-			
+
 		}
-		
+
 		return false;
-		
+
 	}
-	
-	private static boolean hayCambioDeSignoPorFilaYUmbral(int [][] matriz, int i, int j, int umbral) {
-		
+
+	private static boolean hayCambioDeSignoPorFilaYUmbral(int[][] matriz,
+			int i, int j, int umbral) {
+
 		if (j - 1 >= 0) {
-			
+
 			int valorActual = matriz[i][j];
 
 			int valorAnterior = matriz[i][j - 1];
-			if (valorAnterior == 0 && j -2 >= 0) {
+			if (valorAnterior == 0 && j - 2 >= 0) {
 				valorAnterior = matriz[i][j - 2];
 			}
-			
-			if ((valorAnterior < 0 && valorActual > 0) || (valorAnterior > 0 && valorActual < 0)) {
-				if((valorActual + valorAnterior) > umbral){
+
+			if ((valorAnterior < 0 && valorActual > 0)
+					|| (valorAnterior > 0 && valorActual < 0)) {
+				if ((valorActual + valorAnterior) > umbral) {
 					return true;
 				}
 			}
-			
+
 		}
-		
+
 		return false;
-		
+
 	}
-	
-	public static int getPixelTransformado(int rojoMax, int rojoMin, int rojoActual){
-		
+
+	public static int getPixelTransformado(int rojoMax, int rojoMin,
+			int rojoActual) {
+
 		int rojoTransformado = (int) ((((255f) / (rojoMax - rojoMin)) * rojoActual) - ((rojoMin * 255f) / (rojoMax - rojoMin)));
-		
+
 		return rojoTransformado;
 
+	}
+
+	public static BufferedImage laplacianoDelGaussiano(BufferedImage imageInLabel, int sigma, int umbral) {
+
+		double[][] mascara = generarMascaraLaplacianoDelGaussiano(sigma);
+
+		int[][] log = aplicarMascaraLog(imageInLabel, mascara);
+		
+		BufferedImage imagenResultado = new BufferedImage(imageInLabel.getWidth(),
+				imageInLabel.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+
+		int[][] matrizCrucePorCero = new int[imageInLabel.getWidth()][imageInLabel
+				.getHeight()];
+		for (int i = 0; i < imageInLabel.getWidth(); i++) {
+			for (int j = 0; j < imageInLabel.getHeight(); j++) {
+
+				if (hayCambioDeSignoPorFila(log, i, j)) {
+					matrizCrucePorCero[i][j] = 255;
+				} else {
+					matrizCrucePorCero[i][j] = 0;
+				}
+
+				int alpha = new Color(imageInLabel.getRGB(i, j)).getAlpha();
+				int colorPixel = matrizCrucePorCero[i][j];
+				imagenResultado.setRGB(i, j, ColorProvider.colorToRGB(alpha,
+						colorPixel, colorPixel, colorPixel));
+			}
+
+		}
+
+		return imagenResultado;
+	}
+
+	private static double[][] generarMascaraLaplacianoDelGaussiano(int sigma) {
+		
+		double[][] matrizDeLaplacianoDelGaussiano = new double[7][7];
+		
+		double primerTermino = -1.0 * (Math.sqrt(2 * Math.PI) * Math.pow(sigma, 3.0));
+		
+		double segundoTermino = 0;
+		
+		for (int i = 0; i < 7; i++) {
+			for (int j = 0; j < 7; j++) {
+
+				segundoTermino = (Math.pow(i, 2.0) + Math.pow(j, 2.0)) / Math.pow(sigma, 2.0);
+				
+				matrizDeLaplacianoDelGaussiano[i][j] = primerTermino * (2 - segundoTermino) * Math.exp((-0.5) * segundoTermino);
+			}
+
+		}
+		
+		return matrizDeLaplacianoDelGaussiano;
+	}
+	
+	public static int [][] aplicarMascaraLog(BufferedImage image,
+			double mascara[][]) {
+
+		int anchoMascara = 7;
+		int altoMascara = 7;
+		int sumarEnAncho = (-1) * (anchoMascara / 2);
+		int sumarEnAlto = (-1) * (altoMascara / 2);
+		int[][] matriz = new int[image.getWidth()][image.getHeight()];
+
+		// Iterar la imagen, sacando los bordes.
+		for (int i = anchoMascara / 2; i < image.getWidth()
+				- (anchoMascara / 2); i++) {
+			for (int j = altoMascara / 2; j < image.getHeight()
+					- (altoMascara / 2); j++) {
+
+				double sumatoriaX = 0;
+				// Iterar la máscara
+				for (int iAnchoMascara = 0; iAnchoMascara < anchoMascara; iAnchoMascara++) {
+					for (int iAltoMascara = 0; iAltoMascara < altoMascara; iAltoMascara++) {
+
+						int indiceIDeLaImagen = i + sumarEnAncho
+								+ iAnchoMascara;
+						int indiceJDeLaImagen = j + sumarEnAlto + iAltoMascara;
+
+						double nivelDeRojo = new Color(image.getRGB(
+								indiceIDeLaImagen, indiceJDeLaImagen)).getRed();
+						sumatoriaX += nivelDeRojo
+								* mascara[iAnchoMascara][iAltoMascara];
+					}
+				}
+
+				matriz[i][j] = (int) sumatoriaX;
+			}
+		}
+
+		return matriz;
 	}
 }
