@@ -97,9 +97,12 @@ public class PrincipalForm extends JFrame{
 	private JMenuItem menuMetodoLaplacianoConPendiente;
 	private JMenuItem menuMetodoLaplacianoDelGausiano;
 
-
-
-
+	private JMenuItem menuDifusionIsotropica;
+	private JMenuItem menuDifusionAnisotropica;
+	
+	private JMenuItem menuUmbralizacionGlobal;
+	private JMenuItem menuUmbralizacionOtsu;
+	
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
 	
@@ -287,6 +290,18 @@ public class PrincipalForm extends JFrame{
 		
 		menuMetodoLaplacianoDelGausiano = new JMenuItem("Metodo del Laplaciano del Gausiano");
 		menuDeteccionDeBordes.add(menuMetodoLaplacianoDelGausiano);
+		
+		menuDifusionIsotropica = new JMenuItem("Difusion Isotropica");
+		menuDeteccionDeBordes.add(menuDifusionIsotropica);
+		
+		menuDifusionAnisotropica = new JMenuItem("Difusion Anisotropica");
+		menuDeteccionDeBordes.add(menuDifusionAnisotropica);
+		
+		menuUmbralizacionGlobal = new JMenuItem("Metodo Umbralizacion Global");
+		menuDeteccionDeBordes.add(menuUmbralizacionGlobal);
+		
+		menuUmbralizacionOtsu = new JMenuItem("Metodo Umbralizacion Otsu");
+		menuDeteccionDeBordes.add(menuUmbralizacionOtsu);
 	}
 	
 	private void addListenersToComponents() {
@@ -967,6 +982,74 @@ public class PrincipalForm extends JFrame{
 				}				    
 			}
 		});
+		
+		menuDifusionIsotropica.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					generarDifusionIsotropica();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuDifusionAnisotropica.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					generarDifusionAnisotropica();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuUmbralizacionGlobal.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					generarUmbralizacionGlobal();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
+		
+		menuUmbralizacionOtsu.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(originalImage != null) {
+					
+					generarUmbralizacionOtsu();
+					
+				} else {
+					
+					showAlertOriginalImageNull();
+					
+				}				    
+			}
+		});
 	}
 	
 	public BufferedImage abrirImagen() {
@@ -1539,6 +1622,69 @@ public class PrincipalForm extends JFrame{
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 	
+	private void generarDifusionIsotropica() {
+		
+		int sigma = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Sigma", "Generador de Difusion Isotropica", JOptionPane.DEFAULT_OPTION));
+		
+		int cantidadRepeticiones = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Cantidad de repeticiones", "Generador de Difusion Isotropica", JOptionPane.DEFAULT_OPTION));
+
+		imageInLabel = generarDifusionIsotropica(imageInLabel, sigma, cantidadRepeticiones);
+
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void generarDifusionAnisotropica() {
+		
+		int sigma = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Sigma", "Generador de Difusion Anisotropica", JOptionPane.DEFAULT_OPTION));
+		
+		int cantidadRepeticiones = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Cantidad de repeticiones", "Generador de Difusion Anisotropica", JOptionPane.DEFAULT_OPTION));
+
+		imageInLabel = generarDifusionAnisotropica(imageInLabel, sigma, cantidadRepeticiones);
+
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private BufferedImage generarDifusionIsotropica(BufferedImage imageInLabel, int sigma, int cantidadRepeticiones) {
+		
+		BufferedImage imageResult = ImageOperations.clonarImagen(imageInLabel);
+		
+		for(int i = 0; i < cantidadRepeticiones ; i++){
+			imageResult = FiltroGaussiano.aplicarFiltroGaussiano(imageResult, sigma);
+		}
+		
+		return imageResult;
+	}
+
+	private BufferedImage generarDifusionAnisotropica(BufferedImage imageInLabel, int sigma, int cantidadRepeticiones) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+
+	private void generarUmbralizacionGlobal() {
+
+		int umbral = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Umbral", "Umbralizacion Automatica", JOptionPane.DEFAULT_OPTION));
+		
+		imageInLabel = ImageOperations.generarUmbralizacionGlobal(imageInLabel, umbral);
+
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void generarUmbralizacionOtsu() {
+
+		int umbral = Integer.valueOf(JOptionPane.showInputDialog(
+				null, "Umbral t = ", "Umbralizacion Otzu.", JOptionPane.DEFAULT_OPTION));
+		
+		imageInLabel = ImageOperations.generarUmbralizacionOtsu(imageInLabel, umbral);
+
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+
 	private void aplicarMetodoLaplacianoDelGausiano() {
 		// TODO Auto-generated method stub
 	}

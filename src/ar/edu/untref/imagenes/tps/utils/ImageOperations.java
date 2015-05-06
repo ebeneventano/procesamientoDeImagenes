@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import ar.edu.untref.imagenes.tps.domain.Histograma;
 import ar.edu.untref.imagenes.tps.domain.Operations;
 import ar.edu.untref.imagenes.tps.transformations.LinealTransformation;
@@ -365,7 +367,7 @@ public class ImageOperations {
 	 *            , umbral
 	 * @return the umbral aplicated to the image
 	 */
-	public BufferedImage umbralization(BufferedImage originalImage, int umbral) {
+	public static BufferedImage umbralization(BufferedImage originalImage, int umbral) {
 
 		if (umbral < 0 || umbral > 255) {
 			throw new RuntimeException(
@@ -384,8 +386,7 @@ public class ImageOperations {
 				int greenValue = new Color(originalImage.getRGB(i, j))
 						.getGreen();
 
-				int newValue = (greenValue > umbral) ? black.getRGB() : white
-						.getRGB();
+				int newValue = (greenValue > umbral) ? white.getRGB() : black.getRGB();
 
 				newImage.setRGB(i, j, newValue);
 			}
@@ -550,7 +551,109 @@ public class ImageOperations {
 
 		return bufferedImage;
 	}
-	
-	
 
+	public static BufferedImage clonarImagen(BufferedImage image) {
+		
+		BufferedImage imageResult = new BufferedImage(image.getWidth(),
+				image.getHeight(), image.getType());
+		for (int i = 0; i < image.getWidth(); i++) {
+			for (int j = 0; j < image.getHeight(); j++) {
+				imageResult.setRGB(i, j, image.getRGB(i, j));
+			}
+		}
+		
+		return imageResult;
+	}
+
+	public static BufferedImage generarUmbralizacionGlobal(BufferedImage image, int umbral) {
+		
+		int cantidadGrupoBlancos = 0;
+		int cantidadGrupoNegro = 0;
+		
+		int sumatoriaGrupoBlancos = 0;
+		int sumatoriaGrupoNegros = 0;
+		
+		int umbralAnterior = 0;
+		int nuevoUmbral = umbral;
+		
+		int umbralUtilizado = umbral;
+		int cantidadRepeticiones = 0;
+		
+		int diferencia = umbralAnterior > nuevoUmbral ? umbralAnterior - nuevoUmbral : nuevoUmbral - umbralAnterior;
+		while (diferencia > 2){
+			cantidadRepeticiones++;
+			umbralAnterior = nuevoUmbral;
+			
+			for (int i = 0; i < image.getWidth(); i++) {
+				for (int j = 0; j < image.getHeight(); j++) {
+					
+					int greenValue = new Color(image.getRGB(i, j)).getGreen();
+					
+					if(greenValue > umbralUtilizado){
+						cantidadGrupoBlancos++;
+						sumatoriaGrupoBlancos += greenValue;
+					} else {
+						cantidadGrupoNegro++;
+						sumatoriaGrupoNegros += greenValue;
+					}
+				}
+			}
+			nuevoUmbral = (int) ((0.5f) * (sumatoriaGrupoBlancos/cantidadGrupoBlancos + sumatoriaGrupoNegros/cantidadGrupoNegro));
+			umbralUtilizado = nuevoUmbral;
+			diferencia = umbralAnterior > nuevoUmbral ? umbralAnterior - nuevoUmbral : nuevoUmbral - umbralAnterior;
+		}
+		
+		JOptionPane.showMessageDialog(null, "El umbral calculado es: " + String.valueOf(nuevoUmbral) 
+				+ " y la cantidad de repeticiones realizadas fueron: " + String.valueOf(cantidadRepeticiones));				
+
+		return umbralization(image, nuevoUmbral);
+	}
+
+	public static BufferedImage generarUmbralizacionOtsu(BufferedImage imageInLabel, int umbral) {
+		
+		int cantidadDePixelesDeLaImagen = imageInLabel.getWidth() * imageInLabel.getHeight();
+		
+		Histograma histograma = new Histograma();
+		int[] histogramaDeGrises = histograma.completarHistograma(imageInLabel)[0];
+		
+		float[] probabilidadesDeOcurrencia = new float[256];
+		
+		for(int i = 0 ; i < histogramaDeGrises.length ; i++) {
+			probabilidadesDeOcurrencia[i] = (float) histogramaDeGrises[i] / (float) cantidadDePixelesDeLaImagen;
+		}
+		
+		float w1 = 0;
+		float w2 = 0;
+		
+		for (int i = 0 ; i < probabilidadesDeOcurrencia.length ; i++) {
+			
+			if (i < umbral) {
+				w1 += probabilidadesDeOcurrencia[i];
+			} else {
+				w2 += probabilidadesDeOcurrencia[i];
+			}
+		}
+		
+		float u1 = 0;
+		float u2 = 0;
+		for (int i = 0 ; i < probabilidadesDeOcurrencia.length ; i++) {
+			
+			if (i < umbral) {
+				
+				u1 += i * probabilidadesDeOcurrencia[i] / w1;
+				
+			} else {
+				
+				u2 += i * probabilidadesDeOcurrencia[i] / w2;
+			}
+			
+		}
+		
+		int umbralResultante = (int) (w1*u1 + w2*u2); 
+		
+		JOptionPane.showMessageDialog(null, "El umbral calculado es: " + String.valueOf(umbralResultante));
+		
+		return umbralization(imageInLabel, umbralResultante);
+	}
+	
 }
