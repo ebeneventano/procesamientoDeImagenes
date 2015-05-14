@@ -1741,14 +1741,7 @@ public class PrincipalForm extends JFrame {
 						"Generador de Difusion Isotropica",
 						JOptionPane.DEFAULT_OPTION));
 
-		int cantidadRepeticiones = Integer
-				.valueOf(JOptionPane.showInputDialog(null,
-						"Cantidad de repeticiones",
-						"Generador de Difusion Isotropica",
-						JOptionPane.DEFAULT_OPTION));
-
-		imageInLabel = generarDifusionIsotropica(imageInLabel, sigma,
-				cantidadRepeticiones);
+		imageInLabel = generarDifusionIsotropica(imageInLabel, sigma);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
@@ -1771,14 +1764,12 @@ public class PrincipalForm extends JFrame {
 	}
 
 	private BufferedImage generarDifusionIsotropica(BufferedImage imageInLabel,
-			int sigma, int cantidadRepeticiones) {
+			int sigma) {
 
 		BufferedImage imageResult = ImageOperations.clonarImagen(imageInLabel);
 
-		for (int i = 0; i < cantidadRepeticiones; i++) {
-			imageResult = FiltroGaussiano.aplicarFiltroGaussiano(imageResult,
-					sigma);
-		}
+		imageResult = FiltroGaussiano.aplicarFiltroLoG(imageResult,
+				sigma);
 
 		return imageResult;
 	}
