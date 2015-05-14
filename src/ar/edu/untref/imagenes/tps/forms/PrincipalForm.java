@@ -1736,12 +1736,15 @@ public class PrincipalForm extends JFrame {
 
 	private void generarDifusionIsotropica() {
 
-		int sigma = Integer
-				.valueOf(JOptionPane.showInputDialog(null, "Sigma",
+		int sigma = Integer.valueOf(JOptionPane.showInputDialog(null, "Sigma",
 						"Generador de Difusion Isotropica",
 						JOptionPane.DEFAULT_OPTION));
 
-		imageInLabel = generarDifusionIsotropica(imageInLabel, sigma);
+		int cantidadRepeticiones = Integer.valueOf(JOptionPane.showInputDialog(null, "Cantidad de Pasos: ",
+				"Generador de Difusion Isotropica",
+				JOptionPane.DEFAULT_OPTION));
+		
+		imageInLabel = Borde.generarDifusionIsotropica(imageInLabel, sigma, cantidadRepeticiones);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
@@ -1753,31 +1756,14 @@ public class PrincipalForm extends JFrame {
 				JOptionPane.DEFAULT_OPTION));
 
 		int cantidadRepeticiones = Integer.valueOf(JOptionPane.showInputDialog(
-				null, "Cantidad de repeticiones",
+				null, "Cantidad de Pasos",
 				"Generador de Difusion Anisotropica",
 				JOptionPane.DEFAULT_OPTION));
 
-		imageInLabel = generarDifusionAnisotropica(imageInLabel, sigma,
+		imageInLabel = Borde.generarDifusionAnisotropica(imageInLabel, sigma,
 				cantidadRepeticiones);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
-	}
-
-	private BufferedImage generarDifusionIsotropica(BufferedImage imageInLabel,
-			int sigma) {
-
-		BufferedImage imageResult = ImageOperations.clonarImagen(imageInLabel);
-
-		imageResult = FiltroGaussiano.aplicarFiltroLoG(imageResult,
-				sigma);
-
-		return imageResult;
-	}
-
-	private BufferedImage generarDifusionAnisotropica(
-			BufferedImage imageInLabel, int sigma, int cantidadRepeticiones) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	private void generarUmbralizacionGlobal() {
@@ -1806,16 +1792,13 @@ public class PrincipalForm extends JFrame {
 
 	private void aplicarMetodoLaplacianoDelGausiano() {
 
-		int sigma = Integer.valueOf(JOptionPane.showInputDialog(null,
-				"Sigma s = ", "Laplaciano del Gaussiano.",
-				JOptionPane.DEFAULT_OPTION));
+		int sigma = Integer
+				.valueOf(JOptionPane.showInputDialog(null, "Sigma",
+						"Filtro LoG",
+						JOptionPane.DEFAULT_OPTION));
 		
-		int umbral = Integer.valueOf(JOptionPane.showInputDialog(null,
-				"Umbral t = ", "Laplaciano del Gaussiano.",
-				JOptionPane.DEFAULT_OPTION));
-
-		
-		imageInLabel = Borde.laplacianoDelGaussiano(imageInLabel, sigma, umbral);
+		imageInLabel = FiltroGaussiano.aplicarFiltroLoG(imageInLabel,
+				sigma);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 

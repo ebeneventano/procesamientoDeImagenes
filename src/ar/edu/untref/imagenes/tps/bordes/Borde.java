@@ -3,6 +3,7 @@ package ar.edu.untref.imagenes.tps.bordes;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
+import ar.edu.untref.imagenes.tps.utils.ImageOperations;
 import ar.edu.untref.imagenes.utils.ColorProvider;
 
 public class Borde {
@@ -17,6 +18,10 @@ public class Borde {
 		int sumarEnAncho = (-1) * (anchoMascara / 2);
 		int sumarEnAlto = (-1) * (altoMascara / 2);
 
+		int matriz[][] = calcularMatrizDeUnaImagenGris(image);
+		int min = min(matriz);
+		int max = max(matriz);
+		
 		// Iterar la imagen, sacando los bordes.
 		for (int i = anchoMascara / 2; i < image.getWidth()
 				- (anchoMascara / 2); i++) {
@@ -52,8 +57,10 @@ public class Borde {
 				int magnitud = (int) Math
 						.sqrt(((sumatoriaX * sumatoriaX) + (sumatoriaY * sumatoriaY)));
 
-				int nuevoPixel = ColorProvider.colorToRGB(alpha, magnitud,
-						magnitud, magnitud);
+				int pixelTransformado = getPixelTransformado(max, min, magnitud);
+				
+				int nuevoPixel = ColorProvider.colorToRGB(alpha, pixelTransformado,
+						pixelTransformado, pixelTransformado);
 
 				imagenResultado.setRGB(i, j, nuevoPixel);
 			}
@@ -568,5 +575,120 @@ public class Borde {
 		}
 
 		return matriz;
+	}
+
+	public static BufferedImage generarDifusionIsotropica(
+			BufferedImage image, int sigma, int cantidadRepeticiones) {
+		
+		BufferedImage imagenResultado = ImageOperations.clonarImagen(image);
+		
+		for(int i = 0; i < cantidadRepeticiones; i ++){
+			int [][] matriz = calcularMatrizDeUnaImagenGris(imagenResultado);
+			int max = max(matriz);
+			int min = min(matriz);
+			
+			for(int j = 1; j < image.getWidth() - 1 ; j++){
+				for (int k = 1 ; k < image.getHeight() - 1 ; k++){
+					int derivadaNorte = calcularDerivadaNorte(imagenResultado, j, k);
+					int derivadaSur = calcularDerivadaSur(imagenResultado, j, k);
+					int derivadaOeste = calcularDerivadaOeste(imagenResultado, j, k);
+					int derivadaEste = calcularDerivadaEste(imagenResultado, j, k);
+					
+					int pixel = (int) (new Color(imagenResultado.getRGB(j, k)).getRed() + (((float) (0.25f * ((derivadaNorte) + (derivadaSur) 
+							+ (derivadaOeste) + (derivadaEste))))));
+					
+					
+					pixel = getPixelTransformado(max, min, pixel);
+					
+					int alpha = new Color(imagenResultado.getRGB(j, k)).getAlpha();
+
+					imagenResultado.setRGB(j, k, ColorProvider.colorToRGB(alpha,
+							 pixel, pixel, pixel));
+				}
+			}
+		}
+		
+		return imagenResultado;
+	}
+	
+	public static int[][] calcularMatrizDeUnaImagenGris(BufferedImage image) {
+
+		int[][] matriz = new int[image.getWidth()][image.getHeight()];
+
+		for (int i = 0; i < image.getWidth(); i++) {
+			for (int j = 0; j < image.getHeight(); j++) {
+
+				int red = new Color(image.getRGB(i, j)).getRed();
+
+				matriz[i][j] = red;
+			}
+		}
+		return matriz;
+	}
+	
+	public static BufferedImage generarDifusionAnisotropica(
+			BufferedImage image, int sigma, int cantidadRepeticiones) {
+		
+		BufferedImage imagenResultado = ImageOperations.clonarImagen(image);
+		
+		for(int i = 0; i < cantidadRepeticiones; i ++){
+			for(int j = 1; j < image.getWidth() - 1 ; j++){
+				for (int k = 1 ; k < image.getHeight() - 1 ; k++){
+					int derivadaNorte = calcularDerivadaNorte(imagenResultado, j, k);
+					float cnNorte = calcularCn(derivadaNorte, sigma);
+					int derivadaSur = calcularDerivadaSur(imagenResultado, j, k);
+					float cnSur = calcularCn(derivadaSur, sigma);
+					int derivadaOeste = calcularDerivadaOeste(imagenResultado, j, k);
+					float cnOeste = calcularCn(derivadaOeste, sigma);
+					int derivadaEste = calcularDerivadaEste(imagenResultado, j, k);
+					float cnEste = calcularCn(derivadaEste, sigma);
+					
+					float pixel = new Color(imagenResultado.getRGB(j, k)).getRed() + (((float) (0.25f * ((cnNorte*derivadaNorte) + (cnSur * derivadaSur) 
+							+ (cnOeste * derivadaOeste) + (cnEste * derivadaEste)))));
+					
+					int alpha = new Color(imagenResultado.getRGB(j, k)).getAlpha();
+
+					imagenResultado.setRGB(j, k, ColorProvider.colorToRGB(alpha,
+							(int) pixel, (int) pixel, (int) pixel));
+				}
+			}
+		}
+		
+		return imagenResultado;
+	}
+
+	private static float calcularCn(int derivada, int sigma) {
+		return ((float) 1 / (1 + (derivada * derivada / sigma)));
+	}
+
+	private static int calcularDerivadaEste(BufferedImage image, int j, int k) {
+		
+		int nivelDeRojo = new Color(image.getRGB(
+				j - 1, k)).getRed();
+		
+		return nivelDeRojo;
+	}
+
+	private static int calcularDerivadaOeste(BufferedImage image, int j, int k) {
+		
+		int nivelDeRojo = new Color(image.getRGB(
+				j + 1, k)).getRed();
+		
+		return nivelDeRojo;
+	}
+
+	private static int calcularDerivadaSur(BufferedImage image, int j, int k) {
+	
+		int nivelDeRojo = new Color(image.getRGB(
+				j, k + 1)).getRed();
+		
+		return nivelDeRojo;
+	}
+
+	private static int calcularDerivadaNorte(BufferedImage image, int j, int k) {
+		int nivelDeRojo = new Color(image.getRGB(
+				j, k - 1)).getRed();
+		
+		return nivelDeRojo;
 	}
 }
