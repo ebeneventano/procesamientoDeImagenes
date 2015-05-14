@@ -18,10 +18,8 @@ public class Borde {
 		int sumarEnAncho = (-1) * (anchoMascara / 2);
 		int sumarEnAlto = (-1) * (altoMascara / 2);
 
-		int matriz[][] = calcularMatrizDeUnaImagenGris(image);
-		int min = min(matriz);
-		int max = max(matriz);
-		
+		int[][] matrixConMagnitud = new int [image.getWidth()][image.getHeight()];
+
 		// Iterar la imagen, sacando los bordes.
 		for (int i = anchoMascara / 2; i < image.getWidth()
 				- (anchoMascara / 2); i++) {
@@ -30,39 +28,36 @@ public class Borde {
 
 				int sumatoriaX = 0;
 				int sumatoriaY = 0;
-				// Iterar la máscara
+				
+				// Iterar la mascara
 				for (int iAnchoMascara = 0; iAnchoMascara < anchoMascara; iAnchoMascara++) {
 					for (int iAltoMascara = 0; iAltoMascara < altoMascara; iAltoMascara++) {
 
-						// Opero si no es el punto central de la máscara
-						// if (!(iAnchoMascara == (anchoMascara / 2) &&
-						// iAltoMascara == (altoMascara / 2))) {
-
-						int indiceIDeLaImagen = i + sumarEnAncho
-								+ iAnchoMascara;
+						int indiceIDeLaImagen = i + sumarEnAncho + iAnchoMascara;
 						int indiceJDeLaImagen = j + sumarEnAlto + iAltoMascara;
 
-						double nivelDeRojo = new Color(image.getRGB(
-								indiceIDeLaImagen, indiceJDeLaImagen)).getRed();
-						sumatoriaX += nivelDeRojo
-								* mascaraX[iAnchoMascara][iAltoMascara];
-						sumatoriaY += nivelDeRojo
-								* mascaraY[iAnchoMascara][iAltoMascara];
-						// }
-
+						double nivelDeRojo = new Color(image.getRGB(indiceIDeLaImagen, indiceJDeLaImagen)).getRed();
+						
+						sumatoriaX += nivelDeRojo * mascaraX[iAnchoMascara][iAltoMascara];
+						sumatoriaY += nivelDeRojo * mascaraY[iAnchoMascara][iAltoMascara];
 					}
 				}
 
-				int alpha = new Color(image.getRGB(i, j)).getAlpha();
-				int magnitud = (int) Math
-						.sqrt(((sumatoriaX * sumatoriaX) + (sumatoriaY * sumatoriaY)));
-
-				int pixelTransformado = getPixelTransformado(max, min, magnitud);
-				
-				int nuevoPixel = ColorProvider.colorToRGB(alpha, pixelTransformado,
-						pixelTransformado, pixelTransformado);
-
-				imagenResultado.setRGB(i, j, nuevoPixel);
+				int magnitud = (int) Math.hypot(sumatoriaX,sumatoriaY);
+				matrixConMagnitud[i][j] = magnitud;
+			}
+		}
+		
+		int min = min(matrixConMagnitud);
+		int max = max(matrixConMagnitud);
+		
+		for (int i = anchoMascara / 2; i < image.getWidth()
+				- (anchoMascara / 2); i++) {
+			for (int j = altoMascara / 2; j < image.getHeight()
+					- (altoMascara / 2); j++) {
+				int nuevoPixel = getPixelTransformado(max, min, matrixConMagnitud[i][j]);
+				Color color = new Color(nuevoPixel, nuevoPixel, nuevoPixel);
+				imagenResultado.setRGB(i, j, color.getRGB());
 			}
 		}
 		return imagenResultado;
@@ -583,9 +578,7 @@ public class Borde {
 		BufferedImage imagenResultado = ImageOperations.clonarImagen(image);
 		
 		for(int i = 0; i < cantidadRepeticiones; i ++){
-			int [][] matriz = calcularMatrizDeUnaImagenGris(imagenResultado);
-			int max = max(matriz);
-			int min = min(matriz);
+			int [][] matriz = new int [image.getWidth()][image.getHeight()];
 			
 			for(int j = 1; j < image.getWidth() - 1 ; j++){
 				for (int k = 1 ; k < image.getHeight() - 1 ; k++){
@@ -597,13 +590,18 @@ public class Borde {
 					int pixel = (int) (new Color(imagenResultado.getRGB(j, k)).getRed() + (((float) (0.25f * ((derivadaNorte) + (derivadaSur) 
 							+ (derivadaOeste) + (derivadaEste))))));
 					
-					
-					pixel = getPixelTransformado(max, min, pixel);
-					
-					int alpha = new Color(imagenResultado.getRGB(j, k)).getAlpha();
+					matriz[j][k] = pixel;
+				}
+			}
 
-					imagenResultado.setRGB(j, k, ColorProvider.colorToRGB(alpha,
-							 pixel, pixel, pixel));
+			int max = max(matriz);
+			int min = min(matriz);
+			for(int j = 1; j < image.getWidth() - 1 ; j++){
+				for (int k = 1 ; k < image.getHeight() - 1 ; k++){
+					int pixel = getPixelTransformado(max, min, matriz[j][k]);
+					
+					Color color = new Color(pixel, pixel, pixel);
+					imagenResultado.setRGB(j, k, color.getRGB());
 				}
 			}
 		}
@@ -632,6 +630,9 @@ public class Borde {
 		BufferedImage imagenResultado = ImageOperations.clonarImagen(image);
 		
 		for(int i = 0; i < cantidadRepeticiones; i ++){
+			
+			int[][] matriz = new int[image.getWidth()][image.getHeight()];
+			
 			for(int j = 1; j < image.getWidth() - 1 ; j++){
 				for (int k = 1 ; k < image.getHeight() - 1 ; k++){
 					int derivadaNorte = calcularDerivadaNorte(imagenResultado, j, k);
@@ -646,14 +647,22 @@ public class Borde {
 					float pixel = new Color(imagenResultado.getRGB(j, k)).getRed() + (((float) (0.25f * ((cnNorte*derivadaNorte) + (cnSur * derivadaSur) 
 							+ (cnOeste * derivadaOeste) + (cnEste * derivadaEste)))));
 					
-					int alpha = new Color(imagenResultado.getRGB(j, k)).getAlpha();
+					matriz[j][k] = (int)pixel;
+				}
+			}
 
-					imagenResultado.setRGB(j, k, ColorProvider.colorToRGB(alpha,
-							(int) pixel, (int) pixel, (int) pixel));
+			int max = max(matriz);
+			int min = min(matriz);
+			for(int j = 1; j < image.getWidth() - 1 ; j++){
+				for (int k = 1 ; k < image.getHeight() - 1 ; k++){
+					int pixel = getPixelTransformado(max, min, matriz[j][k]);
+					
+					Color color = new Color(pixel, pixel, pixel);
+					imagenResultado.setRGB(j, k, color.getRGB());
 				}
 			}
 		}
-		
+
 		return imagenResultado;
 	}
 
