@@ -33,10 +33,10 @@ public class Difuminador {
 
 					int rojoActual = matrizRojoResultante[i][j];
 
-					float derivadaNorteRojo = calcularDerivadaNorte(imagenResultado, i, j);
-					float derivadaEsteRojo = calcularDerivadaEste(imagenResultado, i, j);
-					float derivadaOesteRojo = calcularDerivadaOeste(imagenResultado, i, j);
-					float derivadaSurRojo = calcularDerivadaSur(imagenResultado, i, j);
+					float derivadaNorteRojo = calcularDerivadaNorte(imagenResultado, j, i);
+					float derivadaEsteRojo = calcularDerivadaEste(imagenResultado, j, i);
+					float derivadaOesteRojo = calcularDerivadaOeste(imagenResultado, j, i);
+					float derivadaSurRojo = calcularDerivadaSur(imagenResultado, j, i);
 
 					float nuevoValorRojo;
 					
