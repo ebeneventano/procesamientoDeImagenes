@@ -609,7 +609,7 @@ public class ImageOperations {
 		return umbralization(image, nuevoUmbral);
 	}
 
-	public static BufferedImage generarUmbralizacionOtsu(BufferedImage imagen, int umbral) {
+	public static BufferedImage generarUmbralizacionOtsu(BufferedImage imagen) {
 		
 		int cantidadDePixelesDeLaImagen = imagen.getWidth() * imagen.getHeight();
 		

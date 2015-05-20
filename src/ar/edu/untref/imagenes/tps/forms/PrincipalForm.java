@@ -1780,11 +1780,7 @@ public class PrincipalForm extends JFrame {
 
 	private void generarUmbralizacionOtsu() {
 
-		int umbral = Integer.valueOf(JOptionPane.showInputDialog(null,
-				"Umbral t = ", "Umbralizacion Otzu.",
-				JOptionPane.DEFAULT_OPTION));
-
-		imageInLabel = ImageOperations.generarUmbralizacionOtsu(imageInLabel, umbral);
+		imageInLabel = ImageOperations.generarUmbralizacionOtsu(imageInLabel);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
