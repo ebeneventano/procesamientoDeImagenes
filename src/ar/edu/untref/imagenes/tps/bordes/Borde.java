@@ -572,8 +572,7 @@ public class Borde {
 		return matriz;
 	}
 
-	public static BufferedImage generarDifusionIsotropica(
-			BufferedImage image, int sigma, int cantidadRepeticiones) {
+	public static BufferedImage generarDifusionIsotropica(BufferedImage image, int sigma, int cantidadRepeticiones) {
 		
 		BufferedImage imagenResultado = ImageOperations.clonarImagen(image);
 		

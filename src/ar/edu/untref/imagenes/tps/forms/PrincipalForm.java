@@ -24,6 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import ar.edu.untref.imagenes.tps.bordes.Borde;
+import ar.edu.untref.imagenes.tps.difusion.Difuminador;
 import ar.edu.untref.imagenes.tps.noise.FiltroGaussiano;
 import ar.edu.untref.imagenes.tps.noise.FiltroPasaAltos;
 import ar.edu.untref.imagenes.tps.noise.FiltroPasaBajos;
@@ -1744,7 +1745,7 @@ public class PrincipalForm extends JFrame {
 				"Generador de Difusion Isotropica",
 				JOptionPane.DEFAULT_OPTION));
 		
-		imageInLabel = Borde.generarDifusionIsotropica(imageInLabel, sigma, cantidadRepeticiones);
+		imageInLabel = Difuminador.aplicarDifusion(imageInLabel, cantidadRepeticiones, true, sigma);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
@@ -1760,8 +1761,7 @@ public class PrincipalForm extends JFrame {
 				"Generador de Difusion Anisotropica",
 				JOptionPane.DEFAULT_OPTION));
 
-		imageInLabel = Borde.generarDifusionAnisotropica(imageInLabel, sigma,
-				cantidadRepeticiones);
+		imageInLabel = Difuminador.aplicarDifusion(imageInLabel, cantidadRepeticiones, false, sigma);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
