@@ -426,7 +426,7 @@ public class Borde {
 		return imagenResultado;
 	}
 
-	private static boolean hayCambioDeSignoPorFila(int[][] matriz, int i, int j) {
+	public static boolean hayCambioDeSignoPorFila(int[][] matriz, int i, int j) {
 
 		if (j - 1 >= 0) {
 
@@ -448,7 +448,29 @@ public class Borde {
 
 	}
 
-	private static boolean hayCambioDeSignoPorFilaYUmbral(int[][] matriz,
+	public static boolean hayCambioDeSignoPorFila(double[][] matriz, int i, int j) {
+
+		if (j - 1 >= 0) {
+
+			double valorActual = matriz[i][j];
+
+			double valorAnterior = matriz[i][j - 1];
+			if (valorAnterior == 0 && j - 2 >= 0) {
+				valorAnterior = matriz[i][j - 2];
+			}
+
+			if ((valorAnterior < 0 && valorActual > 0)
+					|| (valorAnterior > 0 && valorActual < 0)) {
+				return true;
+			}
+
+		}
+
+		return false;
+
+	}
+	
+	public static boolean hayCambioDeSignoPorFilaYUmbral(int[][] matriz,
 			int i, int j, int umbral) {
 
 		if (j - 1 >= 0) {
@@ -491,8 +513,7 @@ public class Borde {
 		BufferedImage imagenResultado = new BufferedImage(imageInLabel.getWidth(),
 				imageInLabel.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
 
-		int[][] matrizCrucePorCero = new int[imageInLabel.getWidth()][imageInLabel
-				.getHeight()];
+		int[][] matrizCrucePorCero = new int[imageInLabel.getWidth()][imageInLabel.getHeight()];
 		for (int i = 0; i < imageInLabel.getWidth(); i++) {
 			for (int j = 0; j < imageInLabel.getHeight(); j++) {
 
@@ -507,7 +528,6 @@ public class Borde {
 				imagenResultado.setRGB(i, j, ColorProvider.colorToRGB(alpha,
 						colorPixel, colorPixel, colorPixel));
 			}
-
 		}
 
 		return imagenResultado;

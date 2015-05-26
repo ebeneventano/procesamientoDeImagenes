@@ -1792,8 +1792,18 @@ public class PrincipalForm extends JFrame {
 						"Filtro LoG",
 						JOptionPane.DEFAULT_OPTION));
 		
+		int umbral = Integer
+				.valueOf(JOptionPane.showInputDialog(null, "Umbral",
+						"Filtro LoG",
+						JOptionPane.DEFAULT_OPTION));
+		
+		int dimensionMascara = Integer
+				.valueOf(JOptionPane.showInputDialog(null, "Dimension Mascara",
+						"Filtro LoG",
+						JOptionPane.DEFAULT_OPTION));
+		
 		imageInLabel = FiltroGaussiano.aplicarFiltroLoG(imageInLabel,
-				sigma);
+				sigma, umbral, dimensionMascara);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 
