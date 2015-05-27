@@ -24,6 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import ar.edu.untref.imagenes.tps.bordes.Borde;
+import ar.edu.untref.imagenes.tps.bordes.DetectorDeBordeCanny;
 import ar.edu.untref.imagenes.tps.difusion.Difuminador;
 import ar.edu.untref.imagenes.tps.noise.FiltroGaussiano;
 import ar.edu.untref.imagenes.tps.noise.FiltroPasaAltos;
@@ -107,6 +108,8 @@ public class PrincipalForm extends JFrame {
 
 	private JMenuItem menuUmbralizacionGlobal;
 	private JMenuItem menuUmbralizacionOtsu;
+	
+	private JMenuItem menuSupresionNoMaximos;
 
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
@@ -342,6 +345,9 @@ public class PrincipalForm extends JFrame {
 
 		menuUmbralizacionOtsu = new JMenuItem("Metodo Umbralizacion Otsu");
 		menuDeteccionDeBordes.add(menuUmbralizacionOtsu);
+		
+		menuSupresionNoMaximos = new JMenuItem("Metodo Supresion No Maximos");
+		menuDeteccionDeBordes.add(menuSupresionNoMaximos);
 	}
 
 	private void addListenersToComponents() {
@@ -1160,6 +1166,24 @@ public class PrincipalForm extends JFrame {
 				}
 			}
 		});
+		
+		menuSupresionNoMaximos.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				if (originalImage != null) {
+
+					aplicarSupresionNoMaximos();
+
+				} else {
+
+					showAlertOriginalImageNull();
+
+				}
+			}
+
+		});
 	}
 
 	public BufferedImage abrirImagen() {
@@ -1804,6 +1828,14 @@ public class PrincipalForm extends JFrame {
 		
 		imageInLabel = FiltroGaussiano.aplicarFiltroLoG(imageInLabel,
 				sigma, umbral, dimensionMascara);
+
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+
+	}
+	
+	private void aplicarSupresionNoMaximos() {
+
+		imageInLabel = DetectorDeBordeCanny.supresionNoMaximos(imageInLabel);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 

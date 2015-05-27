@@ -81,4 +81,43 @@ public class LinealTransformation {
 
 		return imagenTransformada;
 	}
+	
+	public static int[][] aplicarTransformacionLineal(int[][] matriz) {
+
+		int nrows = matriz.length;
+		int ncols = matriz[0].length;
+		
+		int[][] matrizTransformada = new int[nrows][ncols];
+
+		float rojoMin = matrizTransformada[0][0];
+		float rojoMax = matrizTransformada[0][0];
+
+		for (int f = 0; f < nrows; f++) {
+			for (int g = 0; g < ncols; g++) {
+
+				int rojoActual = matriz[f][g];
+
+				if (rojoMin > rojoActual) {
+					rojoMin = rojoActual;
+				}
+
+				if (rojoMax < rojoActual) {
+					rojoMax = rojoActual;
+				}
+			}
+
+		}
+
+		for (int i = 0; i < nrows; i++) {
+			for (int j = 0; j < ncols; j++) {
+
+				int rojoActual = matriz[i][j];
+				int rojoTransformado = (int) ((((255f) / (rojoMax - rojoMin)) * rojoActual) - ((rojoMin * 255f) / (rojoMax - rojoMin)));
+
+				matrizTransformada[i][j] = rojoTransformado;
+			}
+		}
+
+		return matrizTransformada;
+	}
 }

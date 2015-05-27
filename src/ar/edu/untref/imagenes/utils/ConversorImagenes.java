@@ -50,11 +50,12 @@ public class ConversorImagenes {
 	
 	public static BufferedImage convertirMatrizEnImagen(int[][] matriz, int ancho, int alto){
 		
-		BufferedImage bufferedImage = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_RGB);
+		BufferedImage bufferedImage = new BufferedImage(ancho, alto, BufferedImage.TYPE_3BYTE_BGR);
 	    for (int i = 0; i < matriz.length; i++) {
 	        for (int j = 0; j < matriz[0].length; j++) {
 	            int pixel=matriz[i][j];
-	            bufferedImage.setRGB(i, j, pixel);
+	            ColorProvider.colorToRGB(0, pixel, pixel, pixel);
+	            bufferedImage.setRGB(i, j, ColorProvider.colorToRGB(0, pixel, pixel, pixel));
 	        }
 	    }
 	    
