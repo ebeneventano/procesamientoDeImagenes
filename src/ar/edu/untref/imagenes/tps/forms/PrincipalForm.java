@@ -109,7 +109,9 @@ public class PrincipalForm extends JFrame {
 	private JMenuItem menuUmbralizacionGlobal;
 	private JMenuItem menuUmbralizacionOtsu;
 	
+	private JMenuItem menuUmbralizacionConHisteresis;
 	private JMenuItem menuSupresionNoMaximos;
+	private JMenuItem menuDetectorDeBordeCanny;
 
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
@@ -348,6 +350,12 @@ public class PrincipalForm extends JFrame {
 		
 		menuSupresionNoMaximos = new JMenuItem("Metodo Supresion No Maximos");
 		menuDeteccionDeBordes.add(menuSupresionNoMaximos);
+		
+		menuUmbralizacionConHisteresis = new JMenuItem("Metodo Umbralizacion con Histeresis");
+		menuDeteccionDeBordes.add(menuUmbralizacionConHisteresis);
+		
+		menuDetectorDeBordeCanny = new JMenuItem("Metodo Detector de Borde Canny");
+		menuDeteccionDeBordes.add(menuDetectorDeBordeCanny);
 	}
 
 	private void addListenersToComponents() {
@@ -1184,6 +1192,41 @@ public class PrincipalForm extends JFrame {
 			}
 
 		});
+		
+		menuUmbralizacionConHisteresis.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				if (originalImage != null) {
+
+					aplicarUmbralizacionConHisteresis();
+
+				} else {
+
+					showAlertOriginalImageNull();
+
+				}
+			}
+		});
+		
+		menuDetectorDeBordeCanny.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				if (originalImage != null) {
+
+					aplicarCanny();
+
+				} else {
+
+					showAlertOriginalImageNull();
+
+				}
+			}
+
+		});
 	}
 
 	public BufferedImage abrirImagen() {
@@ -1835,9 +1878,33 @@ public class PrincipalForm extends JFrame {
 	
 	private void aplicarSupresionNoMaximos() {
 
-		imageInLabel = DetectorDeBordeCanny.supresionNoMaximos(imageInLabel);
+		imageInLabel = DetectorDeBordeCanny.aplicarSupresionNoMaximos(imageInLabel);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 
+	}
+	
+
+	private void aplicarUmbralizacionConHisteresis() {
+		int umbral1 = Integer.valueOf(JOptionPane.showInputDialog(null, "Umbral 1: ", "Umbralizacion con Histeresis", JOptionPane.DEFAULT_OPTION));
+		int umbral2 = Integer.valueOf(JOptionPane.showInputDialog(null, "Umbral 2: ", "Umbralizacion con Histeresis", JOptionPane.DEFAULT_OPTION));
+		
+		imageInLabel = DetectorDeBordeCanny.aplicarUmbralizacionConHisteresis(imageInLabel, umbral1, umbral2);
+
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));		
+	}
+	
+	private void aplicarCanny() {
+		int umbral1 = Integer.valueOf(JOptionPane.showInputDialog(null, "Umbral 1: ", "Canny", JOptionPane.DEFAULT_OPTION));
+		int umbral2 = Integer.valueOf(JOptionPane.showInputDialog(null, "Umbral 2: ", "Canny", JOptionPane.DEFAULT_OPTION));
+		
+		int sigma1 = Integer.valueOf(JOptionPane.showInputDialog(null, "Sigma 1: ", "Canny", JOptionPane.DEFAULT_OPTION));
+		int sigma2 = Integer.valueOf(JOptionPane.showInputDialog(null, "Sigma 2: ", "Canny", JOptionPane.DEFAULT_OPTION));
+		int sigma3 = Integer.valueOf(JOptionPane.showInputDialog(null, "Sigma 3: ", "Canny", JOptionPane.DEFAULT_OPTION));
+		int sigma4 = Integer.valueOf(JOptionPane.showInputDialog(null, "Sigma 4: ", "Canny", JOptionPane.DEFAULT_OPTION));
+
+		imageInLabel = DetectorDeBordeCanny.detectorDeBordeCanny(imageInLabel, sigma1, sigma2, sigma3, sigma4, umbral1, umbral2);
+
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 }
