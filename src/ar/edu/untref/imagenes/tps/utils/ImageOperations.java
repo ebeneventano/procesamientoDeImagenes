@@ -143,7 +143,7 @@ public class ImageOperations {
 		}
 	}
 
-	public BufferedImage getNegativeImage(BufferedImage image) {
+	public static BufferedImage getNegativeImage(BufferedImage image) {
 
 		BufferedImage imageResult = image;
 

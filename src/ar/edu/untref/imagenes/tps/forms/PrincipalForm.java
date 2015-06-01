@@ -25,7 +25,9 @@ import javax.swing.border.EmptyBorder;
 
 import ar.edu.untref.imagenes.tps.bordes.Borde;
 import ar.edu.untref.imagenes.tps.bordes.DetectorDeBordeCanny;
+import ar.edu.untref.imagenes.tps.bordes.TransformadaDeHough;
 import ar.edu.untref.imagenes.tps.difusion.Difuminador;
+import ar.edu.untref.imagenes.tps.domain.MatrizAcumuladora;
 import ar.edu.untref.imagenes.tps.noise.FiltroGaussiano;
 import ar.edu.untref.imagenes.tps.noise.FiltroPasaAltos;
 import ar.edu.untref.imagenes.tps.noise.FiltroPasaBajos;
@@ -79,39 +81,50 @@ public class PrincipalForm extends JFrame {
 	private JMenuItem menuGenerarFiltroPasaAltos;
 
 	private JMenu menuDeteccionDeBordes;
+	private JMenu menuDetectorPrewitt;
 	private JMenuItem menuDetectorBordePrewitt;
 	private JMenuItem menuDetectorBordePrewittX;
 	private JMenuItem menuDetectorBordePrewittY;
 	private JMenuItem menuDetectorBordePrewitt45Grados;
 	private JMenuItem menuDetectorBordePrewitt135Grados;
 	private JMenuItem menuDetectorBordePrewittColor;
+	
+	private JMenu menuDetectorSobel;
 	private JMenuItem menuDetectorBordeSobel;
 	private JMenuItem menuDetectorBordeSobelVertical;
 	private JMenuItem menuDetectorBordeSobel45Grados;
 	private JMenuItem menuDetectorBordeSobel135Grados;
 	private JMenuItem menuDetectorBordeSobelColor;
 
+	private JMenu menuDetectorKirsh;
 	private JMenuItem menuDetectorBordeKirshVertical;
 	private JMenuItem menuDetectorBordeKirsh45Grados;
 	private JMenuItem menuDetectorBordeKirsh135Grados;
 	
+	private JMenu menuDetectorSinNombre;
 	private JMenuItem menuDetectorBordePuntoAVertical;
 	private JMenuItem menuDetectorBordePuntoA45Grados;
 	private JMenuItem menuDetectorBordePuntoA135Grados;
 
+	private JMenu menuLaplaciano;
 	private JMenuItem menuMetodoLaplaciano;
 	private JMenuItem menuMetodoLaplacianoConPendiente;
 	private JMenuItem menuMetodoLaplacianoDelGausiano;
 
+	private JMenu menuDifusores;
 	private JMenuItem menuDifusionIsotropica;
 	private JMenuItem menuDifusionAnisotropica;
 
+	private JMenu menuUmbralizaciones;
 	private JMenuItem menuUmbralizacionGlobal;
 	private JMenuItem menuUmbralizacionOtsu;
 	
 	private JMenuItem menuUmbralizacionConHisteresis;
 	private JMenuItem menuSupresionNoMaximos;
 	private JMenuItem menuDetectorDeBordeCanny;
+	
+	private JMenuItem menuTransformadaDeHough;
+
 
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
@@ -258,95 +271,116 @@ public class PrincipalForm extends JFrame {
 
 		menuDeteccionDeBordes = new JMenu("Bordes");
 		menuBar.add(menuDeteccionDeBordes);
+		
+		menuDetectorPrewitt = new JMenu("Prewitt");
+		menuDeteccionDeBordes.add(menuDetectorPrewitt);
 
 		menuDetectorBordePrewitt = new JMenuItem("Detector de Bordes Prewitt");
-		menuDeteccionDeBordes.add(menuDetectorBordePrewitt);
+		menuDetectorPrewitt.add(menuDetectorBordePrewitt);
 
 		menuDetectorBordePrewittX = new JMenuItem(
 				"Detector de Bordes Prewitt X");
-		menuDeteccionDeBordes.add(menuDetectorBordePrewittX);
+		menuDetectorPrewitt.add(menuDetectorBordePrewittX);
 
 		menuDetectorBordePrewittY = new JMenuItem(
 				"Detector de Bordes Prewitt Y");
-		menuDeteccionDeBordes.add(menuDetectorBordePrewittY);
+		menuDetectorPrewitt.add(menuDetectorBordePrewittY);
 
 		menuDetectorBordePrewitt45Grados = new JMenuItem(
 				"Detector de Bordes Prewitt 45 Grados");
-		menuDeteccionDeBordes.add(menuDetectorBordePrewitt45Grados);
+		menuDetectorPrewitt.add(menuDetectorBordePrewitt45Grados);
 
 		menuDetectorBordePrewitt135Grados = new JMenuItem(
 				"Detector de Bordes Prewitt 135 Grados");
-		menuDeteccionDeBordes.add(menuDetectorBordePrewitt135Grados);
+		menuDetectorPrewitt.add(menuDetectorBordePrewitt135Grados);
 
 		menuDetectorBordePrewittColor = new JMenuItem(
 				"Detector de Bordes Prewitt (Color)");
-		menuDeteccionDeBordes.add(menuDetectorBordePrewittColor);
+		menuDetectorPrewitt.add(menuDetectorBordePrewittColor);
+		
+		menuDetectorSobel = new JMenu("Sobel");
+		menuDeteccionDeBordes.add(menuDetectorSobel);
 
 		menuDetectorBordeSobel = new JMenuItem("Detector de Bordes Sobel");
-		menuDeteccionDeBordes.add(menuDetectorBordeSobel);
+		menuDetectorSobel.add(menuDetectorBordeSobel);
 
 		menuDetectorBordeSobelVertical = new JMenuItem(
 				"Detector de Bordes Sobel Vertical");
-		menuDeteccionDeBordes.add(menuDetectorBordeSobelVertical);
+		menuDetectorSobel.add(menuDetectorBordeSobelVertical);
 
 		menuDetectorBordeSobel45Grados = new JMenuItem(
 				"Detector de Bordes Sobel 45 Grados");
-		menuDeteccionDeBordes.add(menuDetectorBordeSobel45Grados);
+		menuDetectorSobel.add(menuDetectorBordeSobel45Grados);
 
 		menuDetectorBordeSobel135Grados = new JMenuItem(
 				"Detector de Bordes Sobel 135 Grados");
-		menuDeteccionDeBordes.add(menuDetectorBordeSobel135Grados);
+		menuDetectorSobel.add(menuDetectorBordeSobel135Grados);
 
 		menuDetectorBordeSobelColor = new JMenuItem(
 				"Detector de Bordes Sobel (Color)");
-		menuDeteccionDeBordes.add(menuDetectorBordeSobelColor);
+		menuDetectorSobel.add(menuDetectorBordeSobelColor);
+		
+		menuDetectorKirsh = new JMenu("Kirsh");
+		menuDeteccionDeBordes.add(menuDetectorKirsh);
 
 		menuDetectorBordeKirshVertical = new JMenuItem(
 				"Detector de Bordes Kirsh Vertical");
-		menuDeteccionDeBordes.add(menuDetectorBordeKirshVertical);
+		menuDetectorKirsh.add(menuDetectorBordeKirshVertical);
 
 		menuDetectorBordeKirsh45Grados = new JMenuItem(
 				"Detector de Bordes Kirsh 45 Grados");
-		menuDeteccionDeBordes.add(menuDetectorBordeKirsh45Grados);
+		menuDetectorKirsh.add(menuDetectorBordeKirsh45Grados);
 
 		menuDetectorBordeKirsh135Grados = new JMenuItem(
 				"Detector de Bordes Kirsh 135 Grados");
-		menuDeteccionDeBordes.add(menuDetectorBordeKirsh135Grados);
+		menuDetectorKirsh.add(menuDetectorBordeKirsh135Grados);
+		
+		menuDetectorSinNombre = new JMenu("Mascara Sin Nombre");
+		menuDeteccionDeBordes.add(menuDetectorSinNombre);
 		
 		menuDetectorBordePuntoAVertical = new JMenuItem(
 				"Detector de Bordes Punto A");
-		menuDeteccionDeBordes.add(menuDetectorBordePuntoAVertical);
+		menuDetectorSinNombre.add(menuDetectorBordePuntoAVertical);
 
 		menuDetectorBordePuntoA45Grados = new JMenuItem(
 				"Detector de Bordes Punto A 45 Grados");
-		menuDeteccionDeBordes.add(menuDetectorBordePuntoA45Grados);
+		menuDetectorSinNombre.add(menuDetectorBordePuntoA45Grados);
 
 		menuDetectorBordePuntoA135Grados = new JMenuItem(
 				"Detector de Bordes Punto A 135 Grados");
-		menuDeteccionDeBordes.add(menuDetectorBordePuntoA135Grados);
+		menuDetectorSinNombre.add(menuDetectorBordePuntoA135Grados);
+		
+		menuLaplaciano = new JMenu("Metodos del Laplaciano");
+		menuDeteccionDeBordes.add(menuLaplaciano);
 
 		menuMetodoLaplaciano = new JMenuItem("Metodo del Laplaciano");
-		menuDeteccionDeBordes.add(menuMetodoLaplaciano);
+		menuLaplaciano.add(menuMetodoLaplaciano);
 
 		menuMetodoLaplacianoConPendiente = new JMenuItem(
 				"Metodo del Laplaciano con Pendiente");
-		menuDeteccionDeBordes.add(menuMetodoLaplacianoConPendiente);
+		menuLaplaciano.add(menuMetodoLaplacianoConPendiente);
 
 		menuMetodoLaplacianoDelGausiano = new JMenuItem(
 				"Metodo del Laplaciano del Gausiano");
-		menuDeteccionDeBordes.add(menuMetodoLaplacianoDelGausiano);
+		menuLaplaciano.add(menuMetodoLaplacianoDelGausiano);
+		
+		menuDifusores = new JMenu("Metodos de Difusion");
+		menuDeteccionDeBordes.add(menuDifusores);
 
 		menuDifusionIsotropica = new JMenuItem("Difusion Isotropica");
-		menuDeteccionDeBordes.add(menuDifusionIsotropica);
+		menuDifusores.add(menuDifusionIsotropica);
 
 		menuDifusionAnisotropica = new JMenuItem("Difusion Anisotropica");
-		menuDeteccionDeBordes.add(menuDifusionAnisotropica);
+		menuDifusores.add(menuDifusionAnisotropica);
+		
+		menuUmbralizaciones= new JMenu("Metodos de Umbralizacion");
+		menuDeteccionDeBordes.add(menuUmbralizaciones);
 
 		menuUmbralizacionGlobal = new JMenuItem("Metodo Umbralizacion Global");
-		menuDeteccionDeBordes.add(menuUmbralizacionGlobal);
+		menuUmbralizaciones.add(menuUmbralizacionGlobal);
 
 		menuUmbralizacionOtsu = new JMenuItem("Metodo Umbralizacion Otsu");
-		menuDeteccionDeBordes.add(menuUmbralizacionOtsu);
+		menuUmbralizaciones.add(menuUmbralizacionOtsu);
 		
 		menuSupresionNoMaximos = new JMenuItem("Metodo Supresion No Maximos");
 		menuDeteccionDeBordes.add(menuSupresionNoMaximos);
@@ -356,6 +390,9 @@ public class PrincipalForm extends JFrame {
 		
 		menuDetectorDeBordeCanny = new JMenuItem("Metodo Detector de Borde Canny");
 		menuDeteccionDeBordes.add(menuDetectorDeBordeCanny);
+		
+		menuTransformadaDeHough = new JMenuItem("Transformada de Hough");
+		menuDeteccionDeBordes.add(menuTransformadaDeHough);
 	}
 
 	private void addListenersToComponents() {
@@ -1227,6 +1264,23 @@ public class PrincipalForm extends JFrame {
 			}
 
 		});
+		
+		menuTransformadaDeHough.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				if (originalImage != null) {
+
+					aplicarTransformadaDeHough();
+
+				} else {
+
+					showAlertOriginalImageNull();
+
+				}
+			}
+		});
 	}
 
 	public BufferedImage abrirImagen() {
@@ -1496,21 +1550,23 @@ public class PrincipalForm extends JFrame {
 	}
 
 	private void crearImagenSintetica() {
-		BufferedImage bmp = new BufferedImage(100, 100,
+		BufferedImage bmp = new BufferedImage(500, 500,
 				BufferedImage.TYPE_BYTE_BINARY);
 
-		for (int i = 0; i < 100; i++) {
-			for (int j = 0; j < 100; j++) {
+		for (int i = 0; i < 500; i++) {
+			for (int j = 0; j < 500; j++) {
 				bmp.setRGB(i, j, 0);
 			}
 		}
 
 		Graphics2D g = bmp.createGraphics();
 		g.setColor(Color.WHITE);
-		g.fillOval(50, 50, 15, 15);
+		g.fillRect(220, 220, 50, 50);
 
 		originalImage = bmp;
 		imageInLabel = bmp;
+//		imageInLabel = ImageOperations.getNegativeImage(imageInLabel);
+//		imageInLabel = aplicarDetectorDeBordeSobel();
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 
@@ -1630,7 +1686,7 @@ public class PrincipalForm extends JFrame {
 
 	}
 
-	private void aplicarDetectorDeBordePrewitt() {
+	private BufferedImage aplicarDetectorDeBordePrewitt() {
 
 		int mascaraX[][] = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
 
@@ -1638,6 +1694,8 @@ public class PrincipalForm extends JFrame {
 
 		imageInLabel = Borde.detectarBorde(imageInLabel, mascaraX, mascaraY);
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+		
+		return imageInLabel;
 	}
 
 	private void aplicarDetectorDeBordePrewittHorizontal() {
@@ -1685,13 +1743,15 @@ public class PrincipalForm extends JFrame {
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 
-	private void aplicarDetectorDeBordeSobel() {
+	private BufferedImage aplicarDetectorDeBordeSobel() {
 		int mascaraX[][] = { { 1, 0, -1 }, { 2, 0, -2 }, { 1, 0, -1 } };
 
 		int mascaraY[][] = { { 1, 2, 1 }, { 0, 0, 0 }, { -1, -2, -1 } };
 
 		imageInLabel = Borde.detectarBorde(imageInLabel, mascaraX, mascaraY);
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+		
+		return imageInLabel;
 	}
 
 	private void aplicarDetectorDeBordeSobelColor() {
@@ -1907,4 +1967,22 @@ public class PrincipalForm extends JFrame {
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
+	
+
+	private void aplicarTransformadaDeHough() {
+		
+		int phiMin = Integer.valueOf(JOptionPane.showInputDialog(null, "Phi minimo: ", "Transformada de Hough", JOptionPane.DEFAULT_OPTION));
+		int phiMax = Integer.valueOf(JOptionPane.showInputDialog(null, "Phi maximo: ", "Transformada de Hough", JOptionPane.DEFAULT_OPTION));
+		int tethaMin = Integer.valueOf(JOptionPane.showInputDialog(null, "Tetha minimo: ", "Transformada de Hough", JOptionPane.DEFAULT_OPTION));
+		int tethaMax = Integer.valueOf(JOptionPane.showInputDialog(null, "Tetha maximo: ", "Transformada de Hough", JOptionPane.DEFAULT_OPTION));
+		int discretizacionesPhi = Integer.valueOf(JOptionPane.showInputDialog(null, "Discretizaciones Phi: ", "Transformada de Hough", JOptionPane.DEFAULT_OPTION));
+		int discretizacionesTetha = Integer.valueOf(JOptionPane.showInputDialog(null, "Discretizaciones Tetha: ", "Transformada de Hough", JOptionPane.DEFAULT_OPTION));
+		
+		MatrizAcumuladora matriz = new MatrizAcumuladora(phiMin, phiMax, tethaMin, tethaMax, discretizacionesPhi, discretizacionesTetha);
+		imageInLabel = TransformadaDeHough.aplicarTransformadaDeHough(imageInLabel, matriz);
+
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+		
+	}
+
 }
