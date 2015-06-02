@@ -2,9 +2,13 @@ package ar.edu.untref.imagenes.tps.forms;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -21,10 +25,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.border.EmptyBorder;
 
 import ar.edu.untref.imagenes.tps.bordes.Borde;
 import ar.edu.untref.imagenes.tps.bordes.DetectorDeBordeCanny;
+import ar.edu.untref.imagenes.tps.bordes.Segmentacion;
 import ar.edu.untref.imagenes.tps.bordes.TransformadaDeHough;
 import ar.edu.untref.imagenes.tps.difusion.Difuminador;
 import ar.edu.untref.imagenes.tps.domain.MatrizAcumuladora;
@@ -124,7 +128,9 @@ public class PrincipalForm extends JFrame {
 	private JMenuItem menuDetectorDeBordeCanny;
 	
 	private JMenuItem menuTransformadaDeHough;
-
+	
+	private JMenu menuSegmentacion;
+	private JMenuItem menuSegmentacionSemisupervisada;
 
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
@@ -133,26 +139,29 @@ public class PrincipalForm extends JFrame {
 
 	private BufferedImage imageInLabel;
 	private BufferedImage originalImage;
+	
+	private int primerPuntoX = -1;
+	private int primerPuntoY = -1;
+	private int segundoPuntoX = -1;
+	private int segundoPuntoY = -1;
 
 	public PrincipalForm() {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
-
-		this.initializeMenu();
-		this.addListenersToComponents();
+		
+		labelPrincipalImage = new JLabel();
+		labelPrincipalImage.setHorizontalAlignment(JLabel.CENTER);
 
 		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 
 		scrollPane = new JScrollPane();
+		scrollPane.setViewportView(labelPrincipalImage);
 		contentPane.add(scrollPane, BorderLayout.CENTER);
 
-		labelPrincipalImage = new JLabel();
-		labelPrincipalImage.setHorizontalAlignment(JLabel.CENTER);
-		scrollPane.setViewportView(labelPrincipalImage);
+		this.initializeMenu();
+		this.addListenersToComponents();
 	}
 
 	private void initializeMenu() {
@@ -393,6 +402,12 @@ public class PrincipalForm extends JFrame {
 		
 		menuTransformadaDeHough = new JMenuItem("Transformada de Hough");
 		menuDeteccionDeBordes.add(menuTransformadaDeHough);
+		
+		menuSegmentacion= new JMenu("Metodos de Segmentacion");
+		menuDeteccionDeBordes.add(menuSegmentacion);
+
+		menuSegmentacionSemisupervisada = new JMenuItem("Segmentar Imagen");
+		menuSegmentacion.add(menuSegmentacionSemisupervisada);
 	}
 
 	private void addListenersToComponents() {
@@ -1281,6 +1296,30 @@ public class PrincipalForm extends JFrame {
 				}
 			}
 		});
+		
+		labelPrincipalImage.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				label1MouseClicked(e);
+			}
+		});
+		
+		menuSegmentacionSemisupervisada.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				if (originalImage != null) {
+					segmentarImagen();
+
+				} else {
+
+					showAlertOriginalImageNull();
+
+				}
+			}
+		});
+
 	}
 
 	public BufferedImage abrirImagen() {
@@ -1321,7 +1360,11 @@ public class PrincipalForm extends JFrame {
 				e.printStackTrace();
 			}
 		}
-
+		
+		this.getContentPane().setPreferredSize(new Dimension(imageInLabel.getWidth(), imageInLabel.getHeight()));
+		this.pack();
+		this.setVisible(true);
+		
 		return imageInLabel;
 	}
 
@@ -1465,8 +1508,7 @@ public class PrincipalForm extends JFrame {
 
 	private void getNegative() {
 
-		ImageOperations io = new ImageOperations();
-		imageInLabel = io.getNegativeImage(imageInLabel);
+		imageInLabel = ImageOperations.getNegativeImage(imageInLabel);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
@@ -1983,6 +2025,56 @@ public class PrincipalForm extends JFrame {
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 		
+	}
+	
+	private void segmentarImagen(){
+		Point punto1 = new Point();
+		punto1.setLocation(primerPuntoX, primerPuntoY);
+		
+		Point punto2 = new Point();
+		punto2.setLocation(segundoPuntoX, segundoPuntoY);
+		
+		Segmentacion.segmentarImagen(originalImage, punto1, punto2);
+
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));	
+		
+	}
+	
+	private void label1MouseClicked(MouseEvent e) {
+		if(primerPuntoX == -1 || segundoPuntoX == -1){
+			if(primerPuntoX == -1 && primerPuntoY == -1){
+				primerPuntoX =(int)e.getPoint().getX();
+				primerPuntoY = (int) e.getPoint().getY();
+	
+				Graphics2D g = imageInLabel.createGraphics();
+				g.setColor(Color.BLACK);
+				g.fillOval(primerPuntoX, primerPuntoY, 4, 4);
+			} else {
+				segundoPuntoX =(int)e.getPoint().getX();
+				segundoPuntoY = (int) e.getPoint().getY();
+				
+				Graphics2D g = imageInLabel.createGraphics();
+				g.setColor(Color.BLACK);
+				g.fillOval(segundoPuntoX, segundoPuntoY, 4, 4);
+			}
+		}
+		
+		if(primerPuntoX != -1 && segundoPuntoX != -1){
+			int tercerPuntoX = primerPuntoX;
+			int tercerPuntoY = segundoPuntoY;
+			int cuartoPuntoX = segundoPuntoX;
+			int cuartoPuntoY = primerPuntoY;
+			
+			Graphics2D g = imageInLabel.createGraphics();
+		    g.setColor(Color.BLACK);
+		    g.drawLine(primerPuntoX, primerPuntoY, tercerPuntoX, tercerPuntoY);
+		    g.drawLine(tercerPuntoX, tercerPuntoY, segundoPuntoX, segundoPuntoY);
+		    g.drawLine(segundoPuntoX, segundoPuntoY, cuartoPuntoX, cuartoPuntoY);
+		    g.drawLine(cuartoPuntoX, cuartoPuntoY, primerPuntoX, primerPuntoY);
+		    
+		}
+        
+        labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 
 }

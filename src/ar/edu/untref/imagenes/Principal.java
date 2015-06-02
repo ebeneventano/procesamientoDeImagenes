@@ -8,7 +8,7 @@ public class Principal{
     	EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-//            	new FormularioPrincipal().setVisible(true);
+            	new FormularioPrincipal().setVisible(true);
             }
         });
     }
