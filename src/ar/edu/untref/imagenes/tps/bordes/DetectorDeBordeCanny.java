@@ -129,7 +129,7 @@ public class DetectorDeBordeCanny {
 		for (int i=0; i<matrizSobelX.length ;i++){
 			for (int j=0; j<matrizSobelX[0].length ;j++){
 				
-				float angulo = (float) Math.atan((float) matrizSobelX[i][j] / matrizSobelY[i][j]);
+				float angulo = (float) Math.atan((float) matrizSobelY[i][j] / matrizSobelX[i][j]);
 				double grados = Math.toDegrees(angulo);
                 
                 if ( grados < 0){
@@ -285,15 +285,15 @@ public class DetectorDeBordeCanny {
 		
 		int[][] matrizSupresionNoMaximosSinTransformar = aplicarSupresionNoMaximos(matrizMagnitudDeBorde, matrizDeAngulos);
 		
-//		int[][] matrizSupresionNoMaximosConTransformacionLineal = LinealTransformation.aplicarTransformacionLineal(matrizSupresionNoMaximosSinTransformar);
+		int[][] matrizSupresionNoMaximosConTransformacionLineal = LinealTransformation.aplicarTransformacionLineal(matrizSupresionNoMaximosSinTransformar);
 		
 		int[][] matrizResultado = new int [imagen.getWidth()][imagen.getHeight()];
 		
 		for (int i = 1; i < matrizMagnitudDeBorde.length - 1; i++) {
 			for (int j = 1; j < matrizMagnitudDeBorde[0].length - 1; j++) {
-				if(matrizSupresionNoMaximosSinTransformar[i][j] > umbral2){
+				if(matrizSupresionNoMaximosConTransformacionLineal[i][j] > umbral2){
 					matrizResultado[i][j] = 255;
-				}else if(matrizSupresionNoMaximosSinTransformar[i][j] < umbral1){
+				}else if(matrizSupresionNoMaximosConTransformacionLineal[i][j] < umbral1){
 					matrizResultado[i][j] = 0;
 				}else{
 					if(matrizResultado[i-1][j] == 255 || matrizResultado[i+1][j] == 255 || matrizResultado[i][j+1] == 255 || matrizResultado[i][j-1] == 255){

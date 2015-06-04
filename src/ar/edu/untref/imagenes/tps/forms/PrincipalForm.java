@@ -1597,7 +1597,7 @@ public class PrincipalForm extends JFrame {
 
 		for (int i = 0; i < 500; i++) {
 			for (int j = 0; j < 500; j++) {
-				bmp.setRGB(i, j, 0);
+				bmp.setRGB(i, j, Color.BLACK.getRGB());
 			}
 		}
 
@@ -1607,8 +1607,8 @@ public class PrincipalForm extends JFrame {
 
 		originalImage = bmp;
 		imageInLabel = bmp;
-//		imageInLabel = ImageOperations.getNegativeImage(imageInLabel);
-//		imageInLabel = aplicarDetectorDeBordeSobel();
+		imageInLabel = ImageOperations.getNegativeImage(imageInLabel);
+		imageInLabel = aplicarDetectorDeBordeSobel();
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 
@@ -2034,7 +2034,7 @@ public class PrincipalForm extends JFrame {
 		Point punto2 = new Point();
 		punto2.setLocation(segundoPuntoX, segundoPuntoY);
 		
-		Segmentacion.segmentarImagen(originalImage, punto1, punto2);
+		imageInLabel = Segmentacion.segmentarImagen(originalImage, punto1, punto2);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));	
 		
