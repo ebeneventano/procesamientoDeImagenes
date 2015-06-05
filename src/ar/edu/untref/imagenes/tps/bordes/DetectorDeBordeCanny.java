@@ -136,7 +136,7 @@ public class DetectorDeBordeCanny {
                 	grados = 180 + grados;
                 }
 
-                matrizDeAngulos[i][j] = acomodarGrados(grados);
+                matrizDeAngulos[i][j] = acomodarGrados(angulo);
 			}
 		}
 
@@ -151,11 +151,11 @@ public class DetectorDeBordeCanny {
 			
 			anguloFinal = 45;
 			
-		} else if ( grados >= 67.5 && grados <= 112.5 ){
+		} else if ( grados > 67.5 && grados <= 112.5 ){
 			
 			anguloFinal = 90;
 			
-		} else if ( grados >= 112.5 && grados <= 157.5 ){
+		} else if ( grados > 112.5 && grados <= 157.5 ){
 			
 			anguloFinal = 135;
 			
