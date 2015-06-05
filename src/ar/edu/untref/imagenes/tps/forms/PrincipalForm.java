@@ -26,6 +26,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import susan.Susan;
 import ar.edu.untref.imagenes.tps.bordes.Borde;
 import ar.edu.untref.imagenes.tps.bordes.DetectorDeBordeCanny;
 import ar.edu.untref.imagenes.tps.bordes.Segmentacion;
@@ -2101,6 +2102,10 @@ public class PrincipalForm extends JFrame {
 
 
 	private void aplicarMetodoSusan() {
-		
+
+		Susan susan = new Susan();
+		imageInLabel = susan.aplicar(imageInLabel);
+
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 }

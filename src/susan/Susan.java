@@ -3,8 +3,6 @@ package susan;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
-import ar.edu.untref.imagenes.utils.ColorProvider;
-
 /**
  * Smallest Univaluate Segment Assimilating Nucleus
  * 
@@ -23,8 +21,9 @@ public class Susan {
 	private int[][] mascara;
 	private double umbralT = 27.0;
 	
-	private int pixelNegro = ColorProvider.colorToRGB(255, 0, 0, 0);
-	private int pixelBlanco = ColorProvider.colorToRGB(255, 255, 255, 255);
+	private int pixelNegro = new Color(0, 0, 0).getRGB();
+	private int pixelBlanco = new Color(255, 255, 255).getRGB();
+	private int pixelRojo = new Color(255, 0, 0).getRGB();
 	
 	/**
 	 * Si el resultado es aprox 0, no corresponde a borde ni esquina.
@@ -130,6 +129,20 @@ public class Susan {
 				} else {
 					resultado.setRGB(i, j, pixelNegro);
 				}
+				
+//				// Bordes blancos
+//				if (s > 0.4 && s < 0.6) {
+//					resultado.setRGB(i, j, pixelBlanco);
+//				
+//				// Esquinas rojas
+//				} else if (s > 0.6 && s < 1.0) {
+//					resultado.setRGB(i, j, pixelRojo);
+//				
+//				// Ni borde, ni esquina
+//				} else {
+//					resultado.setRGB(i, j, pixelNegro);
+//				}
+				
 				
 			}
 		}
