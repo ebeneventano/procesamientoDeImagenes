@@ -131,6 +131,8 @@ public class PrincipalForm extends JFrame {
 	
 	private JMenu menuSegmentacion;
 	private JMenuItem menuSegmentacionSemisupervisada;
+	
+	private JMenuItem menuMetodoDeSusan;
 
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
@@ -399,6 +401,9 @@ public class PrincipalForm extends JFrame {
 		
 		menuDetectorDeBordeCanny = new JMenuItem("Metodo Detector de Borde Canny");
 		menuDeteccionDeBordes.add(menuDetectorDeBordeCanny);
+		
+		menuMetodoDeSusan = new JMenuItem("Metodo de SUSAN");
+		menuDeteccionDeBordes.add(menuMetodoDeSusan);
 		
 		menuTransformadaDeHough = new JMenuItem("Transformada de Hough");
 		menuDeteccionDeBordes.add(menuTransformadaDeHough);
@@ -1297,6 +1302,23 @@ public class PrincipalForm extends JFrame {
 			}
 		});
 		
+		menuMetodoDeSusan.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				if (originalImage != null) {
+
+					aplicarMetodoSusan();
+
+				} else {
+
+					showAlertOriginalImageNull();
+
+				}
+			}
+		});
+		
 		labelPrincipalImage.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -2077,4 +2099,8 @@ public class PrincipalForm extends JFrame {
         labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 
+
+	private void aplicarMetodoSusan() {
+		
+	}
 }
