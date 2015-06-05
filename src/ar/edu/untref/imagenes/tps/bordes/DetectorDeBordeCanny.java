@@ -285,15 +285,15 @@ public class DetectorDeBordeCanny {
 		
 		int[][] matrizSupresionNoMaximosSinTransformar = aplicarSupresionNoMaximos(matrizMagnitudDeBorde, matrizDeAngulos);
 		
-		int[][] matrizSupresionNoMaximosConTransformacionLineal = LinealTransformation.aplicarTransformacionLineal(matrizSupresionNoMaximosSinTransformar);
+//		int[][] matrizSupresionNoMaximosConTransformacionLineal = LinealTransformation.aplicarTransformacionLineal(matrizSupresionNoMaximosSinTransformar);
 		
 		int[][] matrizResultado = new int [imagen.getWidth()][imagen.getHeight()];
 		
 		for (int i = 1; i < matrizMagnitudDeBorde.length - 1; i++) {
 			for (int j = 1; j < matrizMagnitudDeBorde[0].length - 1; j++) {
-				if(matrizSupresionNoMaximosConTransformacionLineal[i][j] > umbral2){
+				if(matrizSupresionNoMaximosSinTransformar[i][j] > umbral2){
 					matrizResultado[i][j] = 255;
-				}else if(matrizSupresionNoMaximosConTransformacionLineal[i][j] < umbral1){
+				}else if(matrizSupresionNoMaximosSinTransformar[i][j] < umbral1){
 					matrizResultado[i][j] = 0;
 				}else{
 					if(matrizResultado[i-1][j] == 255 || matrizResultado[i+1][j] == 255 || matrizResultado[i][j+1] == 255 || matrizResultado[i][j-1] == 255){

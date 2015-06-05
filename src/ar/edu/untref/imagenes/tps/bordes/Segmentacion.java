@@ -59,7 +59,7 @@ public class Segmentacion {
 		
 		PromedioRGB promedio = obtenerPromedioRGB(imagen, punto1, punto2);
 		
-		for(int i = 0; i < 10 ; i++){
+		for(int i = 0; i < 10; i++){
 			
 			Iterator<Point> iteradorPuntos = lOut.iterator();
 			while(iteradorPuntos.hasNext()){
@@ -152,7 +152,7 @@ public class Segmentacion {
 		
 		int norma = (int) Math.sqrt((diferenciaColorAzul*diferenciaColorAzul + diferenciaColorRojo*diferenciaColorRojo + diferenciaColorVerde*diferenciaColorVerde));
 		
-		if((1 - ((float)norma))/(255*255*3) < 0){
+		if(Math.log((1 - (float)norma/(255*255*3)) / ((float)norma/(255*255*3))) < 0){
 			
 			int valorMatrizIzquierda = matrizSigmas[unPoint.x - 1][unPoint.y];
 			int valorMatrizDerecha = matrizSigmas[unPoint.x + 1][unPoint.y];
@@ -215,7 +215,7 @@ public class Segmentacion {
 		
 		int norma = (int) Math.sqrt((diferenciaColorAzul*diferenciaColorAzul + diferenciaColorRojo*diferenciaColorRojo + diferenciaColorVerde*diferenciaColorVerde));
 		
-		if((1 - ((float)norma/(255*255*3))) > 0){
+		if(Math.log((1 - (float)norma/(255*255*3)) / ((float)norma/(255*255*3))) > 0){
 			
 			int valorMatrizIzquierda = matrizSigmas[unPoint.x - 1][unPoint.y];
 			int valorMatrizDerecha = matrizSigmas[unPoint.x + 1][unPoint.y];
