@@ -8,12 +8,10 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import ar.edu.untref.imagenes.tps.domain.Curva;
-import ar.edu.untref.imagenes.tps.domain.PromedioRGB;
-import ar.edu.untref.imagenes.tps.utils.ImageOperations;
 
-public class Segmentacion {
+public class Segmentador {
 
-	public static BufferedImage segmentarImagen(BufferedImage imagen, Point punto1, Point punto2) {
+public static BufferedImage segmentarImagen(BufferedImage imagen, Point punto1, Point punto2) {
 		
 		Curva curvaSeleccionada = obtenerCurvaDesdePuntosSeleccionados(punto1.x, punto1.y, punto2.x, punto2.y);
 
@@ -57,14 +55,14 @@ public class Segmentacion {
 			}
 		}
 		
-		PromedioRGB promedio = obtenerPromedioRGB(imagen, punto1, punto2);
+		int[] promedioDeColores = obtenerPromedioRGB(imagen, punto1, punto2);
 		
-		for(int i = 0; i < 10; i++){
+		for(int i = 0; i < 1000; i++){
 			
 			Iterator<Point> iteradorPuntos = lOut.iterator();
 			while(iteradorPuntos.hasNext()){
 				
-				expandir(imagen, matrizSigmas, lIn, lOut, promedio,iteradorPuntos, contPixelFueraLout, contPixelDentroLin);
+				expandir(imagen, matrizSigmas, lIn, lOut, promedioDeColores,iteradorPuntos, contPixelFueraLout, contPixelDentroLin);
 			}
 
 			Iterator<Point> iteradorPuntosLin = lIn.iterator();
@@ -76,7 +74,7 @@ public class Segmentacion {
 			Iterator<Point> iteradorPuntosLin2 = lIn.iterator();
 			while(iteradorPuntosLin2.hasNext()){
 				
-				contraer(imagen, matrizSigmas, lIn, lOut, promedio, iteradorPuntosLin2, contPixelFueraLout, contPixelDentroLin);
+				contraer(imagen, matrizSigmas, lIn, lOut, promedioDeColores, iteradorPuntosLin2, contPixelFueraLout, contPixelDentroLin);
 			}
 			
 			Iterator<Point> iteradorPuntosLout2 = lOut.iterator();
@@ -86,13 +84,11 @@ public class Segmentacion {
 			}
 		}
 		
-		BufferedImage imagenCopia = ImageOperations.clonarImagen(imagen);
-		
 		for(Point unPoint : lIn){
-			imagenCopia.setRGB(unPoint.x, unPoint.y, Color.WHITE.getRGB());
+			imagen.setRGB(unPoint.x, unPoint.y, Color.PINK.getRGB());
 		}
 		
-		return imagenCopia;
+		return imagen;
 	}
 
 	private static Curva obtenerCurvaDesdePuntosSeleccionados(int primerPuntoX,
@@ -141,18 +137,11 @@ public class Segmentacion {
 	}
 
 	private static void contraer(BufferedImage imagen, int[][] matrizSigmas,
-			List<Point> lIn, List<Point> lOut, PromedioRGB promedio,
+			List<Point> lIn, List<Point> lOut, int[] promedio,
 			Iterator<Point> iteradorPuntosLin2, int contadorPixelFuera, int contadorPixelDentro) {
 		Point unPoint = iteradorPuntosLin2.next();
 		
-		Color color = new Color(imagen.getRGB(unPoint.x, unPoint.y));
-		int diferenciaColorRojo = color.getRed() - promedio.getPromedioRojo();
-		int diferenciaColorVerde = color.getGreen() - promedio.getPromedioVerde();
-		int diferenciaColorAzul = color.getBlue() - promedio.getPromedioAzul();
-		
-		int norma = (int) Math.sqrt((diferenciaColorAzul*diferenciaColorAzul + diferenciaColorRojo*diferenciaColorRojo + diferenciaColorVerde*diferenciaColorVerde));
-		
-		if(Math.log((1 - (float)norma/(255*255*3)) / ((float)norma/(255*255*3))) < 0){
+		if(calcularFd(promedio, imagen, unPoint) < 0){
 			
 			int valorMatrizIzquierda = matrizSigmas[unPoint.x - 1][unPoint.y];
 			int valorMatrizDerecha = matrizSigmas[unPoint.x + 1][unPoint.y];
@@ -203,19 +192,12 @@ public class Segmentacion {
 	}
 
 	private static void expandir(BufferedImage imagen, int[][] matrizSigmas,
-			List<Point> lIn, List<Point> lOut, PromedioRGB promedio,
+			List<Point> lIn, List<Point> lOut, int[] promedio,
 			Iterator<Point> iteradorPuntos, int contadorPixelFuera, int contadorPixelDentro) {
 		
 		Point unPoint = iteradorPuntos.next();
 		
-		Color color = new Color(imagen.getRGB(unPoint.x, unPoint.y));
-		int diferenciaColorRojo = color.getRed() - promedio.getPromedioRojo();
-		int diferenciaColorVerde = color.getGreen() - promedio.getPromedioVerde();
-		int diferenciaColorAzul = color.getBlue() - promedio.getPromedioAzul();
-		
-		int norma = (int) Math.sqrt((diferenciaColorAzul*diferenciaColorAzul + diferenciaColorRojo*diferenciaColorRojo + diferenciaColorVerde*diferenciaColorVerde));
-		
-		if(Math.log((1 - (float)norma/(255*255*3)) / ((float)norma/(255*255*3))) > 0){
+		if(calcularFd(promedio, imagen, unPoint) > 0){
 			
 			int valorMatrizIzquierda = matrizSigmas[unPoint.x - 1][unPoint.y];
 			int valorMatrizDerecha = matrizSigmas[unPoint.x + 1][unPoint.y];
@@ -252,6 +234,34 @@ public class Segmentacion {
 		}
 	}
 	
+	private static int calcularFd(int[] promedio, BufferedImage imagen, Point posicion) {
+
+		Color colorPromedio = new Color(promedio[0], promedio[1], promedio[2]);
+
+		int fD = 1;
+		
+		boolean debeSeguir = sonColoresSimilares(imagen, colorPromedio, posicion.x, posicion.y);
+		
+		if ( !debeSeguir ){
+			
+			fD = -1;
+		}
+		
+		return fD;
+	}
+
+	private static boolean sonColoresSimilares(BufferedImage imagen,
+			Color colorPromedio, int i, int j) {
+		
+		Color colorEnEsePunto = new Color(imagen.getRGB(i, j));
+
+		boolean esSimilar = Math.abs(colorEnEsePunto.getRed()-colorPromedio.getRed()) <= 80 
+							&& Math.abs(colorEnEsePunto.getGreen()-colorPromedio.getGreen()) <= 80
+							&& Math.abs(colorEnEsePunto.getBlue()-colorPromedio.getBlue()) <= 80;
+		
+		return esSimilar;
+	}
+
 	private static boolean estaAdentro(int i, int j, int desdeX, int hastaX, int desdeY, int hastaY) {
 		boolean estaAdentro = false;
 		if(i > desdeX && i < hastaX && j > desdeY && j < hastaY){
@@ -292,8 +302,9 @@ public class Segmentacion {
 		return estaEnBorde;
 	}
 
-	private static PromedioRGB obtenerPromedioRGB(BufferedImage imagen, Point punto1, Point punto2){
-	       int rojoAcumulado = 0 ;
+	private static int[] obtenerPromedioRGB(BufferedImage imagen, Point punto1, Point punto2){
+	       
+		   int rojoAcumulado = 0 ;
 	       int verdeAcumulado = 0;
 	       int azulAcumulado = 0;
 	       
@@ -329,8 +340,8 @@ public class Segmentacion {
 	    	   hastaY = primerPuntoY;
 	       }
 	       
-	       for(int i = desdeX ; i < hastaX ; i++){
-	    	   for(int j = desdeY ; j < hastaY ; j++){
+	       for(int i = desdeX+1 ; i < hastaX-1 ; i++){
+	    	   for(int j = desdeY+1 ; j < hastaY-1 ; j++){
 			       Color color = new Color(imagen.getRGB(i, j));
 			       int blue = color.getBlue();
 			       int green = color.getGreen();
@@ -344,13 +355,16 @@ public class Segmentacion {
 	    	   }
 	       }
 	       
-	       promedioRojo = rojoAcumulado / contadorCantPixel;
-	       promedioVerde = verdeAcumulado / contadorCantPixel;
-	       promedioAzul = azulAcumulado / contadorCantPixel;
+	       promedioRojo = (int) (rojoAcumulado / contadorCantPixel);
+	       promedioVerde = (int) (verdeAcumulado / contadorCantPixel);
+	       promedioAzul = (int) (azulAcumulado / contadorCantPixel);
 
-	       PromedioRGB promedio = new PromedioRGB(promedioRojo, promedioVerde, promedioAzul);
+	       int[] valoresPromedio = new int[3];
+	       valoresPromedio[0] = promedioRojo;
+	       valoresPromedio[1] = promedioVerde;
+		   valoresPromedio[2] = promedioAzul;
 	       
-	       return promedio;
+	       return valoresPromedio;
 
 	}
 }

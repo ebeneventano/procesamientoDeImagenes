@@ -29,7 +29,7 @@ import javax.swing.JScrollPane;
 import susan.Susan;
 import ar.edu.untref.imagenes.tps.bordes.Borde;
 import ar.edu.untref.imagenes.tps.bordes.DetectorDeBordeCanny;
-import ar.edu.untref.imagenes.tps.bordes.Segmentacion;
+import ar.edu.untref.imagenes.tps.bordes.Segmentador;
 import ar.edu.untref.imagenes.tps.bordes.TransformadaDeHough;
 import ar.edu.untref.imagenes.tps.difusion.Difuminador;
 import ar.edu.untref.imagenes.tps.domain.MatrizAcumuladora;
@@ -1310,7 +1310,7 @@ public class PrincipalForm extends JFrame {
 
 				if (originalImage != null) {
 
-					aplicarMetodoSusan();
+					aplicarMetodoSusanBorde();
 
 				} else {
 
@@ -2057,7 +2057,7 @@ public class PrincipalForm extends JFrame {
 		Point punto2 = new Point();
 		punto2.setLocation(segundoPuntoX, segundoPuntoY);
 		
-		imageInLabel = Segmentacion.segmentarImagen(originalImage, punto1, punto2);
+		imageInLabel = Segmentador.segmentarImagen(originalImage, punto1, punto2);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));	
 		
@@ -2101,10 +2101,12 @@ public class PrincipalForm extends JFrame {
 	}
 
 
-	private void aplicarMetodoSusan() {
+	private void aplicarMetodoSusanBorde() {
+		
+		String flagDetector = String.valueOf(JOptionPane.showInputDialog(null, "Opcion borde/esquina", "Filtro LoG", JOptionPane.DEFAULT_OPTION));
 
 		Susan susan = new Susan();
-		imageInLabel = susan.aplicar(imageInLabel);
+		imageInLabel = susan.aplicarSusanBorde(imageInLabel, flagDetector);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
