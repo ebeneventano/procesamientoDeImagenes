@@ -11,9 +11,11 @@ import ar.edu.untref.imagenes.tps.domain.Curva;
 
 public class Segmentador {
 
-public static BufferedImage segmentarImagen(BufferedImage imagen, Point punto1, Point punto2) {
-		
-		Curva curvaSeleccionada = obtenerCurvaDesdePuntosSeleccionados(punto1.x, punto1.y, punto2.x, punto2.y);
+	public static ImagenVideoPreProcesada segmentarImagen(BufferedImage imagen,
+			Point punto1, Point punto2) {
+
+		Curva curvaSeleccionada = obtenerCurvaDesdePuntosSeleccionados(
+				punto1.x, punto1.y, punto2.x, punto2.y);
 
 		int desdeX = curvaSeleccionada.getDesde().x;
 		int hastaX = curvaSeleccionada.getHasta().x;
@@ -21,74 +23,79 @@ public static BufferedImage segmentarImagen(BufferedImage imagen, Point punto1, 
 		int hastaY = curvaSeleccionada.getHasta().y;
 
 		int[][] matrizSigmas = new int[imagen.getWidth()][imagen.getHeight()];
-		
+
 		List<Point> lIn = new CopyOnWriteArrayList<Point>();
 		List<Point> lOut = new CopyOnWriteArrayList<Point>();
 
 		int contPixelFueraLout = 0;
 		int contPixelDentroLin = 0;
-		
-		for(int i = 0; i < imagen.getWidth() ; i++){
-			for(int j = 0; j < imagen.getHeight() ; j++){
-				
-				if(estaEnBorde(i, j, desdeX, hastaX, desdeY, hastaY)){
-					
+
+		for (int i = 0; i < imagen.getWidth(); i++) {
+			for (int j = 0; j < imagen.getHeight(); j++) {
+
+				if (estaEnBorde(i, j, desdeX, hastaX, desdeY, hastaY)) {
+
 					matrizSigmas[i][j] = -1;
-					lIn.add(new Point(i,j));
-					
-				}else if(estaAlRededorDelBorde(i, j, desdeX, hastaX, desdeY, hastaY)){
-					
+					lIn.add(new Point(i, j));
+
+				} else if (estaAlRededorDelBorde(i, j, desdeX, hastaX, desdeY,
+						hastaY)) {
+
 					matrizSigmas[i][j] = 1;
-					lOut.add(new Point(i,j));
-					
-				}else if(estaAdentro(i, j, desdeX, hastaX, desdeY, hastaY)){
-					
+					lOut.add(new Point(i, j));
+
+				} else if (estaAdentro(i, j, desdeX, hastaX, desdeY, hastaY)) {
+
 					matrizSigmas[i][j] = -3;
 					contPixelDentroLin++;
-					
-				}else{
-					
+
+				} else {
+
 					matrizSigmas[i][j] = 3;
 					contPixelFueraLout++;
-					
+
 				}
 			}
 		}
-		
+
 		int[] promedioDeColores = obtenerPromedioRGB(imagen, punto1, punto2);
-		
-		for(int i = 0; i < 1000; i++){
-			
+
+		for (int i = 0; i < 1000; i++) {
+
 			Iterator<Point> iteradorPuntos = lOut.iterator();
-			while(iteradorPuntos.hasNext()){
-				
-				expandir(imagen, matrizSigmas, lIn, lOut, promedioDeColores,iteradorPuntos, contPixelFueraLout, contPixelDentroLin);
+			while (iteradorPuntos.hasNext()) {
+
+				expandir(imagen, matrizSigmas, lIn, lOut, promedioDeColores,
+						iteradorPuntos, contPixelFueraLout, contPixelDentroLin);
 			}
 
 			Iterator<Point> iteradorPuntosLin = lIn.iterator();
-			while(iteradorPuntosLin.hasNext()){
-				
+			while (iteradorPuntosLin.hasNext()) {
+
 				sacarLinNoCorrespondientes(matrizSigmas, lIn, iteradorPuntosLin);
 			}
-			
+
 			Iterator<Point> iteradorPuntosLin2 = lIn.iterator();
-			while(iteradorPuntosLin2.hasNext()){
-				
-				contraer(imagen, matrizSigmas, lIn, lOut, promedioDeColores, iteradorPuntosLin2, contPixelFueraLout, contPixelDentroLin);
+			while (iteradorPuntosLin2.hasNext()) {
+
+				contraer(imagen, matrizSigmas, lIn, lOut, promedioDeColores,
+						iteradorPuntosLin2, contPixelFueraLout,
+						contPixelDentroLin);
 			}
-			
+
 			Iterator<Point> iteradorPuntosLout2 = lOut.iterator();
-			while(iteradorPuntosLout2.hasNext()){
-				
-				sacarLoutNoCorrespondientes(matrizSigmas, lOut, iteradorPuntosLout2);
+			while (iteradorPuntosLout2.hasNext()) {
+
+				sacarLoutNoCorrespondientes(matrizSigmas, lOut,
+						iteradorPuntosLout2);
 			}
 		}
-		
-		for(Point unPoint : lIn){
+
+		for (Point unPoint : lIn) {
 			imagen.setRGB(unPoint.x, unPoint.y, Color.PINK.getRGB());
 		}
-		
-		return imagen;
+
+		return new ImagenVideoPreProcesada(imagen, lOut, lIn, promedioDeColores);
 	}
 
 	private static Curva obtenerCurvaDesdePuntosSeleccionados(int primerPuntoX,
@@ -124,13 +131,14 @@ public static BufferedImage segmentarImagen(BufferedImage imagen, Point punto1, 
 	private static void sacarLoutNoCorrespondientes(int[][] matrizSigmas,
 			List<Point> lOut, Iterator<Point> iteradorPuntosLout2) {
 		Point unPoint = iteradorPuntosLout2.next();
-		
+
 		int valorMatrizIzquierda = matrizSigmas[unPoint.x - 1][unPoint.y];
 		int valorMatrizDerecha = matrizSigmas[unPoint.x + 1][unPoint.y];
 		int valorMatrizArriba = matrizSigmas[unPoint.x][unPoint.y - 1];
 		int valorMatrizAbajo = matrizSigmas[unPoint.x][unPoint.y + 1];
-		
-		if(valorMatrizIzquierda > 0 && valorMatrizDerecha > 0 && valorMatrizArriba > 0 && valorMatrizAbajo > 0){
+
+		if (valorMatrizIzquierda > 0 && valorMatrizDerecha > 0
+				&& valorMatrizArriba > 0 && valorMatrizAbajo > 0) {
 			matrizSigmas[unPoint.x][unPoint.y] = 3;
 			lOut.remove(unPoint);
 		}
@@ -138,36 +146,37 @@ public static BufferedImage segmentarImagen(BufferedImage imagen, Point punto1, 
 
 	private static void contraer(BufferedImage imagen, int[][] matrizSigmas,
 			List<Point> lIn, List<Point> lOut, int[] promedio,
-			Iterator<Point> iteradorPuntosLin2, int contadorPixelFuera, int contadorPixelDentro) {
+			Iterator<Point> iteradorPuntosLin2, int contadorPixelFuera,
+			int contadorPixelDentro) {
 		Point unPoint = iteradorPuntosLin2.next();
-		
-		if(calcularFd(promedio, imagen, unPoint) < 0){
-			
+
+		if (calcularFd(promedio, imagen, unPoint) < 0) {
+
 			int valorMatrizIzquierda = matrizSigmas[unPoint.x - 1][unPoint.y];
 			int valorMatrizDerecha = matrizSigmas[unPoint.x + 1][unPoint.y];
 			int valorMatrizArriba = matrizSigmas[unPoint.x][unPoint.y - 1];
 			int valorMatrizAbajo = matrizSigmas[unPoint.x][unPoint.y + 1];
-			
-			if(valorMatrizIzquierda == -3){
+
+			if (valorMatrizIzquierda == -3) {
 				matrizSigmas[unPoint.x - 1][unPoint.y] = -1;
 				lIn.add(new Point(unPoint.x - 1, unPoint.y));
 			}
-			
-			if(valorMatrizDerecha == -3){
+
+			if (valorMatrizDerecha == -3) {
 				matrizSigmas[unPoint.x + 1][unPoint.y] = -1;
 				lIn.add(new Point(unPoint.x + 1, unPoint.y));
 			}
-			
-			if(valorMatrizArriba == -3){
+
+			if (valorMatrizArriba == -3) {
 				matrizSigmas[unPoint.x][unPoint.y - 1] = -1;
 				lIn.add(new Point(unPoint.x, unPoint.y - 1));
 			}
-			
-			if(valorMatrizAbajo == -3){
+
+			if (valorMatrizAbajo == -3) {
 				matrizSigmas[unPoint.x][unPoint.y + 1] = -1;
 				lIn.add(new Point(unPoint.x, unPoint.y + 1));
 			}
-			
+
 			matrizSigmas[unPoint.x][unPoint.y] = 1;
 			lOut.add(unPoint);
 			lIn.remove(unPoint);
@@ -177,194 +186,246 @@ public static BufferedImage segmentarImagen(BufferedImage imagen, Point punto1, 
 	private static void sacarLinNoCorrespondientes(int[][] matrizSigmas,
 			List<Point> lIn, Iterator<Point> iteradorPuntosLin) {
 		Point unPoint = iteradorPuntosLin.next();
-		
+
 		int valorMatrizIzquierda = matrizSigmas[unPoint.x - 1][unPoint.y];
 		int valorMatrizDerecha = matrizSigmas[unPoint.x + 1][unPoint.y];
 		int valorMatrizArriba = matrizSigmas[unPoint.x][unPoint.y - 1];
 		int valorMatrizAbajo = matrizSigmas[unPoint.x][unPoint.y + 1];
-		
-		if(valorMatrizIzquierda < 0 && valorMatrizDerecha < 0 && valorMatrizArriba < 0 && valorMatrizAbajo < 0){
-			
+
+		if (valorMatrizIzquierda < 0 && valorMatrizDerecha < 0
+				&& valorMatrizArriba < 0 && valorMatrizAbajo < 0) {
+
 			matrizSigmas[unPoint.x][unPoint.y] = -3;
 			lIn.remove(unPoint);
-		
+
 		}
 	}
 
 	private static void expandir(BufferedImage imagen, int[][] matrizSigmas,
 			List<Point> lIn, List<Point> lOut, int[] promedio,
-			Iterator<Point> iteradorPuntos, int contadorPixelFuera, int contadorPixelDentro) {
-		
+			Iterator<Point> iteradorPuntos, int contadorPixelFuera,
+			int contadorPixelDentro) {
+
 		Point unPoint = iteradorPuntos.next();
-		
-		if(calcularFd(promedio, imagen, unPoint) > 0){
-			
+
+		if (calcularFd(promedio, imagen, unPoint) > 0) {
+
 			int valorMatrizIzquierda = matrizSigmas[unPoint.x - 1][unPoint.y];
 			int valorMatrizDerecha = matrizSigmas[unPoint.x + 1][unPoint.y];
 			int valorMatrizArriba = matrizSigmas[unPoint.x][unPoint.y - 1];
 			int valorMatrizAbajo = matrizSigmas[unPoint.x][unPoint.y + 1];
-			
-			if(valorMatrizIzquierda == 3){
-				
+
+			if (valorMatrizIzquierda == 3) {
+
 				matrizSigmas[unPoint.x - 1][unPoint.y] = 1;
 				lOut.add(new Point(unPoint.x - 1, unPoint.y));
 			}
 
-			if(valorMatrizDerecha == 3){
+			if (valorMatrizDerecha == 3) {
 
 				matrizSigmas[unPoint.x + 1][unPoint.y] = 1;
 				lOut.add(new Point(unPoint.x + 1, unPoint.y));
 			}
-			
-			if(valorMatrizArriba == 3){
-				
+
+			if (valorMatrizArriba == 3) {
+
 				matrizSigmas[unPoint.x][unPoint.y - 1] = 1;
 				lOut.add(new Point(unPoint.x, unPoint.y - 1));
 			}
 
-			if(valorMatrizAbajo == 3){
-				
+			if (valorMatrizAbajo == 3) {
+
 				matrizSigmas[unPoint.x][unPoint.y + 1] = 1;
 				lOut.add(new Point(unPoint.x, unPoint.y + 1));
 			}
-			
+
 			lIn.add(new Point(unPoint.x, unPoint.y));
 			matrizSigmas[unPoint.x][unPoint.y] = -1;
 			lOut.remove(unPoint);
 		}
 	}
-	
-	private static int calcularFd(int[] promedio, BufferedImage imagen, Point posicion) {
+
+	private static int calcularFd(int[] promedio, BufferedImage imagen,
+			Point posicion) {
 
 		Color colorPromedio = new Color(promedio[0], promedio[1], promedio[2]);
 
 		int fD = 1;
-		
-		boolean debeSeguir = sonColoresSimilares(imagen, colorPromedio, posicion.x, posicion.y);
-		
-		if ( !debeSeguir ){
-			
+
+		boolean debeSeguir = sonColoresSimilares(imagen, colorPromedio,
+				posicion.x, posicion.y);
+
+		if (!debeSeguir) {
+
 			fD = -1;
 		}
-		
+
 		return fD;
 	}
 
 	private static boolean sonColoresSimilares(BufferedImage imagen,
 			Color colorPromedio, int i, int j) {
-		
+
 		Color colorEnEsePunto = new Color(imagen.getRGB(i, j));
 
-		boolean esSimilar = Math.abs(colorEnEsePunto.getRed()-colorPromedio.getRed()) <= 80 
-							&& Math.abs(colorEnEsePunto.getGreen()-colorPromedio.getGreen()) <= 80
-							&& Math.abs(colorEnEsePunto.getBlue()-colorPromedio.getBlue()) <= 80;
-		
+		boolean esSimilar = Math.abs(colorEnEsePunto.getRed()
+				- colorPromedio.getRed()) <= 40
+				&& Math.abs(colorEnEsePunto.getGreen()
+						- colorPromedio.getGreen()) <= 40
+				&& Math.abs(colorEnEsePunto.getBlue() - colorPromedio.getBlue()) <= 40;
+
 		return esSimilar;
 	}
 
-	private static boolean estaAdentro(int i, int j, int desdeX, int hastaX, int desdeY, int hastaY) {
+	private static boolean estaAdentro(int i, int j, int desdeX, int hastaX,
+			int desdeY, int hastaY) {
 		boolean estaAdentro = false;
-		if(i > desdeX && i < hastaX && j > desdeY && j < hastaY){
+		if (i > desdeX && i < hastaX && j > desdeY && j < hastaY) {
 			estaAdentro = true;
 		}
-		
+
 		return estaAdentro;
 	}
 
-	private static boolean estaAlRededorDelBorde(int i, int j, int desdeX, int hastaX, int desdeY, int hastaY) {
-		
+	private static boolean estaAlRededorDelBorde(int i, int j, int desdeX,
+			int hastaX, int desdeY, int hastaY) {
+
 		boolean estaAlrededor = false;
-		if(j + 1 == desdeY && i <= hastaX && i >= desdeX){
+		if (j + 1 == desdeY && i <= hastaX && i >= desdeX) {
 			estaAlrededor = true;
-		}else if(i + 1 == desdeX && j >= desdeY && j<= hastaY){
+		} else if (i + 1 == desdeX && j >= desdeY && j <= hastaY) {
 			estaAlrededor = true;
-		}else if(i - 1 == hastaX && j >= desdeY && j<= hastaY){
+		} else if (i - 1 == hastaX && j >= desdeY && j <= hastaY) {
 			estaAlrededor = true;
-		}else if(j - 1 == hastaY && i >= desdeX && i <= hastaX){
+		} else if (j - 1 == hastaY && i >= desdeX && i <= hastaX) {
 			estaAlrededor = true;
 		}
-		
+
 		return estaAlrededor;
 	}
 
-	private static boolean estaEnBorde(int i, int j, int desdeX, int hastaX, int desdeY, int hastaY) {
+	private static boolean estaEnBorde(int i, int j, int desdeX, int hastaX,
+			int desdeY, int hastaY) {
 		boolean estaEnBorde = false;
-		if(j == desdeY && i <= hastaX && i >= desdeX){
+		if (j == desdeY && i <= hastaX && i >= desdeX) {
 			estaEnBorde = true;
-		}else if(i == desdeX && j >= desdeY && j<= hastaY){
+		} else if (i == desdeX && j >= desdeY && j <= hastaY) {
 			estaEnBorde = true;
-		}else if(i == hastaX && j >= desdeY && j<= hastaY){
+		} else if (i == hastaX && j >= desdeY && j <= hastaY) {
 			estaEnBorde = true;
-		}else if(j == hastaY && i >= desdeX && i <= hastaX){
+		} else if (j == hastaY && i >= desdeX && i <= hastaX) {
 			estaEnBorde = true;
 		}
-		
+
 		return estaEnBorde;
 	}
 
-	private static int[] obtenerPromedioRGB(BufferedImage imagen, Point punto1, Point punto2){
-	       
-		   int rojoAcumulado = 0 ;
-	       int verdeAcumulado = 0;
-	       int azulAcumulado = 0;
-	       
-	       int contadorCantPixel = 0;
-	       
-	       int promedioRojo = 0;
-	       int promedioVerde = 0;
-	       int promedioAzul = 0;
-	       
-	       int primerPuntoX = punto1.x;
-	       int primerPuntoY = punto1.y;
-	       int segundoPuntoX = punto2.x;
-	       int segundoPuntoY = punto2.y;
-	       
-	       int desdeX = 0;
-	       int hastaX = 0;
-	       int desdeY = 0;
-	       int hastaY = 0;
-	       
-	       if(primerPuntoX <= segundoPuntoX){
-	    	   desdeX = primerPuntoX;
-	    	   hastaX = segundoPuntoX;
-	       } else {
-	    	   desdeX = segundoPuntoX;
-	    	   hastaX = primerPuntoX;
-	       }
-	       
-	       if(primerPuntoY<= segundoPuntoY){
-	    	   desdeY = primerPuntoY;
-	    	   hastaY = segundoPuntoY;
-	       } else {
-	    	   desdeY = segundoPuntoY;
-	    	   hastaY = primerPuntoY;
-	       }
-	       
-	       for(int i = desdeX+1 ; i < hastaX-1 ; i++){
-	    	   for(int j = desdeY+1 ; j < hastaY-1 ; j++){
-			       Color color = new Color(imagen.getRGB(i, j));
-			       int blue = color.getBlue();
-			       int green = color.getGreen();
-			       int red = color.getRed();
-			       
-			       rojoAcumulado += red;
-			       verdeAcumulado += green;
-			       azulAcumulado += blue;
-			       
-			       contadorCantPixel++;
-	    	   }
-	       }
-	       
-	       promedioRojo = (int) (rojoAcumulado / contadorCantPixel);
-	       promedioVerde = (int) (verdeAcumulado / contadorCantPixel);
-	       promedioAzul = (int) (azulAcumulado / contadorCantPixel);
+	private static int[] obtenerPromedioRGB(BufferedImage imagen, Point punto1,
+			Point punto2) {
 
-	       int[] valoresPromedio = new int[3];
-	       valoresPromedio[0] = promedioRojo;
-	       valoresPromedio[1] = promedioVerde;
-		   valoresPromedio[2] = promedioAzul;
-	       
-	       return valoresPromedio;
+		int rojoAcumulado = 0;
+		int verdeAcumulado = 0;
+		int azulAcumulado = 0;
 
+		int contadorCantPixel = 0;
+
+		int promedioRojo = 0;
+		int promedioVerde = 0;
+		int promedioAzul = 0;
+
+		int primerPuntoX = punto1.x;
+		int primerPuntoY = punto1.y;
+		int segundoPuntoX = punto2.x;
+		int segundoPuntoY = punto2.y;
+
+		int desdeX = 0;
+		int hastaX = 0;
+		int desdeY = 0;
+		int hastaY = 0;
+
+		if (primerPuntoX <= segundoPuntoX) {
+			desdeX = primerPuntoX;
+			hastaX = segundoPuntoX;
+		} else {
+			desdeX = segundoPuntoX;
+			hastaX = primerPuntoX;
+		}
+
+		if (primerPuntoY <= segundoPuntoY) {
+			desdeY = primerPuntoY;
+			hastaY = segundoPuntoY;
+		} else {
+			desdeY = segundoPuntoY;
+			hastaY = primerPuntoY;
+		}
+
+		for (int i = desdeX + 1; i < hastaX - 1; i++) {
+			for (int j = desdeY + 1; j < hastaY - 1; j++) {
+				Color color = new Color(imagen.getRGB(i, j));
+				int blue = color.getBlue();
+				int green = color.getGreen();
+				int red = color.getRed();
+
+				rojoAcumulado += red;
+				verdeAcumulado += green;
+				azulAcumulado += blue;
+
+				contadorCantPixel++;
+			}
+		}
+
+		promedioRojo = (int) (rojoAcumulado / contadorCantPixel);
+		promedioVerde = (int) (verdeAcumulado / contadorCantPixel);
+		promedioAzul = (int) (azulAcumulado / contadorCantPixel);
+
+		int[] valoresPromedio = new int[3];
+		valoresPromedio[0] = promedioRojo;
+		valoresPromedio[1] = promedioVerde;
+		valoresPromedio[2] = promedioAzul;
+
+		return valoresPromedio;
+
+	}
+
+	public static ImagenVideoPreProcesada segmentarImagen(BufferedImage imagen,
+			List<Point> lIn, List<Point> lOut, int[] promedioDeColores) {
+
+		int[][] matrizSigmas = new int[imagen.getWidth()][imagen.getHeight()];
+
+		for (int i = 0; i < 1000; i++) {
+
+			Iterator<Point> iteradorPuntos = lOut.iterator();
+			while (iteradorPuntos.hasNext()) {
+
+				expandir(imagen, matrizSigmas, lIn, lOut, promedioDeColores,
+						iteradorPuntos, 0, 0);
+			}
+
+			Iterator<Point> iteradorPuntosLin = lIn.iterator();
+			while (iteradorPuntosLin.hasNext()) {
+
+				sacarLinNoCorrespondientes(matrizSigmas, lIn, iteradorPuntosLin);
+			}
+
+			Iterator<Point> iteradorPuntosLin2 = lIn.iterator();
+			while (iteradorPuntosLin2.hasNext()) {
+
+				contraer(imagen, matrizSigmas, lIn, lOut, promedioDeColores,
+						iteradorPuntosLin2, 0, 0);
+			}
+
+			Iterator<Point> iteradorPuntosLout2 = lOut.iterator();
+			while (iteradorPuntosLout2.hasNext()) {
+
+				sacarLoutNoCorrespondientes(matrizSigmas, lOut,
+						iteradorPuntosLout2);
+			}
+		}
+
+		for (Point unPoint : lIn) {
+			imagen.setRGB(unPoint.x, unPoint.y, Color.PINK.getRGB());
+		}
+
+		return new ImagenVideoPreProcesada(imagen, lOut, lIn, promedioDeColores);
 	}
 }
