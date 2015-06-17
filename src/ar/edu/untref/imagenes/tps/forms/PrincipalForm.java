@@ -9,17 +9,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -141,13 +140,15 @@ public class PrincipalForm extends JFrame {
 	private JMenuItem menuMetodoDeSusan;
 	
 	private JMenuItem menuVideoPrimerImagen;
-	private JMenuItem menuProcesarVideo;
 
 	private JScrollPane scrollPane;
 	private JPanel contentPane;
 
 	private JLabel labelPrincipalImage;
 
+	private JButton buttonSiguienteImagen;
+//	private JButton buttonPlay;
+	
 	private BufferedImage imageInLabel;
 	private BufferedImage originalImage;
 	
@@ -155,6 +156,12 @@ public class PrincipalForm extends JFrame {
 	private int primerPuntoY = -1;
 	private int segundoPuntoX = -1;
 	private int segundoPuntoY = -1;
+	
+	private ImagenVideoPreProcesada procesamientoAnterior = null;
+
+	
+	int contadorImagenes = 0;
+	private	File[] files = null;
 
 	public PrincipalForm() {
 
@@ -413,9 +420,6 @@ public class PrincipalForm extends JFrame {
 		
 		menuVideoPrimerImagen = new JMenuItem("Seleccionar Primera Imagen de Video");
 		menuDeteccionDeBordes.add(menuVideoPrimerImagen);
-		
-		menuProcesarVideo = new JMenuItem("Procesamiento de Video");
-		menuDeteccionDeBordes.add(menuProcesarVideo);
 		
 		menuMetodoDeSusan = new JMenuItem("Metodo de SUSAN");
 		menuDeteccionDeBordes.add(menuMetodoDeSusan);
@@ -1344,17 +1348,6 @@ public class PrincipalForm extends JFrame {
 			
 		});
 		
-		menuProcesarVideo.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				procesarVideo(new File("video/Movie2"));
-			}
-
-			
-			
-		});
-		
 		labelPrincipalImage.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -2068,7 +2061,6 @@ public class PrincipalForm extends JFrame {
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 	
-
 	private void aplicarTransformadaDeHough() {
 //		
 //		int phiMin = Integer.valueOf(JOptionPane.showInputDialog(null, "Phi minimo: ", "Transformada de Hough", JOptionPane.DEFAULT_OPTION));
@@ -2092,7 +2084,8 @@ public class PrincipalForm extends JFrame {
 		Point punto2 = new Point();
 		punto2.setLocation(segundoPuntoX, segundoPuntoY);
 		
-		imageInLabel = Segmentador.segmentarImagen(originalImage, punto1, punto2).getImage();
+		Segmentador seg = new Segmentador();
+		imageInLabel = seg.segmentarImagen(originalImage, punto1, punto2).getImage();
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));	
 		
@@ -2104,31 +2097,24 @@ public class PrincipalForm extends JFrame {
 				primerPuntoX =(int)e.getPoint().getX();
 				primerPuntoY = (int) e.getPoint().getY();
 	
-				Graphics2D g = imageInLabel.createGraphics();
-				g.setColor(Color.BLACK);
-				g.fillOval(primerPuntoX, primerPuntoY, 4, 4);
 			} else {
 				segundoPuntoX =(int)e.getPoint().getX();
 				segundoPuntoY = (int) e.getPoint().getY();
-				
-				Graphics2D g = imageInLabel.createGraphics();
-				g.setColor(Color.BLACK);
-				g.fillOval(segundoPuntoX, segundoPuntoY, 4, 4);
 			}
 		}
 		
 		if(primerPuntoX != -1 && segundoPuntoX != -1){
-			int tercerPuntoX = primerPuntoX;
-			int tercerPuntoY = segundoPuntoY;
-			int cuartoPuntoX = segundoPuntoX;
-			int cuartoPuntoY = primerPuntoY;
-			
-			Graphics2D g = imageInLabel.createGraphics();
-		    g.setColor(Color.BLACK);
-		    g.drawLine(primerPuntoX, primerPuntoY, tercerPuntoX, tercerPuntoY);
-		    g.drawLine(tercerPuntoX, tercerPuntoY, segundoPuntoX, segundoPuntoY);
-		    g.drawLine(segundoPuntoX, segundoPuntoY, cuartoPuntoX, cuartoPuntoY);
-		    g.drawLine(cuartoPuntoX, cuartoPuntoY, primerPuntoX, primerPuntoY);
+//			int tercerPuntoX = primerPuntoX;
+//			int tercerPuntoY = segundoPuntoY;
+//			int cuartoPuntoX = segundoPuntoX;
+//			int cuartoPuntoY = primerPuntoY;
+//			
+//			Graphics2D g = imageInLabel.createGraphics();
+//		    g.setColor(Color.BLACK);
+//		    g.drawLine(primerPuntoX, primerPuntoY, tercerPuntoX, tercerPuntoY);
+//		    g.drawLine(tercerPuntoX, tercerPuntoY, segundoPuntoX, segundoPuntoY);
+//		    g.drawLine(segundoPuntoX, segundoPuntoY, cuartoPuntoX, cuartoPuntoY);
+//		    g.drawLine(cuartoPuntoX, cuartoPuntoY, primerPuntoX, primerPuntoY);
 		    
 		}
         
@@ -2146,8 +2132,10 @@ public class PrincipalForm extends JFrame {
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 	
+	
 	public void instanciarPrimerImagenVideo(final File folder) {
-		File[] files = folder.listFiles();
+		
+		files = folder.listFiles();
 		Arrays.sort(files);
 
 		try {
@@ -2162,62 +2150,120 @@ public class PrincipalForm extends JFrame {
 		this.setVisible(true);
 		
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+		
+		buttonSiguienteImagen = new JButton("Procesar Imagen");
+//		buttonPlay = new JButton("Play");
+		this.add(buttonSiguienteImagen);
+//		this.add(buttonPlay);
+		
+		agregarListenerAlBoton();
+		
 	}
 
-	private void procesarVideo(File folder) {
+	private void agregarListenerAlBoton() {
+		buttonSiguienteImagen.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				procesarVideo();
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+		});
+		
+//		buttonPlay.addMouseListener(new MouseListener() {
+//			
+//			@Override
+//			public void mouseClicked(MouseEvent arg0) {
+//				procesarVideoPlay();
+//			}
+//
+//			@Override
+//			public void mouseEntered(MouseEvent e) {
+//			}
+//
+//			@Override
+//			public void mouseExited(MouseEvent e) {
+//			}
+//
+//			@Override
+//			public void mousePressed(MouseEvent e) {
+//			}
+//
+//			@Override
+//			public void mouseReleased(MouseEvent e) {
+//			}
+//		});
+	}
+
+	private void procesarVideo() {
+		
 		Point punto1 = new Point();
 		punto1.setLocation(primerPuntoX, primerPuntoY);
-		
+
 		Point punto2 = new Point();
 		punto2.setLocation(segundoPuntoX, segundoPuntoY);
-		
-		File[] files = folder.listFiles();
-		Arrays.sort(files);
-		
-		List <BufferedImage> imagenesProcesadas = new CopyOnWriteArrayList<BufferedImage>();
-		
-		ImagenVideoPreProcesada procesamientoAnterior = null;
-		for (int i= 0; i< files.length; i++) {
-			if (i == 0) {
-				try {
-					procesamientoAnterior = Segmentador.segmentarImagen(ImageIO.read(files[i]), punto1, punto2);
-					imagenesProcesadas.add(procesamientoAnterior.getImage());
-//					imageInLabel = procesamientoAnterior.getImage();
-//					labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} else {
-				try {
-					procesamientoAnterior = Segmentador.segmentarImagen(ImageIO.read(files[i]), procesamientoAnterior.getlIn(), 
-							procesamientoAnterior.getlOut(), procesamientoAnterior.getPromedioDeColores());
-					imagenesProcesadas.add(procesamientoAnterior.getImage());
-//					imageInLabel = procesamientoAnterior.getImage();
-//					labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
-		}
-		
-		Iterator<BufferedImage> iterador = imagenesProcesadas.iterator();
-		
-		while(iterador.hasNext()){
-			try {
-				Thread.sleep(1000);
-				imageInLabel = iterador.next();
-				labelPrincipalImage.setIcon(new ImageIcon(iterador.next()));
 
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+		Arrays.sort(files);
+
+		Segmentador segmentador = new Segmentador();
+		
+		if (this.contadorImagenes == 0) {
+			procesamientoAnterior = segmentador.segmentarImagen(imageInLabel, punto1, punto2);
+		} else {
+			try {
+				procesamientoAnterior = segmentador.segmentarImagen(ImageIO.read(files[contadorImagenes]));
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 		
-		
-		
-		
+		contadorImagenes++;
+
+		imageInLabel = procesamientoAnterior.getImage();
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
 	
+	private void procesarVideoPlay() {
+		
+		Point punto1 = new Point();
+		punto1.setLocation(primerPuntoX, primerPuntoY);
+
+		Point punto2 = new Point();
+		punto2.setLocation(segundoPuntoX, segundoPuntoY);
+
+		Arrays.sort(files);
+
+		Segmentador segmentador = new Segmentador();
+		
+		if (this.contadorImagenes == 0) {
+			procesamientoAnterior = segmentador.segmentarImagen(imageInLabel, punto1, punto2);
+		} else {
+			try {
+				for (int i = 1; i < files.length; i++) {
+					procesamientoAnterior = segmentador.segmentarImagen(ImageIO.read(files[i]));
+					imageInLabel = procesamientoAnterior.getImage();
+					labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		contadorImagenes++;
+	}
 }
