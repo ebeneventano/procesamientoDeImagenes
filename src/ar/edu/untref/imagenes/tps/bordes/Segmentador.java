@@ -12,14 +12,14 @@ import ar.edu.untref.imagenes.tps.utils.ImageOperations;
 
 public class Segmentador {
 	
-	private static List<Point> lOut;
-	private static List<Point> lIn;
-	
+	static List<Point> lOut = null;
+	static List<Point> lIn = null;
 	static int[] promedioDeColores = null;
 	static int[][] matrizSigmas = null;
 
 	public ImagenVideoPreProcesada segmentarImagen(BufferedImage imagen,
 			Point punto1, Point punto2) {
+
 
 		BufferedImage imagenCopia = ImageOperations.clonarImagen(imagen);
 		
@@ -88,12 +88,12 @@ public class Segmentador {
 			while (iteradorPuntosLout2.hasNext()) {
 
 				sacarLoutNoCorrespondientes(lOut,
-						iteradorPuntosLout2);
+						iteradorPuntosLout2, imagen);
 			}
 		}
 
 		for (Point unPoint : lIn) {
-			imagenCopia.setRGB(unPoint.x, unPoint.y, Color.PINK.getRGB());
+			imagenCopia.setRGB(unPoint.x, unPoint.y, Color.GREEN.getRGB());
 		}
 
 		return new ImagenVideoPreProcesada(imagenCopia);
@@ -129,23 +129,24 @@ public class Segmentador {
 		return new Curva(desde, hasta);
 	}
 
-	private static void sacarLoutNoCorrespondientes(
-			List<Point> lOut, Iterator<Point> iteradorPuntosLout2) {
+	private void sacarLoutNoCorrespondientes(
+			List<Point> lOut, Iterator<Point> iteradorPuntosLout2, BufferedImage imagen) {
 		Point unPoint = iteradorPuntosLout2.next();
-
-		int valorMatrizIzquierda = matrizSigmas[unPoint.x - 1][unPoint.y];
-		int valorMatrizDerecha = matrizSigmas[unPoint.x + 1][unPoint.y];
-		int valorMatrizArriba = matrizSigmas[unPoint.x][unPoint.y - 1];
-		int valorMatrizAbajo = matrizSigmas[unPoint.x][unPoint.y + 1];
-
-		if (valorMatrizIzquierda > 0 && valorMatrizDerecha > 0
-				&& valorMatrizArriba > 0 && valorMatrizAbajo > 0) {
-			matrizSigmas[unPoint.x][unPoint.y] = 3;
-			lOut.remove(unPoint);
+		
+		if(unPoint.x > 0 && unPoint.y < imagen.getHeight() - 1 && unPoint.y > 0 && unPoint.x < imagen.getWidth()){
+			int valorMatrizIzquierda = matrizSigmas[unPoint.x - 1][unPoint.y];
+			int valorMatrizDerecha = matrizSigmas[unPoint.x + 1][unPoint.y];
+			int valorMatrizArriba = matrizSigmas[unPoint.x][unPoint.y - 1];
+			int valorMatrizAbajo = matrizSigmas[unPoint.x][unPoint.y + 1];
+			if (valorMatrizIzquierda > 0 && valorMatrizDerecha > 0
+					&& valorMatrizArriba > 0 && valorMatrizAbajo > 0) {
+				matrizSigmas[unPoint.x][unPoint.y] = 3;
+				lOut.remove(unPoint);
+			}
 		}
 	}
 
-	private static void contraer(BufferedImage imagen,
+	private void contraer(BufferedImage imagen,
 			List<Point> lIn, List<Point> lOut, int[] promedio,
 			Iterator<Point> iteradorPuntosLin2) {
 		Point unPoint = iteradorPuntosLin2.next();
@@ -183,7 +184,7 @@ public class Segmentador {
 		}
 	}
 
-	private static void sacarLinNoCorrespondientes(
+	private void sacarLinNoCorrespondientes(
 			List<Point> lIn, Iterator<Point> iteradorPuntosLin) {
 		Point unPoint = iteradorPuntosLin.next();
 
@@ -201,14 +202,14 @@ public class Segmentador {
 		}
 	}
 
-	private static void expandir(BufferedImage imagen,
+	private void expandir(BufferedImage imagen,
 			List<Point> lIn, List<Point> lOut, int[] promedio,
 			Iterator<Point> iteradorPuntos) {
 
 		Point unPoint = iteradorPuntos.next();
 
 		if (calcularFd(promedio, imagen, unPoint) > 0) {
-
+			if(unPoint.x > 0 && unPoint.y < imagen.getHeight() - 1 && unPoint.y > 0 && unPoint.x < imagen.getWidth() -1 ){
 			int valorMatrizIzquierda = matrizSigmas[unPoint.x - 1][unPoint.y];
 			int valorMatrizDerecha = matrizSigmas[unPoint.x + 1][unPoint.y];
 			int valorMatrizArriba = matrizSigmas[unPoint.x][unPoint.y - 1];
@@ -241,6 +242,7 @@ public class Segmentador {
 			lIn.add(new Point(unPoint.x, unPoint.y));
 			matrizSigmas[unPoint.x][unPoint.y] = -1;
 			lOut.remove(unPoint);
+		}
 		}
 	}
 
@@ -390,7 +392,7 @@ public class Segmentador {
 		
 		BufferedImage imagenCopia = ImageOperations.clonarImagen(imagen);
 
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 50; i++) {
 
 			Iterator<Point> iteradorPuntos = lOut.iterator();
 			while (iteradorPuntos.hasNext()) {
@@ -414,14 +416,15 @@ public class Segmentador {
 			while (iteradorPuntosLout2.hasNext()) {
 
 				sacarLoutNoCorrespondientes(lOut,
-						iteradorPuntosLout2);
+						iteradorPuntosLout2, imagen);
 			}
 		}
 
 		for (Point unPoint : lIn) {
-			imagenCopia.setRGB(unPoint.x, unPoint.y, Color.PINK.getRGB());
+			imagenCopia.setRGB(unPoint.x, unPoint.y, Color.GREEN.getRGB());
 		}
 
 		return new ImagenVideoPreProcesada(imagenCopia);
 	}
+
 }

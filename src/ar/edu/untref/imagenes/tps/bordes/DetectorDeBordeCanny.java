@@ -245,7 +245,7 @@ public class DetectorDeBordeCanny {
 		return matriz;
 	}
 	
-	public static BufferedImage detectorDeBordeCanny(BufferedImage imagenOriginal, int sigma1, int sigma2, int sigma3, int sigma4, int umbral1, int umbral2){
+	public static BufferedImage detectorDeBordeCanny(BufferedImage imagenOriginal, int sigma1, int sigma2, int umbral1, int umbral2){
 		
 		BufferedImage imagenResultado1 = FiltroGaussiano.aplicarFiltroGaussiano(imagenOriginal, sigma1);
 		BufferedImage imagenResultado2 = FiltroGaussiano.aplicarFiltroGaussiano(imagenOriginal, sigma2);
@@ -259,10 +259,10 @@ public class DetectorDeBordeCanny {
 			for (int j = 0; j < matrizResultadoFinal[0].length; j++) {
 				int resultado1 = matrizResultado1[i][j];
 				int resultado2 = matrizResultado2[i][j];
-				if(resultado1 + resultado2 > 255){
-					matrizResultadoFinal [i][j] = 255;
+				if(resultado1 > resultado2){
+					matrizResultadoFinal [i][j] = resultado1;
 				}else{
-					matrizResultadoFinal [i][j] = resultado1 + resultado2;
+					matrizResultadoFinal [i][j] = resultado2;
 				}
 			}
 		}
@@ -284,8 +284,6 @@ public class DetectorDeBordeCanny {
 		int[][] matrizDeAngulos = obtenerAnguloDelGradiente(matrizImagenSobelX, matrizImagenSobelY);
 		
 		int[][] matrizSupresionNoMaximosSinTransformar = aplicarSupresionNoMaximos(matrizMagnitudDeBorde, matrizDeAngulos);
-		
-//		int[][] matrizSupresionNoMaximosConTransformacionLineal = LinealTransformation.aplicarTransformacionLineal(matrizSupresionNoMaximosSinTransformar);
 		
 		int[][] matrizResultado = new int [imagen.getWidth()][imagen.getHeight()];
 		

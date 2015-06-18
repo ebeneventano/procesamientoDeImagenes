@@ -14,7 +14,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -156,6 +158,10 @@ public class PrincipalForm extends JFrame {
 	private int primerPuntoY = -1;
 	private int segundoPuntoX = -1;
 	private int segundoPuntoY = -1;
+	
+	private List<Long> tiempos = new ArrayList<>();
+	private Long tiempo1 = null;
+	private Long tiempo2 = null;
 	
 	private ImagenVideoPreProcesada procesamientoAnterior = null;
 
@@ -1343,7 +1349,7 @@ public class PrincipalForm extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				instanciarPrimerImagenVideo(new File("video/Movie2"));
+				instanciarPrimerImagenVideo();
 			}
 			
 		});
@@ -2053,10 +2059,8 @@ public class PrincipalForm extends JFrame {
 		
 		int sigma1 = Integer.valueOf(JOptionPane.showInputDialog(null, "Sigma 1: ", "Canny", JOptionPane.DEFAULT_OPTION));
 		int sigma2 = Integer.valueOf(JOptionPane.showInputDialog(null, "Sigma 2: ", "Canny", JOptionPane.DEFAULT_OPTION));
-		int sigma3 = Integer.valueOf(JOptionPane.showInputDialog(null, "Sigma 3: ", "Canny", JOptionPane.DEFAULT_OPTION));
-		int sigma4 = Integer.valueOf(JOptionPane.showInputDialog(null, "Sigma 4: ", "Canny", JOptionPane.DEFAULT_OPTION));
 
-		imageInLabel = DetectorDeBordeCanny.detectorDeBordeCanny(imageInLabel, sigma1, sigma2, sigma3, sigma4, umbral1, umbral2);
+		imageInLabel = DetectorDeBordeCanny.detectorDeBordeCanny(imageInLabel, sigma1, sigma2, umbral1, umbral2);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 	}
@@ -2070,7 +2074,7 @@ public class PrincipalForm extends JFrame {
 		int discretizacionesPhi = Integer.valueOf(JOptionPane.showInputDialog(null, "Discretizaciones Phi: ", "Transformada de Hough", JOptionPane.DEFAULT_OPTION));
 		int discretizacionesTetha = Integer.valueOf(JOptionPane.showInputDialog(null, "Discretizaciones Tetha: ", "Transformada de Hough", JOptionPane.DEFAULT_OPTION));
 		
-		MatrizAcumuladora matriz = new MatrizAcumuladora(1, 256, 1, 360, discretizacionesPhi, discretizacionesTetha);
+		MatrizAcumuladora matriz = new MatrizAcumuladora(1, 500, 1, 360, discretizacionesPhi, discretizacionesTetha);
 		imageInLabel = TransformadaDeHough.aplicarTransformadaDeHough(imageInLabel, matriz);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
@@ -2133,7 +2137,11 @@ public class PrincipalForm extends JFrame {
 	}
 	
 	
-	public void instanciarPrimerImagenVideo(final File folder) {
+	public void instanciarPrimerImagenVideo() {
+		
+		Integer rutaVideo = Integer.valueOf(JOptionPane.showInputDialog(null, "Numero de Video", "Segmentador", JOptionPane.DEFAULT_OPTION));
+
+		File folder = new File("video/Movie" + String.valueOf(rutaVideo));
 		
 		files = folder.listFiles();
 		Arrays.sort(files);
@@ -2153,7 +2161,7 @@ public class PrincipalForm extends JFrame {
 		
 		buttonSiguienteImagen = new JButton("Procesar Imagen");
 //		buttonPlay = new JButton("Play");
-		this.add(buttonSiguienteImagen);
+		this.menuBar.add(buttonSiguienteImagen);
 //		this.add(buttonPlay);
 		
 		agregarListenerAlBoton();
@@ -2185,29 +2193,6 @@ public class PrincipalForm extends JFrame {
 			}
 		});
 		
-//		buttonPlay.addMouseListener(new MouseListener() {
-//			
-//			@Override
-//			public void mouseClicked(MouseEvent arg0) {
-//				procesarVideoPlay();
-//			}
-//
-//			@Override
-//			public void mouseEntered(MouseEvent e) {
-//			}
-//
-//			@Override
-//			public void mouseExited(MouseEvent e) {
-//			}
-//
-//			@Override
-//			public void mousePressed(MouseEvent e) {
-//			}
-//
-//			@Override
-//			public void mouseReleased(MouseEvent e) {
-//			}
-//		});
 	}
 
 	private void procesarVideo() {
@@ -2219,7 +2204,7 @@ public class PrincipalForm extends JFrame {
 		punto2.setLocation(segundoPuntoX, segundoPuntoY);
 
 		Arrays.sort(files);
-
+		
 		Segmentador segmentador = new Segmentador();
 		
 		if (this.contadorImagenes == 0) {
@@ -2236,34 +2221,27 @@ public class PrincipalForm extends JFrame {
 
 		imageInLabel = procesamientoAnterior.getImage();
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+		mostrarTiempoPromedio();
 	}
-	
-	private void procesarVideoPlay() {
-		
-		Point punto1 = new Point();
-		punto1.setLocation(primerPuntoX, primerPuntoY);
 
-		Point punto2 = new Point();
-		punto2.setLocation(segundoPuntoX, segundoPuntoY);
-
-		Arrays.sort(files);
-
-		Segmentador segmentador = new Segmentador();
-		
-		if (this.contadorImagenes == 0) {
-			procesamientoAnterior = segmentador.segmentarImagen(imageInLabel, punto1, punto2);
-		} else {
-			try {
-				for (int i = 1; i < files.length; i++) {
-					procesamientoAnterior = segmentador.segmentarImagen(ImageIO.read(files[i]));
-					imageInLabel = procesamientoAnterior.getImage();
-					labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+	private void mostrarTiempoPromedio() {
+			if(tiempo1 == null){
+				tiempo1 = System.currentTimeMillis();
+			} else {
+				tiempo2 = System.currentTimeMillis();
 			}
+			
+			if(tiempo2 != null){
+				tiempos.add(tiempo2 - tiempo1);
+				tiempo1 = tiempo2;
+			}
+		if(contadorImagenes == 40){
+			long contadorTiempos = 0;
+			for(Long unTiempo : tiempos){
+				contadorTiempos+=unTiempo;
+			}
+			
+			JOptionPane.showMessageDialog(null, "El promedio de tiempo procesado en 40 imagenes es de: " + String.valueOf(contadorTiempos / (long) tiempos.size()) + " milisegundos");		
 		}
-		
-		contadorImagenes++;
 	}
 }

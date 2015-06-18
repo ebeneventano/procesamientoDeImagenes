@@ -22,7 +22,7 @@ public class Susan {
 	private double umbralT = 27.0;
 	
 	private int pixelNegro = new Color(0, 0, 0).getRGB();
-	private int pixelRojo = new Color(255, 0, 0).getRGB();
+	private int pixelVerde = new Color(0, 255, 0).getRGB();
 	
  	private static double criterioDeBorde = 0.5;
  	private static double criterioDeEsquina = 0.75;
@@ -121,7 +121,7 @@ public class Susan {
  				case "E":
  					if(Math.abs( Sr0 - criterioDeEsquina) < 0.1){
  	 					
- 	 					imagenResultado.setRGB(i, j, pixelRojo);
+ 	 					imagenResultado.setRGB(i, j, pixelVerde);
  	 				} else {
  	 					
  	 					imagenResultado.setRGB(i, j, pixelNegro);
@@ -131,7 +131,7 @@ public class Susan {
  				case "B":
  					if(Math.abs( Sr0 - criterioDeBorde) < 0.1){
  	 					
- 	 					imagenResultado.setRGB(i, j, pixelRojo);
+ 	 					imagenResultado.setRGB(i, j, pixelVerde);
  	 				} else {
  	 					
  	 					imagenResultado.setRGB(i, j, pixelNegro);
@@ -141,7 +141,7 @@ public class Susan {
  				case "BE":
  					if(Math.abs( Sr0 - criterioDeEsquina) < 0.1 || Math.abs( Sr0 - criterioDeBorde) < 0.1){
  	 					
- 	 					imagenResultado.setRGB(i, j, pixelRojo);
+ 	 					imagenResultado.setRGB(i, j, pixelVerde);
  	 				} else {
  	 					
  	 					imagenResultado.setRGB(i, j, pixelNegro);
@@ -151,7 +151,7 @@ public class Susan {
 				case "EB":
  					if(Math.abs( Sr0 - criterioDeEsquina) < 0.1 || Math.abs( Sr0 - criterioDeBorde) < 0.1){
  	 					
- 	 					imagenResultado.setRGB(i, j, pixelRojo);
+ 	 					imagenResultado.setRGB(i, j, pixelVerde);
  	 				} else {
  	 					
  	 					imagenResultado.setRGB(i, j, pixelNegro);
