@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.Kernel;
 
 import ar.edu.untref.imagenes.tps.bordes.Borde;
-import ar.edu.untref.imagenes.utils.ColorProvider;
 
 public class FiltroGaussiano {
 
@@ -16,7 +15,6 @@ public class FiltroGaussiano {
 		float[][] mascara = generarMascaraGaussiana(sigma);
 		
 		BufferedImage imagenFiltrada = new BufferedImage(imagenOriginal.getWidth(), imagenOriginal.getHeight(), imagenOriginal.getType());
-		
 		
 		int width = mascara.length;
         int height = mascara[0].length;
@@ -143,33 +141,4 @@ public class FiltroGaussiano {
 		return valor;
 	}
 	
-//	public static BufferedImage aplicarFiltroLoGConUmbral(BufferedImage imagenOriginal, int sigma, int umbral, int dimensionMascara) {
-//
-//		float[][] mascara = generarMascaraLoG(dimensionMascara, sigma);
-//		
-//		BufferedImage imagenFiltrada = new BufferedImage(imagenOriginal.getWidth(), imagenOriginal.getHeight(), imagenOriginal.getType());
-//		
-//		
-//		
-//		int width = mascara.length;
-//        int height = mascara[0].length;
-//        int tam = width * height;
-//        float filtroK[] = new float[tam];
-//
-//        //Creamos el filtro - Se pasa de una matriz cuadrada (vector de 2 dimensiones) a un vector lineal
-//        for(int i=0; i < width; i++){
-//            for(int j=0; j < height; j++){
-//                filtroK[i*width + j] = mascara[i][j];
-//            }
-//        }
-//
-//        Kernel kernel = new Kernel(width, height, filtroK);
-//        Filtro filtro = new Filtro(kernel);
-//
-//        //Aplicamos el filtro
-//        filtro.filter(imagenOriginal, imagenFiltrada);
-//
-//		return imagenFiltrada;
-//	}
-
 }

@@ -31,7 +31,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import susan.Susan;
+import ar.edu.untref.imagenes.susan.Susan;
 import ar.edu.untref.imagenes.tps.bordes.Borde;
 import ar.edu.untref.imagenes.tps.bordes.DetectorDeBordeCanny;
 import ar.edu.untref.imagenes.tps.bordes.DetectorDeHarris;

@@ -1,7 +1,8 @@
-package susan;
+package ar.edu.untref.imagenes.susan;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+
 
 /**
  * Smallest Univaluate Segment Assimilating Nucleus
