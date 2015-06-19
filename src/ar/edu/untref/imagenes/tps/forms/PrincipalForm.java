@@ -34,6 +34,7 @@ import javax.swing.JScrollPane;
 import susan.Susan;
 import ar.edu.untref.imagenes.tps.bordes.Borde;
 import ar.edu.untref.imagenes.tps.bordes.DetectorDeBordeCanny;
+import ar.edu.untref.imagenes.tps.bordes.DetectorDeHarris;
 import ar.edu.untref.imagenes.tps.bordes.ImagenVideoPreProcesada;
 import ar.edu.untref.imagenes.tps.bordes.Segmentador;
 import ar.edu.untref.imagenes.tps.bordes.TransformadaDeHough;
@@ -135,6 +136,8 @@ public class PrincipalForm extends JFrame {
 	private JMenuItem menuDetectorDeBordeCanny;
 	
 	private JMenuItem menuTransformadaDeHough;
+	
+	private JMenuItem menuHarris;
 	
 	private JMenu menuSegmentacion;
 	private JMenuItem menuSegmentacionSemisupervisada;
@@ -432,6 +435,9 @@ public class PrincipalForm extends JFrame {
 		
 		menuTransformadaDeHough = new JMenuItem("Transformada de Hough");
 		menuDeteccionDeBordes.add(menuTransformadaDeHough);
+		
+		menuHarris = new JMenuItem("Harris");
+		menuDeteccionDeBordes.add(menuHarris);
 		
 		menuSegmentacion= new JMenu("Metodos de Segmentacion");
 		menuDeteccionDeBordes.add(menuSegmentacion);
@@ -1325,6 +1331,24 @@ public class PrincipalForm extends JFrame {
 
 				}
 			}
+		});
+		
+		menuHarris.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				if (originalImage != null) {
+
+					aplicarMetodoHarris();
+
+				} else {
+
+					showAlertOriginalImageNull();
+
+				}
+			}
+
 		});
 		
 		menuMetodoDeSusan.addActionListener(new ActionListener() {
@@ -2243,5 +2267,14 @@ public class PrincipalForm extends JFrame {
 			
 			JOptionPane.showMessageDialog(null, "El promedio de tiempo procesado en 40 imagenes es de: " + String.valueOf(contadorTiempos / (long) tiempos.size()) + " milisegundos");		
 		}
+	}
+	
+
+	private void aplicarMetodoHarris() {
+		
+		imageInLabel = DetectorDeHarris.detectarEsquinas(imageInLabel);
+		
+		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+		
 	}
 }
