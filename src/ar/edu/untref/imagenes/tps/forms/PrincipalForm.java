@@ -37,9 +37,9 @@ import ar.edu.untref.imagenes.tps.bordes.DetectorDeBordeCanny;
 import ar.edu.untref.imagenes.tps.bordes.DetectorDeHarris;
 import ar.edu.untref.imagenes.tps.bordes.ImagenVideoPreProcesada;
 import ar.edu.untref.imagenes.tps.bordes.Segmentador;
-import ar.edu.untref.imagenes.tps.bordes.TransformadaDeHough;
 import ar.edu.untref.imagenes.tps.difusion.Difuminador;
 import ar.edu.untref.imagenes.tps.domain.MatrizAcumuladora;
+import ar.edu.untref.imagenes.tps.hough.TransformadaDeHough;
 import ar.edu.untref.imagenes.tps.noise.FiltroGaussiano;
 import ar.edu.untref.imagenes.tps.noise.FiltroPasaAltos;
 import ar.edu.untref.imagenes.tps.noise.FiltroPasaBajos;
@@ -2090,15 +2090,13 @@ public class PrincipalForm extends JFrame {
 	}
 	
 	private void aplicarTransformadaDeHough() {
-//		
-//		int phiMin = Integer.valueOf(JOptionPane.showInputDialog(null, "Phi minimo: ", "Transformada de Hough", JOptionPane.DEFAULT_OPTION));
-//		int phiMax = Integer.valueOf(JOptionPane.showInputDialog(null, "Phi maximo: ", "Transformada de Hough", JOptionPane.DEFAULT_OPTION));
-//		int tethaMin = Integer.valueOf(JOptionPane.showInputDialog(null, "Tetha minimo: ", "Transformada de Hough", JOptionPane.DEFAULT_OPTION));
-//		int tethaMax = Integer.valueOf(JOptionPane.showInputDialog(null, "Tetha maximo: ", "Transformada de Hough", JOptionPane.DEFAULT_OPTION));
-		int discretizacionesPhi = Integer.valueOf(JOptionPane.showInputDialog(null, "Discretizaciones Phi: ", "Transformada de Hough", JOptionPane.DEFAULT_OPTION));
-		int discretizacionesTetha = Integer.valueOf(JOptionPane.showInputDialog(null, "Discretizaciones Tetha: ", "Transformada de Hough", JOptionPane.DEFAULT_OPTION));
 		
-		MatrizAcumuladora matriz = new MatrizAcumuladora(1, 500, 1, 360, discretizacionesPhi, discretizacionesTetha);
+		Integer discretizacionesRo = Integer.valueOf(JOptionPane.showInputDialog(null, "Discretizaciones Phi: ", 
+				"Transformada de Hough", JOptionPane.DEFAULT_OPTION));
+		Integer discretizacionesTetha = Integer.valueOf(JOptionPane.showInputDialog(null, "Discretizaciones Tetha: ", 
+				"Transformada de Hough", JOptionPane.DEFAULT_OPTION));
+		
+		MatrizAcumuladora matriz = new MatrizAcumuladora(0, 700, 0, 360, discretizacionesRo, discretizacionesTetha);
 		imageInLabel = TransformadaDeHough.aplicarTransformadaDeHough(imageInLabel, matriz);
 
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));

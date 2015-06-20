@@ -4,63 +4,62 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+import ar.edu.untref.imagenes.tps.hough.HoughLine;
+import ar.edu.untref.imagenes.tps.hough.Parametro;
+
 public class MatrizAcumuladora {
 
-	private int phiMin;
-	private int phiMax;
+	private int roMin;
+	private int roMax;
 	private int tethaMin;
 	private int tethaMax;
-	private int discretizacionesPhi;
-	private int discretizacionesTetha;
+	private Integer discretizacionesRo;
+	private Integer discretizacionesTetha;
 	private List<Point> [][] matrizAcumuladora;
+	private Parametro [][] espacioParametros;
 	
 	@SuppressWarnings("unchecked")
 	public MatrizAcumuladora(int phiMin, int phiMax, int tethaMin,
-			int tethaMax, int discretizacionesPhi, int discretizacionesTetha) {
-		this.phiMin = phiMin;
-		this.phiMax = phiMax;
+			int tethaMax, Integer discretizacionesRo, Integer discretizacionesTetha) {
+		this.roMin = phiMin;
+		this.roMax = phiMax;
 		this.tethaMin = tethaMin;
 		this.tethaMax = tethaMax;
-		this.discretizacionesPhi = discretizacionesPhi;
-		this.discretizacionesTetha = discretizacionesTetha;
-		this.setMatrizAcumuladora(new ArrayList[discretizacionesTetha][discretizacionesPhi]);
+		this.setDiscretizacionesRo(discretizacionesRo);
+		this.setDiscretizacionesTetha(discretizacionesTetha);
+		this.cargarEspacioParametros();
+		this.setMatrizAcumuladora(new ArrayList[this.espacioParametros.length]
+				[this.espacioParametros[0].length]);
 	}
 	
-	public int getPhiMin() {
-		return phiMin;
+	private void cargarEspacioParametros() {
+		int cantidadDeTethas =  (int) ((float)((this.tethaMax-this.tethaMin)/this.discretizacionesTetha));
+		int cantidadDeRos =  (int) ((float)((this.roMax-this.roMin)/this.discretizacionesRo));
+		
+		this.setEspacioParametros(new Parametro[cantidadDeRos][cantidadDeTethas]);
+		
+		for (int i= 0; i< cantidadDeRos; i++) {
+			for (int j= 0; j< cantidadDeTethas; j++) {
+				this.getEspacioParametros()[i][j] = new Parametro(roMin + (getDiscretizacionesRo()*i), tethaMin + 
+						(discretizacionesTetha*j));
+			}
+		}
 	}
-	public void setPhiMin(int phiMin) {
-		this.phiMin = phiMin;
-	}
-	public int getPhiMax() {
-		return phiMax;
-	}
-	public void setPhiMax(int phiMax) {
-		this.phiMax = phiMax;
-	}
+	
 	public int getTethaMin() {
 		return tethaMin;
 	}
+	
 	public void setTethaMin(int tethaMin) {
 		this.tethaMin = tethaMin;
 	}
+	
 	public int getTethaMax() {
 		return tethaMax;
 	}
+	
 	public void setTethaMax(int tethaMax) {
 		this.tethaMax = tethaMax;
-	}
-	public int getDiscretizacionesPhi() {
-		return discretizacionesPhi;
-	}
-	public void setDiscretizacionesPhi(int discretizacionesPhi) {
-		this.discretizacionesPhi = discretizacionesPhi;
-	}
-	public int getDiscretizacionesTetha() {
-		return discretizacionesTetha;
-	}
-	public void setDiscretizacionesTetha(int discretizacionesTetha) {
-		this.discretizacionesTetha = discretizacionesTetha;
 	}
 
 	public List<Point> [][] getMatrizAcumuladora() {
@@ -71,22 +70,51 @@ public class MatrizAcumuladora {
 		this.matrizAcumuladora = matrizAcumuladora;
 	}
 
-	public List<Point> getMaximos() {
+	public List<HoughLine> getMaximos() {
 		int cantidadElementosMaximo = 0;
-		int posicionX=0;
-		int posicionY=0;
+		List<HoughLine> lines = new ArrayList<>();
 		
-		for (int i=0; i< getDiscretizacionesTetha(); i++) {
-			for (int j=0; j< getDiscretizacionesPhi(); j++){
+		for (int i=0; i< matrizAcumuladora.length; i++) {
+			for (int j=0; j< matrizAcumuladora[0].length; j++){
+
 				if (matrizAcumuladora[i][j].size() > cantidadElementosMaximo) {
 					cantidadElementosMaximo = matrizAcumuladora[i][j].size();
-					posicionX = i;
-					posicionY= j;
+					lines.clear();
 				}
+				
+				if (matrizAcumuladora[i][j].size() == cantidadElementosMaximo) {
+					lines.add(new HoughLine(espacioParametros[i][j].getRo(), 
+							espacioParametros[i][j].getTetha()));
+				}
+				
 			}
 		}
 		
-		return matrizAcumuladora[posicionX][posicionY];
+		return lines;
+	}
+
+	public Parametro [][] getEspacioParametros() {
+		return espacioParametros;
+	}
+
+	public void setEspacioParametros(Parametro [][] espacioParametros) {
+		this.espacioParametros = espacioParametros;
+	}
+
+	public Integer getDiscretizacionesTetha() {
+		return discretizacionesTetha;
+	}
+
+	public void setDiscretizacionesTetha(Integer discretizacionesTetha) {
+		this.discretizacionesTetha = discretizacionesTetha;
+	}
+
+	public Integer getDiscretizacionesRo() {
+		return discretizacionesRo;
+	}
+
+	public void setDiscretizacionesRo(Integer discretizacionesRo) {
+		this.discretizacionesRo = discretizacionesRo;
 	}
 	
 }

@@ -1,6 +1,7 @@
-package ar.edu.untref.imagenes.tps.bordes;
+package ar.edu.untref.imagenes.tps.hough;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -21,13 +22,11 @@ public class TransformadaDeHough {
 		
 		BufferedImage nuevaImagen = new BufferedImage(imagenOriginal.getWidth(), imagenOriginal.getHeight(), 
 				imagenOriginal.getType());
+		Graphics2D graphics = nuevaImagen.createGraphics();
+		graphics.setBackground(Color.WHITE);
 		
-		for (Point unMaximo: acumuladora.getMaximos()) {
-			
-			Color color = new Color(255,255,255);
-			int rgb = color.getRGB();
-			
-			nuevaImagen.setRGB(unMaximo.x, unMaximo.y, rgb);
+		for (HoughLine line: acumuladora.getMaximos()) {
+			line.draw(nuevaImagen, new Color(0, 200, 0).getRGB());
 		}
 		
 		return nuevaImagen;
@@ -35,23 +34,23 @@ public class TransformadaDeHough {
 
 	private static void verificarBlanco(MatrizAcumuladora acumuladora, int i, int j, Color color) {
 		if (color.getRed() == 255) {
-			for (int k= 0; k< acumuladora.getDiscretizacionesTetha(); k++) {
-				for (int m=0; m <acumuladora.getDiscretizacionesPhi(); m++) {
-					int tetha = k + acumuladora.getPhiMin();
-					int phi = m + acumuladora.getTethaMin();
-					evaluarPunto(acumuladora, i, j, k, m, tetha, phi);
+			for (int k= 0; k< acumuladora.getEspacioParametros().length; k++) {
+				for (int m=0; m <acumuladora.getEspacioParametros()[0].length; m++) {
+					int tetha = acumuladora.getEspacioParametros()[k][m].getTetha();
+					int ro = acumuladora.getEspacioParametros()[k][m].getRo();
+					evaluarPunto(acumuladora, i, j, k, m, tetha, ro);
 				}
 			}
 		}
 	}
 
 	private static void evaluarPunto(MatrizAcumuladora acumuladora, int i, int j, int k, 
-			int m, int tetha, int phi) {
+			int m, int tetha, int ro) {
 		if(acumuladora.getMatrizAcumuladora()[k][m] == null){
 			acumuladora.getMatrizAcumuladora()[k][m] = new ArrayList<>();
 		}
 		
-		if ((phi - i*Math.cos(tetha)- j*Math.sin(tetha)) < 0.2) {
+		if ((ro - i*Math.cos(tetha)- j*Math.sin(tetha)) < 1) {
 			acumuladora.getMatrizAcumuladora()[k][m].add(new Point(i, j));
 		}
 	}
