@@ -2269,8 +2269,8 @@ public class PrincipalForm extends JFrame {
 	
 
 	private void aplicarMetodoHarris() {
-		
-		imageInLabel = DetectorDeHarris.detectarEsquinas(imageInLabel);
+		DetectorDeHarris dt = new DetectorDeHarris(imageInLabel);
+		imageInLabel = dt.detectarEsquinas();
 		
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
 		

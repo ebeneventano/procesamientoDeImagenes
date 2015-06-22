@@ -8,8 +8,19 @@ import ar.edu.untref.imagenes.tps.utils.ImageOperations;
 import ar.edu.untref.imagenes.utils.ConversorImagenes;
 
 public class DetectorDeHarris {
+	
+	private BufferedImage imagenOriginal;
+	
+	private int ancho;
+	private int alto;
+	
+	public DetectorDeHarris(BufferedImage imagen){
+		this.imagenOriginal = imagen;
+		this.ancho = imagenOriginal.getWidth();
+		this.alto = imagenOriginal.getHeight();
+	}
 
-	public static BufferedImage detectarEsquinas(BufferedImage imagenOriginal){
+	public BufferedImage detectarEsquinas(){
 		
 		int mascaraX[][] = { { 1, 0, -1 }, { 2, 0, -2 }, { 1, 0, -1 } };
 		int mascaraY[][] = { { 1, 2, 1 }, { 0, 0, 0 }, { -1, -2, -1 } };
@@ -22,49 +33,44 @@ public class DetectorDeHarris {
         int[][] matrizRojoEnXCuadrado = aplicarTransformacionLineal(elevarAlCuadrado(matrizImagenSobelX));
         int[][] matrizRojoEnYCuadrado = aplicarTransformacionLineal(elevarAlCuadrado(matrizImagenSobelY));
         
+		
         BufferedImage imagenConFiltroGaussEnX = FiltroGaussiano.aplicarFiltroGaussiano(ConversorImagenes.convertirMatrizEnImagen(
-        		matrizRojoEnXCuadrado,imagenOriginal.getWidth(), imagenOriginal.getHeight()), 2);
+        		matrizRojoEnXCuadrado,ancho, alto), 2);
         BufferedImage imagenConFiltroGaussEnY = FiltroGaussiano.aplicarFiltroGaussiano(ConversorImagenes.convertirMatrizEnImagen(
-        		matrizRojoEnYCuadrado,imagenOriginal.getWidth(), imagenOriginal.getHeight()), 2);
+        		matrizRojoEnYCuadrado, ancho, alto), 2);
         
         //Paso3: Calcular Ixy multiplicando elemento a elemento también suavizar con el mismo filtro gaussiano.
-        
-        int[][] matrizRojoXY = aplicarTransformacionLineal(multiplicarValores(matrizImagenSobelX, matrizImagenSobelY));
+        int[][] resultadoMultiplicacion = multiplicarValores(ConversorImagenes.convertirImagenEnMatriz(imagenConFiltroGaussEnX), 
+        		ConversorImagenes.convertirImagenEnMatriz(imagenConFiltroGaussEnY));
+        int[][] matrizRojoXY = aplicarTransformacionLineal(resultadoMultiplicacion);
 
-        BufferedImage imagenXY = ConversorImagenes.convertirMatrizEnImagen(matrizRojoXY, imagenOriginal.getWidth(), imagenOriginal.getHeight());
+        BufferedImage imagenXY = ConversorImagenes.convertirMatrizEnImagen(matrizRojoXY, ancho, alto);
         BufferedImage imagenXYConFiltroGauss = FiltroGaussiano.aplicarFiltroGaussiano(imagenXY, 2);
         
         //Paso 4: con k=0.04 Calcular: cim1 = (Ix2*Iy2 - Ixy^2) - k*(Ix2 + Iy2)^2  
         int[][] cimRojos = aplicarTransformacionLineal(calcularCim(ConversorImagenes.convertirImagenEnMatriz(
         		imagenConFiltroGaussEnX), ConversorImagenes.convertirImagenEnMatriz(
         		imagenConFiltroGaussEnY), ConversorImagenes.convertirImagenEnMatriz(imagenXYConFiltroGauss)));
-        
-        //Aplicamos filtros en X y en Y
-        int[][] transpuestaRojo = new int[cimRojos[0].length][cimRojos.length];
-    	
-    	for(int j = 0; j < cimRojos.length; j++){
-           for(int i = 0; i < cimRojos[0].length; i++){
-        	   transpuestaRojo[i][j] = cimRojos[j][i];
-           }
-        }
     	
     	BufferedImage imagenUmbralizada = ImageOperations.generarUmbralizacionOtsu(ConversorImagenes.convertirMatrizEnImagen(
-    			transpuestaRojo, imagenOriginal.getWidth(), imagenOriginal.getHeight()));
+    			cimRojos, ancho, alto));
     	
         
 		return superponerAImagenOriginal(imagenUmbralizada, imagenOriginal);
 	}
 
-	private static BufferedImage superponerAImagenOriginal(BufferedImage umbralizada, BufferedImage original) {
-
-		BufferedImage imagenFinal = new BufferedImage(original.getWidth(), original.getHeight(), original.getType());		
-		for (int i=0; i< umbralizada.getWidth(); i++){
-			for (int j=0; j< umbralizada.getHeight(); j++){
+	private BufferedImage superponerAImagenOriginal(BufferedImage umbralizada, BufferedImage original) {
+		
+		int greenRGB = Color.GREEN.getRGB();
+		BufferedImage imagenFinal = new BufferedImage(ancho, alto, original.getType());		
+		
+		for (int i=0; i< ancho; i++){
+			for (int j=0; j< alto; j++){
 				
 				Color colorEnUmbralizada = new Color(umbralizada.getRGB(i, j));
 				if (colorEnUmbralizada.getRed()==255){
 					
-					imagenFinal.setRGB(i, j, Color.YELLOW.getRGB());
+					imagenFinal.setRGB(i, j, greenRGB);
 				} else {
 					
 					imagenFinal.setRGB(i, j, original.getRGB(i, j));
@@ -82,15 +88,14 @@ public class DetectorDeHarris {
 	 * @param imagenXYConFiltroGauss
 	 * @return
 	 */
-	private static int[][] calcularCim(int[][] Ix2,
-			int[][] Iy2, int[][] Ixy2) {
+	private int[][] calcularCim(int[][] Ix2, int[][] Iy2, int[][] Ixy2) {
 		
-		int filas = Ix2.length;
-		int columnas = Ix2[0].length;
-		int[][] matrizCim = new int[filas][columnas];
+		int ancho = this.ancho;
+		int alto = this.alto;
+		int[][] matrizCim = new int[ancho][alto];
 		
-		for (int f = 0; f < filas; f++) {
-			for (int g = 0; g < columnas; g++) {
+		for (int f = 0; f < ancho; f++) {
+			for (int g = 0; g < alto; g++) {
 
 				matrizCim[f][g] = (int) (((Ix2[f][g]*Iy2[f][g]) - Ixy2[f][g]) - (0.04 * Math.pow((Ix2[f][g] + Iy2[f][g]),2)));
 			}
@@ -99,18 +104,17 @@ public class DetectorDeHarris {
 		return matrizCim;
 	}
 	
-	public static int[][] aplicarMascara(BufferedImage image,
-			int mascara[][]) {
+	public int[][] aplicarMascara(BufferedImage image, int mascara[][]) {
 
 		int anchoMascara = 3;
 		int altoMascara = 3;
 		int sumarEnAncho = (-1) * (anchoMascara / 2);
 		int sumarEnAlto = (-1) * (altoMascara / 2);
-		int[][] matriz = new int[image.getWidth()][image.getHeight()];
+		int[][] matriz = new int[ancho][alto];
 
 		// Iterar la imagen, sacando los bordes.
-		for (int i = anchoMascara / 2; i < image.getWidth() - (anchoMascara / 2); i++) {
-			for (int j = altoMascara / 2; j < image.getHeight() - (altoMascara / 2); j++) {
+		for (int i = anchoMascara / 2; i < ancho - (anchoMascara / 2); i++) {
+			for (int j = altoMascara / 2; j < alto - (altoMascara / 2); j++) {
 
 				int sumatoriaX = 0;
 				// Iterar la mÃ¡scara
@@ -131,13 +135,10 @@ public class DetectorDeHarris {
 		return matriz;
 	}
 	
-	public static int[][] elevarAlCuadrado(int[][] matriz) {
+	public int[][] elevarAlCuadrado(int[][] matriz) {
 		
-		int filas = matriz.length;
-		int columnas = matriz[0].length;
-
-		for (int f = 0; f < filas; f++) {
-			for (int g = 0; g < columnas; g++) {
+		for (int f = 0; f < ancho; f++) {
+			for (int g = 0; g < alto; g++) {
 
 				matriz[f][g] = (int) Math.pow(matriz[f][g],2);
 			}
@@ -146,23 +147,20 @@ public class DetectorDeHarris {
 		return matriz;
 	}
 	
-	public static int[][] aplicarTransformacionLineal(int[][] matrizDesfasada) {
+	public int[][] aplicarTransformacionLineal(int[][] matrizDesfasada) {
 
 		float minimo;
 		float maximo;
 
 		int[][] matrizTransformada;
 		
-		int filas = matrizDesfasada.length;
-		int columnas = matrizDesfasada[0].length;
-		
-		matrizTransformada = new int[filas][columnas];
+		matrizTransformada = new int[ancho][alto];
 		
 		minimo = 0;
 		maximo = 255;
 
-		for (int f = 0; f < filas; f++) {
-			for (int g = 0; g < columnas; g++) {
+		for (int f = 0; f < ancho; f++) {
+			for (int g = 0; g < alto; g++) {
 		
 				int valorActual = matrizDesfasada[f][g];
 				
@@ -182,8 +180,8 @@ public class DetectorDeHarris {
 		maximosYMinimos[0] = minimo;
 		maximosYMinimos[1] = maximo;
 		
-		for (int i = 0; i < filas; i++) {
-			for (int j = 0; j < columnas; j++) {
+		for (int i = 0; i < ancho; i++) {
+			for (int j = 0; j < alto; j++) {
 
 				int valorActual = matrizDesfasada[i][j];
 				int valorTransformado = (int) ((((255f) / (maximo - minimo)) * valorActual) - ((minimo * 255f) / (maximo - minimo)));
@@ -195,20 +193,25 @@ public class DetectorDeHarris {
 		return matrizTransformada;
 	}
 	
-	public static int[][] multiplicarValores(int[][] matrizRojoEnX,
-			int[][] matrizRojoEnY) {
+	public int[][] multiplicarValores(int[][] matrizRojoEnX, int[][] matrizRojoEnY) {
+ 
+		int[][] matrizResultado = new int[ancho][alto];
 
-		int filas = matrizRojoEnX.length;
-		int columnas = matrizRojoEnX[0].length;
-		int[][] matrizResultado = new int[filas][columnas];
-
-		for (int f = 0; f < filas; f++) {
-			for (int g = 0; g < columnas; g++) {
+		for (int f = 0; f < ancho; f++) {
+			for (int g = 0; g < alto; g++) {
 
 				matrizResultado[f][g] = matrizRojoEnX[f][g]*matrizRojoEnY[f][g];
 			}
 		}
 		
 		return matrizResultado;
+	}
+
+	public BufferedImage getImagenOriginal() {
+		return imagenOriginal;
+	}
+
+	public void setImagenOriginal(BufferedImage imagenOriginal) {
+		this.imagenOriginal = imagenOriginal;
 	}
 }
