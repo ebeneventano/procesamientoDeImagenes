@@ -38,23 +38,21 @@ public class DetectorDeHarris {
         		matrizRojoEnXCuadrado,ancho, alto), 2);
         BufferedImage imagenConFiltroGaussEnY = FiltroGaussiano.aplicarFiltroGaussiano(ConversorImagenes.convertirMatrizEnImagen(
         		matrizRojoEnYCuadrado, ancho, alto), 2);
-        
+         
+        int [][] matrizImagenFiltroGaussEnX = ConversorImagenes.convertirImagenEnMatriz(imagenConFiltroGaussEnX);
+        int [][] matrizImagenFiltroGaussEnY = ConversorImagenes.convertirImagenEnMatriz(imagenConFiltroGaussEnY);
+
         //Paso3: Calcular Ixy multiplicando elemento a elemento también suavizar con el mismo filtro gaussiano.
-        int[][] resultadoMultiplicacion = multiplicarValores(ConversorImagenes.convertirImagenEnMatriz(imagenConFiltroGaussEnX), 
-        		ConversorImagenes.convertirImagenEnMatriz(imagenConFiltroGaussEnY));
+        int[][] resultadoMultiplicacion = multiplicarValores(matrizImagenFiltroGaussEnX, matrizImagenFiltroGaussEnY);
         int[][] matrizRojoXY = aplicarTransformacionLineal(resultadoMultiplicacion);
 
         BufferedImage imagenXY = ConversorImagenes.convertirMatrizEnImagen(matrizRojoXY, ancho, alto);
         BufferedImage imagenXYConFiltroGauss = FiltroGaussiano.aplicarFiltroGaussiano(imagenXY, 2);
         
         //Paso 4: con k=0.04 Calcular: cim1 = (Ix2*Iy2 - Ixy^2) - k*(Ix2 + Iy2)^2  
-        int[][] cimRojos = aplicarTransformacionLineal(calcularCim(ConversorImagenes.convertirImagenEnMatriz(
-        		imagenConFiltroGaussEnX), ConversorImagenes.convertirImagenEnMatriz(
-        		imagenConFiltroGaussEnY), ConversorImagenes.convertirImagenEnMatriz(imagenXYConFiltroGauss)));
+        int[][] cimRojos = aplicarTransformacionLineal(calcularCim(matrizImagenFiltroGaussEnX, matrizImagenFiltroGaussEnY, ConversorImagenes.convertirImagenEnMatriz(imagenXYConFiltroGauss)));
     	
-    	BufferedImage imagenUmbralizada = ImageOperations.generarUmbralizacionOtsu(ConversorImagenes.convertirMatrizEnImagen(
-    			cimRojos, ancho, alto));
-    	
+    	BufferedImage imagenUmbralizada = ImageOperations.generarUmbralizacionOtsu(ConversorImagenes.convertirMatrizEnImagen(cimRojos, ancho, alto));
         
 		return superponerAImagenOriginal(imagenUmbralizada, imagenOriginal);
 	}
