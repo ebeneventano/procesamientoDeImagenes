@@ -81,10 +81,6 @@ public class DetectorDeHarris {
 
 	/**
 	 * cim1 = (Ix2*Iy2 - Ixy^2) - k*(Ix2 + Iy2)^2  con k=0.04
-	 * @param imagenConFiltroGaussEnX
-	 * @param imagenConFiltroGaussEnY
-	 * @param imagenXYConFiltroGauss
-	 * @return
 	 */
 	private int[][] calcularCim(int[][] Ix2, int[][] Iy2, int[][] Ixy2) {
 		
