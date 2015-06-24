@@ -132,10 +132,10 @@ public class Susan {
  				case "B":
  					if(Math.abs( Sr0 - criterioDeBorde) < 0.1){
  	 					
- 	 					imagenResultado.setRGB(i, j, pixelVerde);
+ 	 					imagenOriginal.setRGB(i, j, pixelVerde);
  	 				} else {
  	 					
- 	 					imagenResultado.setRGB(i, j, pixelNegro);
+// 	 					imagenResultado.setRGB(i, j, pixelNegro);
  	 				}
  					break;
  					
@@ -161,7 +161,7 @@ public class Susan {
 				}
  			}
  		}
- 		return imagenResultado;
+ 		return imagenOriginal;
 	}
 	
 }

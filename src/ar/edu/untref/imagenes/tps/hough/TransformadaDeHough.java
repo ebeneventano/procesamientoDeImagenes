@@ -26,7 +26,7 @@ public class TransformadaDeHough {
 		graphics.setBackground(Color.WHITE);
 		
 		for (HoughLine line: acumuladora.getMaximos()) {
-			line.draw(nuevaImagen, new Color(0, 200, 0).getRGB());
+			line.draw(acumuladora, nuevaImagen);
 		}
 		
 		return nuevaImagen;

@@ -33,17 +33,24 @@ public class MatrizAcumuladora {
 	}
 	
 	private void cargarEspacioParametros() {
-		int cantidadDeTethas =  (int) ((float)((this.tethaMax-this.tethaMin)/this.discretizacionesTetha));
-		int cantidadDeRos =  (int) ((float)((this.roMax-this.roMin)/this.saltoEntreDiscretizacionesDeRo));
+//		int cantidadDeTethas =  (int) ((float)((this.tethaMax-this.tethaMin)/this.discretizacionesTetha));
+//		int cantidadDeRos =  (int) ((float)((this.roMax-this.roMin)/this.saltoEntreDiscretizacionesDeRo));
+//		
+//		this.setEspacioParametros(new Parametro[cantidadDeRos][cantidadDeTethas]);
+//		
+//		for (int i= 0; i< cantidadDeRos; i++) {
+//			//for (int j= 0; j< cantidadDeTethas; j++) {
+//				//this.getEspacioParametros()[i][j] = new Parametro(roMin + (getDiscretizacionesRo()*i), tethaMin + 
+//					//	(discretizacionesTetha*j));
+//			//}
+//			
+//		}
 		
-		this.setEspacioParametros(new Parametro[cantidadDeRos][cantidadDeTethas]);
-		
-		for (int i= 0; i< cantidadDeRos; i++) {
-			for (int j= 0; j< cantidadDeTethas; j++) {
-				this.getEspacioParametros()[i][j] = new Parametro(roMin + (getDiscretizacionesRo()*i), tethaMin + 
-						(discretizacionesTetha*j));
-			}
-		}
+		this.setEspacioParametros(new Parametro[2][2]);
+		this.getEspacioParametros()[0][0] = new Parametro(50, 0);
+		this.getEspacioParametros()[0][1] = new Parametro(50, 90);
+		this.getEspacioParametros()[1][0] = new Parametro(150, 0);
+		this.getEspacioParametros()[1][1] = new Parametro(150, 90);
 	}
 	
 	public int getTethaMin() {

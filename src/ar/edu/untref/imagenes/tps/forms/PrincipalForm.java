@@ -2096,7 +2096,7 @@ public class PrincipalForm extends JFrame {
 		Integer discretizacionesTetha = Integer.valueOf(JOptionPane.showInputDialog(null, "Discretizaciones Tetha: ", 
 				"Transformada de Hough", JOptionPane.DEFAULT_OPTION));
 		
-		MatrizAcumuladora matriz = new MatrizAcumuladora(1, 700, 0, 360, saltoEntreDiscretizacionesRo, discretizacionesTetha);
+		MatrizAcumuladora matriz = new MatrizAcumuladora(0, 200, 0, 90, saltoEntreDiscretizacionesRo, discretizacionesTetha);
 		
 		imageInLabel = TransformadaDeHough.aplicarTransformadaDeHough(imageInLabel, matriz);
 
