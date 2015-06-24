@@ -120,7 +120,7 @@ public class Susan {
  				switch (flagDetector) {
 
  				case "E":
- 					if(Math.abs( Sr0 - criterioDeEsquina) < 0.1){
+ 					if(Math.abs( Sr0 - criterioDeEsquina) < 0.2){
  	 					
  	 					imagenResultado.setRGB(i, j, pixelVerde);
  	 				} else {

@@ -13,19 +13,19 @@ public class MatrizAcumuladora {
 	private int roMax;
 	private int tethaMin;
 	private int tethaMax;
-	private Integer discretizacionesRo;
+	private Integer saltoEntreDiscretizacionesDeRo;
 	private Integer discretizacionesTetha;
 	private List<Point> [][] matrizAcumuladora;
 	private Parametro [][] espacioParametros;
 	
 	@SuppressWarnings("unchecked")
-	public MatrizAcumuladora(int phiMin, int phiMax, int tethaMin,
-			int tethaMax, Integer discretizacionesRo, Integer discretizacionesTetha) {
-		this.roMin = phiMin;
-		this.roMax = phiMax;
+	public MatrizAcumuladora(int roMin, int roMax, int tethaMin,
+			int tethaMax, Integer saltoEntreDiscretizacionesRo, Integer discretizacionesTetha) {
+		this.roMin = roMin;
+		this.roMax = roMax;
 		this.tethaMin = tethaMin;
 		this.tethaMax = tethaMax;
-		this.setDiscretizacionesRo(discretizacionesRo);
+		this.setSaltoEntreDiscretizacionesRo(saltoEntreDiscretizacionesRo);
 		this.setDiscretizacionesTetha(discretizacionesTetha);
 		this.cargarEspacioParametros();
 		this.setMatrizAcumuladora(new ArrayList[this.espacioParametros.length]
@@ -34,7 +34,7 @@ public class MatrizAcumuladora {
 	
 	private void cargarEspacioParametros() {
 		int cantidadDeTethas =  (int) ((float)((this.tethaMax-this.tethaMin)/this.discretizacionesTetha));
-		int cantidadDeRos =  (int) ((float)((this.roMax-this.roMin)/this.discretizacionesRo));
+		int cantidadDeRos =  (int) ((float)((this.roMax-this.roMin)/this.saltoEntreDiscretizacionesDeRo));
 		
 		this.setEspacioParametros(new Parametro[cantidadDeRos][cantidadDeTethas]);
 		
@@ -110,11 +110,11 @@ public class MatrizAcumuladora {
 	}
 
 	public Integer getDiscretizacionesRo() {
-		return discretizacionesRo;
+		return saltoEntreDiscretizacionesDeRo;
 	}
 
-	public void setDiscretizacionesRo(Integer discretizacionesRo) {
-		this.discretizacionesRo = discretizacionesRo;
+	public void setSaltoEntreDiscretizacionesRo(Integer discretizacionesRo) {
+		this.saltoEntreDiscretizacionesDeRo = discretizacionesRo;
 	}
 	
 }
