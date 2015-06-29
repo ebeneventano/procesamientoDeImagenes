@@ -20,39 +20,34 @@ import org.openimaj.math.geometry.transforms.estimation.RobustAffineTransformEst
 import org.openimaj.math.model.fit.RANSAC;
 
 public class Sift {
-	
-	public static void aplicar(File imagen1, File imagen2, boolean esRobusto) throws Exception {
-		MBFImage query = ImageUtilities.readMBF(imagen1);
-		MBFImage target = ImageUtilities.readMBF(imagen2);
-	
-		// Se crea un motor de diferencia guassiana, bastante resistente a
-		// cambios de tamaño, rotaciones y reposicionamiento
+
+	public static void aplicar(File img1, File img2) throws Exception {
+		MBFImage query = ImageUtilities.readMBF(img1);
+		MBFImage target = ImageUtilities.readMBF(img2);
+
 		DoGSIFTEngine engine = new DoGSIFTEngine();
-	
-		// Se extraen los Keypoints de cada imagen.
+
 		LocalFeatureList<Keypoint> queryKeypoints = engine.findFeatures(query.flatten());
 		LocalFeatureList<Keypoint> targetKeypoints = engine.findFeatures(target.flatten());
-	
-		LocalFeatureMatcher<Keypoint> matcher = new BasicMatcher<Keypoint>(80);
+
+		LocalFeatureMatcher<Keypoint> matcher = new BasicMatcher<Keypoint>(75);
 		matcher.setModelFeatures(queryKeypoints);
 		matcher.findMatches(targetKeypoints);
-		
-		if (esRobusto){
-			RobustAffineTransformEstimator modelFitter = new RobustAffineTransformEstimator(
-					5.0, 1500, new RANSAC.PercentageInliersStoppingCondition(0.5));
-			matcher = new ConsistentLocalFeatureMatcher2d<Keypoint>(
-					new FastBasicKeypointMatcher<Keypoint>(8), modelFitter);
-			
-			matcher.setModelFeatures(queryKeypoints);
-			matcher.findMatches(targetKeypoints);
-		}
-	
-		MBFImage consistentMatches = MatchingUtilities.drawMatches(query, target, matcher.getMatches(),
-				RGBColour.RED);
-		
-		JOptionPane.showMessageDialog(null, " Coincidencias entre descriptores: " + 
-					String.valueOf(matcher.getMatches().size()));
-		
+
+		RobustAffineTransformEstimator modelFitter = new RobustAffineTransformEstimator(
+				5.0, 1500, new RANSAC.PercentageInliersStoppingCondition(0.5));
+		matcher = new ConsistentLocalFeatureMatcher2d<Keypoint>(
+				new FastBasicKeypointMatcher<Keypoint>(8), modelFitter);
+
+		matcher.setModelFeatures(queryKeypoints);
+		matcher.findMatches(targetKeypoints);
+
+		MBFImage consistentMatches = MatchingUtilities.drawMatches(query,
+				target, matcher.getMatches(), RGBColour.BLUE);
+
+		JOptionPane.showMessageDialog(null,
+				" Coincidencias entre descriptores: " + String.valueOf(matcher.getMatches().size()));
+
 		DisplayUtilities.display(consistentMatches);
 	}
 

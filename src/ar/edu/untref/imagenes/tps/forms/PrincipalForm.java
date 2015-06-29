@@ -44,6 +44,7 @@ import ar.edu.untref.imagenes.tps.noise.FiltroGaussiano;
 import ar.edu.untref.imagenes.tps.noise.FiltroPasaAltos;
 import ar.edu.untref.imagenes.tps.noise.FiltroPasaBajos;
 import ar.edu.untref.imagenes.tps.noise.GeneradorDeRuido;
+import ar.edu.untref.imagenes.tps.sift.Sift;
 import ar.edu.untref.imagenes.tps.utils.ImageOperations;
 
 @SuppressWarnings("serial")
@@ -69,6 +70,7 @@ public class PrincipalForm extends JFrame {
 	private JMenuItem menuNegativeImage;
 	private JMenuItem menuIncreaseContrast;
 	private JMenuItem menuUmbralization;
+	private JMenuItem menuSift;
 
 	private JMenu menuRuido;
 
@@ -168,9 +170,12 @@ public class PrincipalForm extends JFrame {
 	
 	private ImagenVideoPreProcesada procesamientoAnterior = null;
 
-	
 	int contadorImagenes = 0;
 	private	File[] files = null;
+
+	private File querySift;
+
+	private File targetSift;
 
 	public PrincipalForm() {
 
@@ -438,6 +443,9 @@ public class PrincipalForm extends JFrame {
 		
 		menuHarris = new JMenuItem("Harris");
 		menuDeteccionDeBordes.add(menuHarris);
+		
+		menuSift = new JMenuItem("SIFT");
+		menuDeteccionDeBordes.add(menuSift);
 		
 		menuSegmentacion= new JMenu("Metodos de Segmentacion");
 		menuDeteccionDeBordes.add(menuSegmentacion);
@@ -1351,6 +1359,14 @@ public class PrincipalForm extends JFrame {
 
 		});
 		
+		menuSift.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				aplicarMetodoSift();
+			}
+
+		});
+		
 		menuMetodoDeSusan.addActionListener(new ActionListener() {
 
 			@Override
@@ -2151,7 +2167,8 @@ public class PrincipalForm extends JFrame {
 
 	private void aplicarMetodoSusanBorde() {
 		
-		String flagDetector = String.valueOf(JOptionPane.showInputDialog(null, "Opcion borde/esquina", "Filtro LoG", JOptionPane.DEFAULT_OPTION));
+		String flagDetector = String.valueOf(JOptionPane.showInputDialog(null, "Opcion borde/esquina", "Filtro LoG", 
+				JOptionPane.DEFAULT_OPTION));
 
 		Susan susan = new Susan();
 		imageInLabel = susan.aplicarSusanBorde(imageInLabel, flagDetector);
@@ -2162,7 +2179,8 @@ public class PrincipalForm extends JFrame {
 	
 	public void instanciarPrimerImagenVideo() {
 		
-		Integer rutaVideo = Integer.valueOf(JOptionPane.showInputDialog(null, "Numero de Video", "Segmentador", JOptionPane.DEFAULT_OPTION));
+		Integer rutaVideo = Integer.valueOf(JOptionPane.showInputDialog(null, "Numero de Video", "Segmentador", 
+				JOptionPane.DEFAULT_OPTION));
 
 		File folder = new File("video/Movie" + String.valueOf(rutaVideo));
 		
@@ -2274,6 +2292,38 @@ public class PrincipalForm extends JFrame {
 		imageInLabel = dt.detectarEsquinas();
 		
 		labelPrincipalImage.setIcon(new ImageIcon(imageInLabel));
+	}
+	
+	private void aplicarMetodoSift() {
+		this.seleccionarQuerySift();
+		this.seleccionarTargetSift();
 		
+		try {
+			Sift.aplicar(querySift, targetSift);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public void seleccionarQuerySift() {
+		JFileChooser selector = new JFileChooser();
+		selector.setDialogTitle("Seleccione la primer imagen a comparar");
+
+		int flag = selector.showOpenDialog(null);
+
+		if (flag == JFileChooser.APPROVE_OPTION) {
+			this.querySift = selector.getSelectedFile();
+		}
+	}
+	
+	public void seleccionarTargetSift() {
+		JFileChooser selector = new JFileChooser();
+		selector.setDialogTitle("Seleccione la segunda imagen a comparar");
+
+		int flag = selector.showOpenDialog(null);
+
+		if (flag == JFileChooser.APPROVE_OPTION) {
+			this.targetSift = selector.getSelectedFile();
+		}
 	}
 }

@@ -1,0 +1,31 @@
+JFDML JFormDesigner: "5.2.0.3.124" Java: "1.7.0_71" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq l {space :p:75:p, par l:::p {seq {comp buttonCrearImagen:::p::p, space u:::p, comp buttonGuardar:::::x}, comp scrollPane1:::p:200:p}, space ::74:x}}"
+			"$verticalGroup": "par l {seq {space :p:28:p, comp scrollPane1:::p:200:p, space u:::p, par b {comp buttonCrearImagen::b:p::p, comp buttonGuardar::b:p::p}, space ::47:x}}"
+		} ) {
+			name: "this"
+			"title": "Punto 2 - Imagen Binaria con Circulo en el medio"
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "buttonCrearImagen"
+				"text": "Crear Imagen"
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "scrollPane1"
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "imagenLabel"
+				} )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "buttonGuardar"
+				"text": "Guardar"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 365, 345 )
+		} )
+	}
+}
