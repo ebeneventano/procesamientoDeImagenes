@@ -22,39 +22,6 @@ public class HoughLine {
 		return tetha;
 	}
 
-	public void draw(BufferedImage image, int color) {
-
-//		int height = image.getHeight();
-//		int width = image.getWidth();
-//
-//		int houghHeight = (int) (Math.sqrt(2) * Math.max(height, width)) / 2;
-//
-//		float centerX = width / 2;
-//		float centerY = height / 2;
-//
-//		double tsin = Math.sin(tetha);
-//		double tcos = Math.cos(tetha);
-//
-//		if (tetha < Math.PI * 0.25 || tetha > Math.PI * 0.75) {
-//			for (int y = 0; y < height; y++) {
-//				int x = (int) ((((ro - houghHeight) - ((y - centerY) * tsin)) / tcos) + centerX);
-//				if (x < width && x >= 0) {
-//					image.setRGB(x, y, color);
-//				}
-//			}
-//		} else {
-//			for (int x = 0; x < width; x++) {
-//				int y = (int) ((((ro - houghHeight) - ((x - centerX) * tcos)) / tsin) + centerY);
-//				if (y < height && y >= 0) {
-//					image.setRGB(x, y, color);
-//				}
-//			}
-//		}
-		
-		
-		
-	}
-
 	public Integer getRo() {
 		return ro;
 	}
@@ -89,21 +56,38 @@ public class HoughLine {
 		
 		int x0, y0, x1, y1;
 		
+		// Recta Vertical
 		if(punto1.x == punto2.x) {
 			
+			x0 = 0;
+			x1 = imagen.getWidth();
+			y0 = punto1.y;
+			y1 = punto1.y;
 			
-						x0 = 0;
-						x1 = imagen.getWidth();
-						y0 = punto1.y;
-						y1 = punto1.y;
-		} else {
-			
+		// Recta Horizontal
+		} else if (punto1.y == punto2.y) {
 
 			x0 = punto1.x;
 			x1 = punto1.x;
 			y0 = 0;
 			y1 = imagen.getHeight();			
+
+		// Diagonales
+		} else {
 			
+			// Ecuacion de la recta que pasa por dos puntos (x0, y0), (x1, y1)
+			// (x - x0) * (y1 - y0) = (y - y0) * (x1 - x0)
+			// => y = [ (x - x0) * (y1 - y0) / (x1 - x0) ] - y0
+			
+			// Cuando x = 0 ¿cuál es el y correspondiente de la recta en la imágen?
+			x0 = 0;
+			y0 = (x0 - punto1.x) * (punto2.y - punto1.y) / (punto2.x - punto1.x);
+			y0 = y0 - punto1.y;
+			
+			// Necesito otro punto de la imágen, ¿cuando x0 es el ancho total, cuál va a ser el valor de y?
+			x1 = imagen.getWidth() - 1;
+			y1 = (x1 - punto1.x) * (punto2.y - punto1.y) / (punto2.x - punto1.x);
+			y1 = y1 - punto1.y;
 		}
 		
 		graphics.setColor(Color.GREEN);
