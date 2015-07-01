@@ -18,7 +18,7 @@ public class HoughTest {
 		int tethaMinimo = 0;
 		int tethaMaximo = 90;
 		
-		int discretizacionesRho = 2; // Me interesa la 50 y la 150
+		int discretizacionesRho = 4; // Me interesa la 0, 50, 100 y 150
 		int discretizacionesTetha = 2; // Me interesa 0 y 90 grados
 			
 		
@@ -28,23 +28,19 @@ public class HoughTest {
 		
 		Parametro[][] espacioDeParametros = matriz.getEspacioParametros();
 		
-		Assert.assertEquals("Se generaron 2 Rho", 2, espacioDeParametros.length);
+		Assert.assertEquals("Se generaron 4 Rho", 4, espacioDeParametros.length);
 		Assert.assertEquals("Se generaron 2 Tetha", 2, espacioDeParametros[0].length);
 
 		// Recta horizontal inferior
-		Assert.assertEquals(50, espacioDeParametros[0][0].getRo().intValue());
 		Assert.assertEquals(0, espacioDeParametros[0][0].getTetha().intValue());
 		
 		// Recta horizontal superior
-		Assert.assertEquals(150, espacioDeParametros[1][0].getRo().intValue());
 		Assert.assertEquals(0, espacioDeParametros[1][0].getTetha().intValue());
 		
 		// Recta vertical izquierda
-		Assert.assertEquals(50, espacioDeParametros[0][1].getRo().intValue());
 		Assert.assertEquals(90, espacioDeParametros[0][1].getTetha().intValue());
 		
 		// Recta vertical derecha
-		Assert.assertEquals(150, espacioDeParametros[1][1].getRo().intValue());
 		Assert.assertEquals(90, espacioDeParametros[1][1].getTetha().intValue());
 		
 	}
